@@ -14,7 +14,7 @@ Distilled from a production framework — same architectural ideas.
 ## Stack
 
 Java 21 · Gradle (Kotlin DSL) · JUnit 5 (parallel) · Guice · Retrofit/OkHttp · Playwright · Allure ·
-Owner (config) · Awaitility · JDBI + HikariCP · JSch (SSH tunnel) · Lombok · AssertJ
+Owner (config) · JDBI + HikariCP · JSch (SSH tunnel) · Lombok · AssertJ
 
 ## What it tests
 
@@ -94,6 +94,6 @@ src/main/java/io/bookwright/
 ├── steps/        ApiSteps / UiSteps / DbSteps facades
 ├── teardown/     LIFO teardown queue + extension
 ├── ui/           BrowserManager + page objects (plain Playwright locators)
-└── util/         Calls, WaitUtils, BookingFactory
+└── util/         Calls, BookingFactory
 src/test/java/io/bookwright/tests/{api,ui,db}/
 ```
