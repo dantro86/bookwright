@@ -9,7 +9,7 @@
 ![tests](https://github.com/dantro86/bookwright/actions/workflows/tests.yml/badge.svg)
 
 Example Java test-automation framework: API + UI + DB-over-SSH in one lean project.
-Distilled from a production framework — same architectural ideas, none of the excess abstraction.
+Distilled from a production framework — same architectural ideas.
 
 ## Stack
 
