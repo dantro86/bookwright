@@ -6,6 +6,7 @@ import io.bookwright.api.model.AuthRequest;
 import io.bookwright.api.model.AuthResponse;
 import io.bookwright.config.MainConfig;
 import io.bookwright.util.Calls;
+import io.bookwright.util.Waits;
 import io.qameta.allure.Step;
 import retrofit2.Response;
 
@@ -40,5 +41,16 @@ public class AuthApiSteps {
     public void ping() {
         Response<Void> response = Calls.execute(authApi.ping());
         Calls.checkStatus(response, 201);
+    }
+
+    /**
+     * Health-wait example: polls /ping until the service answers. Useful right
+     * after `docker compose up` or against a cold heroku dyno, where the first
+     * requests may fail or hang.
+     */
+    @Step("Wait until API is up")
+    public void waitUntilApiUp() {
+        Waits.awaitSlow("API /ping answers 201")
+                .until(() -> Calls.execute(authApi.ping()).code() == 201);
     }
 }

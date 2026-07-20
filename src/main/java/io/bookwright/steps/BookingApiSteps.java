@@ -7,6 +7,7 @@ import io.bookwright.api.model.BookingId;
 import io.bookwright.api.model.CreatedBooking;
 import io.bookwright.teardown.TeardownStorage;
 import io.bookwright.util.Calls;
+import io.bookwright.util.Waits;
 import io.qameta.allure.Step;
 import java.util.List;
 
@@ -57,6 +58,19 @@ public class BookingApiSteps {
     @Step("Find booking ids by guest name {firstname} {lastname}")
     public List<BookingId> findIdsByName(String firstname, String lastname) {
         return Calls.unwrap(bookingApi.findBookingIds(firstname, lastname), 200);
+    }
+
+    /**
+     * Eventual-consistency wait example: polls the search endpoint until the
+     * created booking shows up. Note the raw API call inside the lambda — calling
+     * a @Step method in a polling loop would flood the Allure report with a step
+     * per poll attempt.
+     */
+    @Step("Wait until booking {id} is searchable by guest name {firstname} {lastname}")
+    public void waitUntilSearchableByName(int id, String firstname, String lastname) {
+        Waits.await("booking %d in search results by name %s %s".formatted(id, firstname, lastname))
+                .until(() -> Calls.unwrap(bookingApi.findBookingIds(firstname, lastname), 200).stream()
+                        .anyMatch(found -> found.getBookingid() == id));
     }
 
     @Step("Check update without auth token is forbidden for booking {id}")

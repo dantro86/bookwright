@@ -16,6 +16,7 @@ object Versions {
     const val ALLURE = "2.29.1"
     const val PLAYWRIGHT = "1.53.0"
     const val OWNER = "1.0.12"
+    const val AWAITILITY = "4.3.0"
     const val JDBI = "3.49.5"
     const val MYSQL = "9.3.0"
     const val HIKARI = "6.3.0"
@@ -51,6 +52,7 @@ dependencies {
     implementation("io.qameta.allure:allure-assertj")
     implementation("com.microsoft.playwright:playwright:${Versions.PLAYWRIGHT}")
     implementation("org.aeonbits.owner:owner:${Versions.OWNER}")
+    implementation("org.awaitility:awaitility:${Versions.AWAITILITY}")
     implementation("org.jdbi:jdbi3-core:${Versions.JDBI}")
     implementation("org.jdbi:jdbi3-sqlobject:${Versions.JDBI}")
     implementation("com.mysql:mysql-connector-j:${Versions.MYSQL}")

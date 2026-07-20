@@ -14,7 +14,7 @@ Distilled from a production framework — same architectural ideas.
 ## Stack
 
 Java 21 · Gradle (Kotlin DSL) · JUnit 5 (parallel) · Guice · Retrofit/OkHttp · Playwright · Allure ·
-Owner (config) · JDBI + HikariCP · JSch (SSH tunnel) · Lombok · AssertJ
+Owner (config) · Awaitility · JDBI + HikariCP · JSch (SSH tunnel) · Lombok · AssertJ
 
 ## What it tests
 
@@ -50,6 +50,10 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 - **SSH tunnel** — `SshTunnel` (JSch) forwards `localhost:13306` to MySQL through the bastion,
   opened lazily on first DB access, closed by a run-level `TestExecutionListener`. MySQL has no
   host port mapping, so the tunnel is genuinely required.
+- **Waits** — UI relies on Playwright's auto-retrying assertions; async API states are polled with
+  Awaitility via `Waits` (shared defaults + mandatory alias, composed fluently at the call site).
+  Examples: `AuthApiSteps.waitUntilApiUp()` (infrastructure warm-up),
+  `BookingApiSteps.waitUntilSearchableByName()` (eventual consistency).
 - **Tags** — `@Smoke`, `@Regression`, `@Api`, `@Ui`, `@Db` wrap JUnit `@Tag`;
   `@OwnerDanil` wraps Allure `@Owner`.
 
@@ -94,6 +98,6 @@ src/main/java/io/bookwright/
 ├── steps/        ApiSteps / UiSteps / DbSteps facades
 ├── teardown/     LIFO teardown queue + extension
 ├── ui/           BrowserManager + page objects (plain Playwright locators)
-└── util/         Calls, BookingFactory
+└── util/         Calls, Waits, BookingFactory
 src/test/java/io/bookwright/tests/{api,ui,db}/
 ```

@@ -23,6 +23,12 @@ class AuthTest {
     }
 
     @Test
+    @DisplayName("API becomes available within the warm-up window")
+    void apiBecomesAvailable(ApiSteps api) {
+        api.auth().waitUntilApiUp();
+    }
+
+    @Test
     @DisplayName("Auth token is issued for valid credentials")
     void tokenIsIssued(ApiSteps api) {
         assertThat(api.auth().token()).isNotBlank();

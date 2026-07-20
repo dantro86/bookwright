@@ -35,6 +35,16 @@ class BookingSearchTest {
     }
 
     @Test
+    @Preconditions({BOOKING_EXISTS})
+    @DisplayName("Created booking becomes searchable (Awaitility polling)")
+    void createdBookingBecomesSearchable(ApiSteps api, TestStore store) {
+        CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
+        Booking booking = existing.getBooking();
+        api.bookings().waitUntilSearchableByName(
+                existing.getBookingid(), booking.getFirstname(), booking.getLastname());
+    }
+
+    @Test
     @WithAuthSession
     @Preconditions({BOOKING_EXISTS})
     @DisplayName("PATCH updates only the provided fields")
