@@ -1,0 +1,3 @@
+io.bookwright.teardown.TeardownExtension
+io.bookwright.junit.StepsParameterResolver
+io.bookwright.junit.ScreenshotOnFailureExtension

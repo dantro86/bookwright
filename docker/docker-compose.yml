@@ -1,0 +1,36 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: hotel
+      MYSQL_USER: qa
+      MYSQL_PASSWORD: ${DB_PASSWORD:-qa_local}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_local}
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - private
+    # No host port mapping on purpose: MySQL is only reachable through the SSH tunnel
+
+  bastion:
+    image: lscr.io/linuxserver/openssh-server:latest
+    environment:
+      USER_NAME: tunnel
+      USER_PASSWORD: ${SSH_PASSWORD:-tunnel_local}
+      PASSWORD_ACCESS: "true"
+      DOCKER_MODS: linuxserver/mods:openssh-server-ssh-tunnel
+    ports:
+      - "2222:2222"
+    networks:
+      - private
+
+  restful-booker:
+    image: mwinteringham/restfulbooker:latest
+    platform: linux/amd64  # image is amd64-only; emulated on Apple Silicon
+    ports:
+      - "3001:3001"
+    networks:
+      - private
+
+networks:
+  private:
