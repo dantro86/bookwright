@@ -101,3 +101,10 @@ src/main/java/io/bookwright/
 └── util/         Calls, Waits, BookingFactory
 src/test/java/io/bookwright/tests/{api,ui,db}/
 ```
+
+## Author
+
+**Danil Trofimov** — test automation engineer.
+Built as a showcase of the approaches I use in production test frameworks.
+
+[LinkedIn](https://www.linkedin.com/in/dantro/) · [GitHub](https://github.com/dantro86)
