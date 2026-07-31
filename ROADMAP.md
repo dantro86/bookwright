@@ -10,6 +10,7 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 - [x] Add an automated, tag-driven GitHub Release workflow.
 - [x] Create the initial `v1.0.0` tag and GitHub Release.
 - [x] Release the lifecycle and API contract hardening as `v1.1.0`.
+- [x] Release secure diagnostics, stronger UI contracts, and reproducible test data as `v1.2.0`.
 
 ## 1. Correctness and lifecycle
 

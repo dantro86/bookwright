@@ -7,6 +7,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Planned
+
+- See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
+
+## [1.2.0] - 2026-07-31
+
 ### Added
 
 - Added safe HTTP request/response reporting with redaction tests and an architecture decision record.
@@ -24,10 +30,6 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Replaced derived product selector slugs with product-card scoped locators.
 - Strengthened login, sorting, cart, checkout overview, and order completion assertions.
 - Replaced global UUID, thread-local random, and current-date test data with explicit per-test `TestData` sequences.
-
-### Planned
-
-- See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
 
 ## [1.1.0] - 2026-07-31
 
@@ -63,6 +65,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - MIT license, project documentation, and author/contact information.
 - Semantic Versioning, a validated single version source, Keep a Changelog, and tag-driven GitHub Releases.
 
-[Unreleased]: https://github.com/dantro86/bookwright/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/dantro86/bookwright/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/dantro86/bookwright/releases/tag/v1.2.0
 [1.1.0]: https://github.com/dantro86/bookwright/releases/tag/v1.1.0
 [1.0.0]: https://github.com/dantro86/bookwright/releases/tag/v1.0.0
