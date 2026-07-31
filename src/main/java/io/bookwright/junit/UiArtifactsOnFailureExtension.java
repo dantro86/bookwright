@@ -27,10 +27,11 @@ public class UiArtifactsOnFailureExtension implements AfterTestExecutionCallback
             return;
         }
 
-        capture("screenshot", () -> attachScreenshot(page));
-        capture("page HTML", () -> attachHtml(page));
-        capture("browser diagnostics", UiArtifactsOnFailureExtension::attachDiagnostics);
-        capture("Playwright trace", UiArtifactsOnFailureExtension::attachTrace);
+        captureAll(
+                new Artifact("screenshot", () -> attachScreenshot(page)),
+                new Artifact("page HTML", () -> attachHtml(page)),
+                new Artifact("browser diagnostics", UiArtifactsOnFailureExtension::attachDiagnostics),
+                new Artifact("Playwright trace", UiArtifactsOnFailureExtension::attachTrace));
     }
 
     private static void attachScreenshot(Page page) {
@@ -62,16 +63,21 @@ public class UiArtifactsOnFailureExtension implements AfterTestExecutionCallback
         }
     }
 
-    private static void capture(String artifact, ThrowingRunnable capture) {
-        try {
-            capture.run();
-        } catch (Exception e) {
-            log.warn("Could not capture {}: {}", artifact, e.getMessage());
+    static void captureAll(Artifact... artifacts) {
+        for (Artifact artifact : artifacts) {
+            try {
+                artifact.capture().run();
+            } catch (Exception e) {
+                log.warn("Could not capture {}: {}", artifact.name(), e.getMessage());
+            }
         }
     }
 
     @FunctionalInterface
-    private interface ThrowingRunnable {
+    interface ThrowingRunnable {
         void run() throws Exception;
+    }
+
+    record Artifact(String name, ThrowingRunnable capture) {
     }
 }

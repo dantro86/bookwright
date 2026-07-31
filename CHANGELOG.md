@@ -7,6 +7,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Added a documented framework verification matrix and self-tests for configuration, preconditions, JUnit Store isolation, waits, UI artifact isolation, and browser resource closure.
+
 ### Planned
 
 - See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.

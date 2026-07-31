@@ -69,6 +69,10 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 - **User-facing UI locators** — product actions find the card by its visible product name and resolve the
   button inside that card; no selector slug is derived from display text. Assertions verify complete
   product collections and cart → checkout → completion state transitions.
+- **Framework self-tests** — infrastructure contracts are verified independently from product scenarios:
+  configuration precedence, preconditions, JUnit Store isolation, teardown policy, waits, deterministic data,
+  HTTP helpers, diagnostics, artifact isolation, and resource closure. See the
+  [verification matrix](docs/framework-self-tests.md).
 - **Tags** — `@Smoke`, `@Regression`, `@Api`, `@Ui`, `@Db` wrap JUnit `@Tag`;
   `@OwnerDanil` wraps Allure `@Owner`.
 
@@ -128,7 +132,7 @@ src/main/java/io/bookwright/
 ├── teardown/     LIFO teardown queue + extension
 ├── ui/           BrowserManager + page objects (plain Playwright locators)
 └── util/         Calls, Waits, deterministic TestData and factories
-src/test/java/io/bookwright/{teardown,tests/{api,db,framework,ui}}/
+src/test/java/io/bookwright/{api,config,junit,teardown,ui,util,tests/{api,db,framework,ui}}/
 ```
 
 ## Author

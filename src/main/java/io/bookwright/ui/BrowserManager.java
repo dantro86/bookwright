@@ -44,9 +44,8 @@ public final class BrowserManager {
                 return;
             }
             try {
-                browser.close();
+                closeInOrder(browser::close, playwright::close);
             } finally {
-                playwright.close();
                 closed = true;
                 log.info("Playwright browser session closed");
             }
@@ -87,6 +86,14 @@ public final class BrowserManager {
     private static final ThreadLocal<TestContext> TEST_CONTEXT = new ThreadLocal<>();
 
     private BrowserManager() {
+    }
+
+    static void closeInOrder(Runnable browserClose, Runnable playwrightClose) {
+        try {
+            browserClose.run();
+        } finally {
+            playwrightClose.run();
+        }
     }
 
     public static Page page() {
