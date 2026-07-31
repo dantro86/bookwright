@@ -23,10 +23,10 @@ public final class DbPool {
         if (jdbi == null) {
             synchronized (DbPool.class) {
                 if (jdbi == null) {
-                    SshTunnel.ensureOpen();
                     DbConfig db = Configs.db();
+                    int tunnelPort = SshTunnel.ensureOpen();
                     HikariConfig config = new HikariConfig();
-                    config.setJdbcUrl("jdbc:mysql://localhost:%d/%s".formatted(db.tunnelPort(), db.name()));
+                    config.setJdbcUrl("jdbc:mysql://localhost:%d/%s".formatted(tunnelPort, db.name()));
                     config.setUsername(db.user());
                     config.setPassword(db.password());
                     config.setMaximumPoolSize(4);

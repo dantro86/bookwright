@@ -13,11 +13,16 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Added concurrent isolation tests for JUnit Store, Guice facades, auth data, teardown queues, generated data, and Playwright contexts.
 - Added deterministic MockWebServer coverage for disconnects, timeouts, malformed JSON, explicit polling, and unexpected responses.
 - Added ADR 0004 documenting the explicit retry policy.
+- Added digest-pinned local services with explicit MySQL, SSH, and API health checks.
+- Added a dynamic-port local test launcher with isolated Compose projects and guaranteed cleanup.
+- Added validated local-password and strict private-key SSH profiles, documented in ADR 0005.
 
 ### Changed
 
 - Disabled shared OkHttp connection retries so every Retrofit call executes once unless a step explicitly polls a transient state.
 - Registered class-scoped browser cleanup per worker thread to support concurrent test methods without leaking sessions.
+- Removed fixed API, SSH, and JDBC tunnel ports from the local execution path.
+- Removed demo DB and SSH credentials from the public `prod` stand.
 
 ### Planned
 

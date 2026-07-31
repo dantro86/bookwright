@@ -4,7 +4,7 @@ import org.aeonbits.owner.Config;
 
 /**
  * MySQL connection settings. The database is only reachable through the SSH tunnel,
- * so tests always connect to {@code localhost:db.tunnel.port}.
+ * so tests always connect to a dynamically assigned localhost forwarding port.
  * The password comes from the {@code DB_PASSWORD} env var (local demo default in the stand file).
  */
 @Config.LoadPolicy(Config.LoadType.MERGE)
@@ -32,6 +32,6 @@ public interface DbConfig extends Config {
     String password();
 
     @Key("db.tunnel.port")
-    @DefaultValue("13306")
+    @DefaultValue("0")
     int tunnelPort();
 }

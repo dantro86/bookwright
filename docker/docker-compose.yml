@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:8.4
+    image: mysql:8.4.11@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb
     environment:
       MYSQL_DATABASE: hotel
       MYSQL_USER: qa
@@ -11,26 +11,44 @@ services:
     networks:
       - private
     # No host port mapping on purpose: MySQL is only reachable through the SSH tunnel
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
 
   bastion:
-    image: lscr.io/linuxserver/openssh-server:latest
+    image: lscr.io/linuxserver/openssh-server:10.3_p1-r0-ls232@sha256:9c5e178975fcc3917853f5e37cbf135ad7deb11de504ab0f460cc81a2e1eb539
     environment:
       USER_NAME: tunnel
       USER_PASSWORD: ${SSH_PASSWORD:-tunnel_local}
       PASSWORD_ACCESS: "true"
-      DOCKER_MODS: linuxserver/mods:openssh-server-ssh-tunnel
+      DOCKER_MODS: linuxserver/mods:openssh-server-ssh-tunnel@sha256:f44f068ac72eda4d9d19d33d89891e6f03f9674593477160e34b805407547c1f
     ports:
-      - "2222:2222"
+      - "127.0.0.1::2222"
     networks:
       - private
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 2222"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
 
   restful-booker:
-    image: mwinteringham/restfulbooker:latest
+    image: mwinteringham/restfulbooker@sha256:e4a04233731ceca2e6d99bca16689e0d4bc44631047ab351b6f11b5fa08fb418
     platform: linux/amd64  # image is amd64-only; emulated on Apple Silicon
     ports:
-      - "3001:3001"
+      - "127.0.0.1::3001"
     networks:
       - private
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent --show-error http://127.0.0.1:3001/ping >/dev/null"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
 
 networks:
   private:

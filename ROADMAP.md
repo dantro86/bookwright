@@ -33,10 +33,10 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 
 ## 3. Reproducible and secure infrastructure
 
-- [ ] Pin Docker image versions/digests and add health checks for MySQL, SSH, and restful-booker.
-- [ ] Remove fixed host/tunnel port assumptions so concurrent local runs do not conflict.
-- [ ] Keep password/insecure host-key SSH only for the local demo; support private keys and known_hosts for non-local stands.
-- [ ] Validate required stand configuration before opening clients or infrastructure.
+- [x] Pin Docker image versions/digests and add health checks for MySQL, SSH, and restful-booker.
+- [x] Remove fixed host/tunnel port assumptions so concurrent local runs do not conflict.
+- [x] Keep password/insecure host-key SSH only for the local demo; support private keys and known_hosts for non-local stands.
+- [x] Validate required stand configuration before opening clients or infrastructure.
 
 ## 4. Portfolio, CI, and documentation
 

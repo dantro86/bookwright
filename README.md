@@ -50,9 +50,14 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   `stands/${STAND}/stand.properties`. Switch stands with `-DSTAND=local` (default `prod`).
   No secrets in the repo: local demo passwords are documented non-secrets, real ones come from env
   (`DB_PASSWORD`, `SSH_PASSWORD`).
-- **SSH tunnel** — `SshTunnel` (JSch) forwards `localhost:13306` to MySQL through the bastion,
-  opened lazily on first DB access, closed by a run-level `TestExecutionListener`. MySQL has no
-  host port mapping, so the tunnel is genuinely required.
+- **SSH tunnel** — `SshTunnel` (JSch) forwards a dynamically assigned localhost port to MySQL through the
+  bastion, opens lazily on first DB access, and closes through a run-level `TestExecutionListener`. Password
+  authentication with disabled host-key checking is restricted to the loopback `local` demo; non-local stands
+  require a private key and `known_hosts`. See [ADR 0005](docs/adr/0005-deterministic-local-infrastructure.md).
+- **Deterministic local stand** — service images are pinned by digest and expose explicit health checks.
+  `run-local-tests.sh` creates an isolated Compose project, discovers dynamic API/SSH ports, and lets JSch reserve
+  the tunnel port, so concurrent checkouts do not compete for fixed host ports. Configuration examples are in the
+  [infrastructure profiles guide](docs/infrastructure.md).
 - **Waits** — UI relies on Playwright's auto-retrying assertions; async API states are polled with
   Awaitility via `Waits` (shared defaults + mandatory alias, composed fluently at the call site).
   Examples: `AuthApiSteps.waitUntilApiUp()` (infrastructure warm-up),
@@ -87,11 +92,11 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 # UI tests (Playwright downloads Chromium on first run)
 ./gradlew test --tests "io.bookwright.tests.ui.*"
 
-# DB + tunnel tests and/or the local API stand
-docker compose -f docker/docker-compose.yml up -d
-./gradlew test --tests "io.bookwright.tests.db.*"
-./gradlew test -DSTAND=local --tests "io.bookwright.tests.api.*"
-docker compose -f docker/docker-compose.yml down -v
+# DB + tunnel tests on an isolated local stand (automatic cleanup)
+./scripts/run-local-tests.sh --tests "io.bookwright.tests.db.*"
+
+# API tests against the digest-pinned local restful-booker
+./scripts/run-local-tests.sh --tests "io.bookwright.tests.api.*"
 
 # by tags
 ./gradlew test -DincludeTags=smoke
@@ -100,9 +105,8 @@ docker compose -f docker/docker-compose.yml down -v
 # replay the exact generated data from an Allure failure
 ./gradlew test -Dtest.seed=4242 --tests "io.bookwright.tests.api.BookingCrudTest.bookingCanBeCreated"
 
-# everything + report
-docker compose -f docker/docker-compose.yml up -d
-./gradlew clean test
+# everything on the local stand + report
+./scripts/run-local-tests.sh
 allure serve build/allure-results
 ```
 

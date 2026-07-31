@@ -10,6 +10,7 @@ diagnostic, and failure-handling contracts that ordinary API or UI tests may exe
 | HTTP secret redaction and fail-closed body handling | `SafeHttpReportingInterceptorTest` |
 | Explicit auth-session safety | `AuthSessionTest` |
 | Configuration source order, overrides, and defaults | `MainConfigTest` |
+| Local-only password SSH and strict private-key profiles | `InfrastructureConfigValidatorTest` |
 | Precondition order and method-store handoff | `PreconditionProviderTest` |
 | JUnit method-store isolation | `StoreIsolationTest` |
 | Concurrent Guice facade and Playwright context isolation | `StoreIsolationTest`, `BrowserContextIsolationTest` |

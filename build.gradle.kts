@@ -90,6 +90,10 @@ tasks.test {
     listOf("STAND", "DB_PASSWORD", "SSH_PASSWORD", "test.seed").forEach { key ->
         (System.getProperty(key) ?: System.getenv(key))?.let { systemProperty(key, it) }
     }
+    val configPrefixes = listOf("api.", "ui.", "db.", "ssh.", "teardown.")
+    System.getProperties().stringPropertyNames()
+        .filter { key -> configPrefixes.any(key::startsWith) }
+        .forEach { key -> systemProperty(key, System.getProperty(key)) }
     testLogging {
         events("passed", "failed", "skipped")
         showStandardStreams = System.getProperty("verbose") != null
