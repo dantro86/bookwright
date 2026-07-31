@@ -57,6 +57,9 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   Awaitility via `Waits` (shared defaults + mandatory alias, composed fluently at the call site).
   Examples: `AuthApiSteps.waitUntilApiUp()` (infrastructure warm-up),
   `BookingApiSteps.waitUntilSearchableByName()` (eventual consistency).
+- **Safe HTTP reporting** — one interceptor produces sanitized logs and Allure attachments. Sensitive
+  headers, query parameters, JSON fields, and form fields are redacted; unknown body formats are omitted.
+  The rationale and trade-offs are documented in [ADR 0001](docs/adr/0001-safe-http-reporting.md).
 - **Tags** — `@Smoke`, `@Regression`, `@Api`, `@Ui`, `@Db` wrap JUnit `@Tag`;
   `@OwnerDanil` wraps Allure `@Owner`.
 

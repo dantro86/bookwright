@@ -3,6 +3,7 @@ package io.bookwright.util;
 import java.io.IOException;
 
 import io.bookwright.api.ApiCallException;
+import io.bookwright.api.SecretSanitizer;
 import io.bookwright.api.UnexpectedResponseException;
 import java.util.Arrays;
 import lombok.experimental.UtilityClass;
@@ -34,7 +35,8 @@ public class Calls {
             return call.execute();
         } catch (IOException e) {
             throw new ApiCallException(
-                    "HTTP call failed: " + call.request().method() + " " + call.request().url(), e);
+                    "HTTP call failed: " + call.request().method() + " "
+                            + SecretSanitizer.url(call.request().url()), e);
         }
     }
 
@@ -54,13 +56,15 @@ public class Calls {
         String errorBody = "";
         try (var body = response.errorBody()) {
             if (body != null) {
-                errorBody = body.string();
+                errorBody = SecretSanitizer.body(body.string(), body.contentType());
             }
         } catch (IOException ignored) {
             // Error body is best-effort diagnostic information.
         }
         return "Expected status %s but got %d for %s %s. Body: %s".formatted(
                 Arrays.toString(expectedStatuses), response.code(),
-                response.raw().request().method(), response.raw().request().url(), errorBody);
+                response.raw().request().method(),
+                SecretSanitizer.url(response.raw().request().url()),
+                errorBody);
     }
 }

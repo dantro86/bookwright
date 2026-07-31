@@ -19,7 +19,7 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 - [x] Add a run/class-scoped `CloseableResource` that closes `Browser` and then `Playwright`; continue closing each context after its test.
 - [x] Restrict Awaitility exception handling to known transient failures; programming errors must fail immediately.
 - [x] Introduce a small `ApiCallException`/`UnexpectedResponseException` and focused `body`, `response`, and `expectStatus` helpers.
-- [ ] Design HTTP/Allure secret redaction separately before changing logging behavior.
+- [x] Design and implement HTTP/Allure secret redaction with safe diagnostics and regression tests.
 
 ## 2. Diagnostics and test quality
 

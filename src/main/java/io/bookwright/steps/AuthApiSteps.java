@@ -1,17 +1,15 @@
 package io.bookwright.steps;
 
 import com.google.inject.Inject;
-import io.bookwright.api.AuthSession;
 import io.bookwright.api.AuthApi;
+import io.bookwright.api.AuthSession;
+import io.bookwright.api.UnexpectedResponseException;
 import io.bookwright.api.model.AuthRequest;
 import io.bookwright.api.model.AuthResponse;
 import io.bookwright.config.MainConfig;
 import io.bookwright.util.Calls;
 import io.bookwright.util.Waits;
 import io.qameta.allure.Step;
-import retrofit2.Response;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthApiSteps {
 
@@ -32,7 +30,9 @@ public class AuthApiSteps {
                     .username(config.apiUsername())
                     .password(config.apiPassword())
                     .build()), 200, "auth token response");
-            assertThat(response.getToken()).as("auth token").isNotBlank();
+            if (response.getToken() == null || response.getToken().isBlank()) {
+                throw new UnexpectedResponseException("Auth response token was blank");
+            }
             cachedToken = response.getToken();
         }
         return cachedToken;

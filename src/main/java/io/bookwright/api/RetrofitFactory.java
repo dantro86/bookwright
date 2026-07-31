@@ -4,11 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.qameta.allure.okhttp3.AllureOkHttp3;
 import java.time.Duration;
-import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
@@ -16,16 +13,12 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
  * The single place where HTTP is configured: timeouts, logging and Allure
  * request/response attachments. Everything above this is a plain Retrofit interface.
  */
-@Slf4j
 public final class RetrofitFactory {
 
     private RetrofitFactory() {
     }
 
     public static Retrofit create(String baseUrl) {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(log::info);
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(Duration.ofSeconds(15))
                 .readTimeout(Duration.ofSeconds(30))
@@ -33,8 +26,7 @@ public final class RetrofitFactory {
                 .addInterceptor(chain -> chain.proceed(chain.request().newBuilder()
                         .header("Accept", "application/json")
                         .build()))
-                .addInterceptor(logging)
-                .addInterceptor(new AllureOkHttp3())
+                .addInterceptor(new SafeHttpReportingInterceptor())
                 .build();
 
         return new Retrofit.Builder()

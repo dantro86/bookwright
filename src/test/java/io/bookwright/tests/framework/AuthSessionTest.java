@@ -14,6 +14,13 @@ class AuthSessionTest {
     }
 
     @Test
+    void doesNotExposeTokenThroughStringRepresentation() {
+        assertThat(new AuthSession("abc123").toString())
+                .isEqualTo("AuthSession[token=[REDACTED]]")
+                .doesNotContain("abc123");
+    }
+
+    @Test
     void rejectsBlankToken() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new AuthSession(" "))

@@ -12,4 +12,9 @@ public record AuthSession(String token) {
     public String cookie() {
         return "token=" + token;
     }
+
+    @Override
+    public String toString() {
+        return "AuthSession[token=[REDACTED]]";
+    }
 }

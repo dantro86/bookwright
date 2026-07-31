@@ -49,13 +49,17 @@ class CallsTest {
 
     @Test
     void reportsUnexpectedStatusWithRequestDiagnostics() {
-        server.enqueue(new MockResponse().setResponseCode(503).setBody("temporarily unavailable"));
+        server.enqueue(new MockResponse()
+                .setResponseCode(503)
+                .addHeader("Content-Type", "application/json")
+                .setBody("{\"message\":\"temporarily unavailable\",\"token\":\"server-secret\"}"));
 
         assertThatThrownBy(() -> Calls.expectStatus(api.get(), 200))
                 .isInstanceOf(UnexpectedResponseException.class)
                 .hasMessageContaining("Expected status [200] but got 503")
                 .hasMessageContaining("GET")
-                .hasMessageContaining("temporarily unavailable");
+                .hasMessageContaining("temporarily unavailable")
+                .satisfies(error -> assertThat(error.getMessage()).doesNotContain("server-secret"));
     }
 
     @Test
