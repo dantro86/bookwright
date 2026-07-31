@@ -1,40 +1,55 @@
 package io.bookwright.tests.framework;
 
 import com.microsoft.playwright.Page;
-import io.bookwright.steps.UiSteps;
 import io.bookwright.ui.BrowserManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Execution(ExecutionMode.CONCURRENT)
 class BrowserContextIsolationTest {
 
-    private static final CyclicBarrier BARRIER = new CyclicBarrier(2);
+    private static final int WORKERS = 2;
 
     @Test
-    void firstConcurrentTestOwnsItsPage(UiSteps ignored) throws Exception {
-        assertIsolatedPage("first");
+    void concurrentWorkersOwnIndependentPagesAndSessions() throws Exception {
+        CyclicBarrier barrier = new CyclicBarrier(WORKERS);
+        List<Callable<String>> tasks = new ArrayList<>();
+        tasks.add(() -> exercisePage("first", barrier));
+        tasks.add(() -> exercisePage("second", barrier));
+
+        List<String> markers;
+        try (var executor = Executors.newFixedThreadPool(WORKERS)) {
+            markers = executor.invokeAll(tasks).stream().map(future -> {
+                try {
+                    return future.get();
+                } catch (Exception exception) {
+                    throw new AssertionError("Concurrent browser worker failed", exception);
+                }
+            }).toList();
+        }
+
+        assertThat(markers).containsExactlyInAnyOrder("first", "second");
     }
 
-    @Test
-    void secondConcurrentTestOwnsItsPage(UiSteps ignored) throws Exception {
-        assertIsolatedPage("second");
-    }
+    private String exercisePage(String marker, CyclicBarrier barrier) throws Exception {
+        Page page = BrowserManager.page();
+        AutoCloseable session = BrowserManager.sessionResource();
+        try {
+            page.setContent("<main data-marker='%s'>%s</main>".formatted(marker, marker));
+            page.evaluate("value => window.__bookwrightMarker = value", marker);
+            barrier.await(30, TimeUnit.SECONDS);
 
-    private void assertIsolatedPage(String marker) throws Exception {
-        Page page = BrowserManager.activePageOrNull();
-        assertThat(page).as("active page provided with UiSteps").isNotNull();
-        page.setContent("<main data-marker='%s'>%s</main>".formatted(marker, marker));
-        page.evaluate("marker => window.__bookwrightMarker = marker", marker);
-
-        BARRIER.await(10, TimeUnit.SECONDS);
-
-        assertThat(page.locator("main").getAttribute("data-marker")).isEqualTo(marker);
-        assertThat(page.evaluate("() => window.__bookwrightMarker")).isEqualTo(marker);
+            assertThat(page.locator("main").getAttribute("data-marker")).isEqualTo(marker);
+            return (String) page.evaluate("() => window.__bookwrightMarker");
+        } finally {
+            BrowserManager.closeContext();
+            session.close();
+        }
     }
 }
