@@ -14,6 +14,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Planned
 
 - See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
+- Add managed new/existing user fixtures and API-authenticated Playwright contexts for UI scenarios.
 
 ## [1.2.0] - 2026-07-31
 
