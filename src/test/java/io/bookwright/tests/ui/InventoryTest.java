@@ -26,4 +26,11 @@ class InventoryTest {
     void lockedOutUserCannotLogIn(UiSteps ui) {
         ui.loginAsLockedOutUserAndExpectError();
     }
+
+    @Test
+    @DisplayName("Product with punctuation can be added by its visible name")
+    void productWithPunctuationCanBeAddedByVisibleName(UiSteps ui) {
+        ui.loginAsStandardUser();
+        ui.addToCart("Test.allTheThings() T-Shirt (Red)");
+    }
 }

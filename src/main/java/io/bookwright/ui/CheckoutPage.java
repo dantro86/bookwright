@@ -10,6 +10,7 @@ public class CheckoutPage {
     private final Page page;
 
     private final Locator cartItems;
+    private final Locator itemNames;
     private final Locator checkoutButton;
     private final Locator firstNameInput;
     private final Locator lastNameInput;
@@ -17,11 +18,13 @@ public class CheckoutPage {
     private final Locator continueButton;
     private final Locator finishButton;
     private final Locator completeHeader;
+    private final Locator completeText;
 
     @Inject
     public CheckoutPage(Page page) {
         this.page = page;
         this.cartItems = page.locator("[data-test=inventory-item]");
+        this.itemNames = page.locator("[data-test=inventory-item-name]");
         this.checkoutButton = page.locator("[data-test=checkout]");
         this.firstNameInput = page.locator("[data-test=firstName]");
         this.lastNameInput = page.locator("[data-test=lastName]");
@@ -29,10 +32,15 @@ public class CheckoutPage {
         this.continueButton = page.locator("[data-test=continue]");
         this.finishButton = page.locator("[data-test=finish]");
         this.completeHeader = page.locator("[data-test=complete-header]");
+        this.completeText = page.locator("[data-test=complete-text]");
     }
 
     public Locator cartItems() {
         return cartItems;
+    }
+
+    public Locator itemNames() {
+        return itemNames;
     }
 
     public void startCheckout() {
@@ -52,5 +60,13 @@ public class CheckoutPage {
 
     public Locator completeHeader() {
         return completeHeader;
+    }
+
+    public Locator completeText() {
+        return completeText;
+    }
+
+    public Page page() {
+        return page;
     }
 }

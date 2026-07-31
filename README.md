@@ -63,6 +63,9 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 - **UI failure diagnostics** — every UI test gets an isolated tracing session and bounded event capture
   for console errors, page errors, and failed requests. Failure artifacts include the current URL and
   viewport; successful-test traces are discarded. See [ADR 0002](docs/adr/0002-ui-failure-artifacts.md).
+- **User-facing UI locators** — product actions find the card by its visible product name and resolve the
+  button inside that card; no selector slug is derived from display text. Assertions verify complete
+  product collections and cart → checkout → completion state transitions.
 - **Tags** — `@Smoke`, `@Regression`, `@Api`, `@Ui`, `@Db` wrap JUnit `@Tag`;
   `@OwnerDanil` wraps Allure `@Owner`.
 

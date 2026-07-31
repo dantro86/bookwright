@@ -24,8 +24,8 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 ## 2. Diagnostics and test quality
 
 - [x] Attach Playwright trace, browser console errors, page errors, failed network requests, URL, and viewport on UI failures.
-- [ ] Verify complete UI collections (for example the full sorted inventory), not one representative element.
-- [ ] Replace derived selector slugs with locators scoped to the visible product/card.
+- [x] Verify complete UI collections (for example the full sorted inventory), not one representative element.
+- [x] Replace derived selector slugs with locators scoped to the visible product/card.
 - [ ] Make randomized test data reproducible with a configurable seed recorded in Allure.
 - [ ] Add framework self-tests for API helpers, config precedence, preconditions, JUnit Store isolation, teardown order/error policy, waits, screenshots, and resource closure.
 - [ ] Add parallel-isolation tests and use MockWebServer for deterministic HTTP edge cases.

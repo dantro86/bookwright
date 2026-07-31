@@ -12,6 +12,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Added safe HTTP request/response reporting with redaction tests and an architecture decision record.
 - Added Playwright traces and bounded browser-event diagnostics to failed UI test artifacts.
 - Added UI diagnostics self-tests and an architecture decision record for artifact lifecycle and security.
+- Added a UI scenario proving that products with punctuation are selected by their visible name.
 
 ### Changed
 
@@ -19,6 +20,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Replaced raw OkHttp body logging and `AllureOkHttp3` attachments with sanitized diagnostics.
 - Protected authentication values in Allure step parameters, API exceptions, and object string representations.
 - Replaced screenshot-only UI failure handling with independent screenshot, HTML, diagnostics, and trace capture.
+- Replaced derived product selector slugs with product-card scoped locators.
+- Strengthened login, sorting, cart, checkout overview, and order completion assertions.
 
 ### Planned
 
