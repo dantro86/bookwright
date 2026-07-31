@@ -7,8 +7,8 @@ import lombok.Value;
 @Value
 @Builder
 public class RoomRow {
-    Integer id;
-    String name;
-    String type;
-    BigDecimal price;
+  Integer id;
+  String name;
+  String type;
+  BigDecimal price;
 }

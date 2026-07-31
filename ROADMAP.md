@@ -40,10 +40,10 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 
 ## 4. Portfolio, CI, and documentation
 
-- [ ] Split CI into framework, API, UI, and DB/SSH quality gates, then merge results.
-- [ ] Publish a history-enabled Allure report to GitHub Pages and link it from README.
-- [ ] Add focused quality gates: Spotless, JaCoCo for framework self-tests, dependency updates/review, CodeQL, and Gradle dependency verification.
-- [ ] Add concise ADRs explaining Retrofit, plain Playwright locators, Guice, JUnit Store, LIFO cleanup, Awaitility, and the no-global-retry policy.
+- [x] Split CI into framework, API, UI, and DB/SSH quality gates, then merge results.
+- [x] Publish a history-enabled Allure report to GitHub Pages and link it from README.
+- [x] Add focused quality gates: Spotless, JaCoCo for framework self-tests, dependency updates/review, CodeQL, and Gradle dependency verification.
+- [x] Add concise ADRs explaining Retrofit, plain Playwright locators, Guice, JUnit Store, LIFO cleanup, Awaitility, and the no-global-retry policy.
 
 ## 5. Integrated local system
 

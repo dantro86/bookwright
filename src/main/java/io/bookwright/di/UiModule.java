@@ -9,13 +9,13 @@ import io.bookwright.ui.BrowserManager;
 
 public class UiModule extends AbstractModule {
 
-    @Override
-    protected void configure() {
-        bind(MainConfig.class).toInstance(Configs.main());
-    }
+  @Override
+  protected void configure() {
+    bind(MainConfig.class).toInstance(Configs.main());
+  }
 
-    @Provides
-    Page page() {
-        return BrowserManager.page();
-    }
+  @Provides
+  Page page() {
+    return BrowserManager.page();
+  }
 }

@@ -7,11 +7,11 @@ import lombok.Value;
 @Value
 @Builder
 public class BookingRow {
-    Integer id;
-    Integer roomId;
-    String guestFirstName;
-    String guestLastName;
-    LocalDate checkin;
-    LocalDate checkout;
-    Boolean depositPaid;
+  Integer id;
+  Integer roomId;
+  String guestFirstName;
+  String guestLastName;
+  LocalDate checkin;
+  LocalDate checkout;
+  Boolean depositPaid;
 }

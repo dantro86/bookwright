@@ -14,15 +14,15 @@ import org.junit.jupiter.api.Test;
 @Feature("Login")
 class LoginTest {
 
-    @Test
-    @DisplayName("Standard user can log in")
-    void standardUserCanLogIn(UiSteps ui) {
-        ui.loginAsStandardUser();
-    }
+  @Test
+  @DisplayName("Standard user can log in")
+  void standardUserCanLogIn(UiSteps ui) {
+    ui.loginAsStandardUser();
+  }
 
-    @Test
-    @DisplayName("Invalid password shows an error")
-    void invalidPasswordShowsError(UiSteps ui) {
-        ui.loginWithInvalidPasswordAndExpectError();
-    }
+  @Test
+  @DisplayName("Invalid password shows an error")
+  void invalidPasswordShowsError(UiSteps ui) {
+    ui.loginWithInvalidPasswordAndExpectError();
+  }
 }

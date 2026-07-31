@@ -8,6 +8,6 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class AuthRequest {
-    String username;
-    String password;
+  String username;
+  String password;
 }

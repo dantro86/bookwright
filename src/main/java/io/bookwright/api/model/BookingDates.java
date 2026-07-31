@@ -9,6 +9,6 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class BookingDates {
-    LocalDate checkin;
-    LocalDate checkout;
+  LocalDate checkin;
+  LocalDate checkout;
 }

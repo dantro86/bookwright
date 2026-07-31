@@ -1,4 +1,4 @@
-name: tests
+name: quality gates
 
 on:
   push:
@@ -6,26 +6,189 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  test:
+  quality:
+    name: Static quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Validate source and build configuration
+        run: ./gradlew spotlessCheck validateVersion compileJava compileTestJava
 
-      - uses: gradle/actions/setup-gradle@v4
-
-      - name: Run tests against the local stand
-        run: ./scripts/run-local-tests.sh
-
-      - name: Upload Allure results
-        if: always()
-        uses: actions/upload-artifact@v4
+  framework:
+    name: Framework self-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
-          name: allure-results
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Run framework tests and coverage gate
+        run: ./gradlew frameworkJacocoVerification
+      - name: Upload framework test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results-framework
           path: build/allure-results
           retention-days: 14
+      - name: Upload JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-framework
+          path: build/reports/jacoco/frameworkJacocoReport
+          retention-days: 14
+
+  api:
+    name: API scenarios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Run API tests against the local stand
+        run: ./scripts/run-local-tests.sh apiTest
+      - name: Upload API test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results-api
+          path: build/allure-results
+          retention-days: 14
+
+  ui:
+    name: UI scenarios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Run Playwright tests
+        run: ./gradlew uiTest
+      - name: Upload UI test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results-ui
+          path: build/allure-results
+          retention-days: 14
+
+  db-ssh:
+    name: DB over SSH scenarios
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Run DB tests through the local SSH bastion
+        run: ./scripts/run-local-tests.sh dbTest
+      - name: Upload DB/SSH test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results-db-ssh
+          path: build/allure-results
+          retention-days: 14
+
+  quality-gate:
+    name: Required quality gate
+    if: always()
+    needs: [quality, framework, api, ui, db-ssh]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify every gate passed
+        env:
+          QUALITY_RESULT: ${{ needs.quality.result }}
+          FRAMEWORK_RESULT: ${{ needs.framework.result }}
+          API_RESULT: ${{ needs.api.result }}
+          UI_RESULT: ${{ needs.ui.result }}
+          DB_SSH_RESULT: ${{ needs['db-ssh'].result }}
+        run: |
+          printf '%-20s %s\n' \
+            "Static quality" "$QUALITY_RESULT" \
+            "Framework" "$FRAMEWORK_RESULT" \
+            "API" "$API_RESULT" \
+            "UI" "$UI_RESULT" \
+            "DB over SSH" "$DB_SSH_RESULT"
+          test "$QUALITY_RESULT" = success
+          test "$FRAMEWORK_RESULT" = success
+          test "$API_RESULT" = success
+          test "$UI_RESULT" = success
+          test "$DB_SSH_RESULT" = success
+
+  allure-report:
+    name: Build Allure report
+    if: github.event_name != 'pull_request'
+    needs: [framework, api, ui, db-ssh]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - uses: actions/download-artifact@v7
+        with:
+          pattern: allure-results-*
+          path: build/allure-results
+          merge-multiple: true
+      - name: Restore published Allure history
+        shell: bash
+        run: |
+          mkdir -p build/allure-results/history
+          base_url="https://dantro86.github.io/bookwright/history"
+          for file in history.json history-trend.json duration-trend.json retry-trend.json categories-trend.json; do
+            curl --fail --silent --show-error "$base_url/$file" \
+              --output "build/allure-results/history/$file" || true
+          done
+      - name: Generate merged Allure report
+        run: ./gradlew allureReport
+      - name: Upload merged Allure report
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-report
+          path: build/reports/allure-report/allureReport
+          retention-days: 30
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: build/reports/allure-report/allureReport
+
+  deploy-report:
+    name: Publish Allure report
+    if: github.event_name != 'pull_request'
+    needs: [quality-gate, allure-report]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

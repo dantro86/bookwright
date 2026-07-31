@@ -6,37 +6,37 @@ import java.util.Deque;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
- * Method-scoped LIFO queue of cleanup actions. The instance lives in the JUnit
- * Store, so ownership follows the test lifecycle rather than a worker thread.
+ * Method-scoped LIFO queue of cleanup actions. The instance lives in the JUnit Store, so ownership
+ * follows the test lifecycle rather than a worker thread.
  */
 public class TeardownStorage {
 
-    public record TeardownAction(String name, Runnable action) {
-    }
+  public record TeardownAction(String name, Runnable action) {}
 
-    private final Deque<TeardownAction> actions = new ArrayDeque<>();
+  private final Deque<TeardownAction> actions = new ArrayDeque<>();
 
-    public static TeardownStorage getOrCreate(ExtensionContext context) {
-        return NamespaceRegistry.methodStore(context).getOrComputeIfAbsent(
-                NamespaceRegistry.TEARDOWN_STORAGE_KEY,
-                key -> new TeardownStorage(),
-                TeardownStorage.class);
-    }
+  public static TeardownStorage getOrCreate(ExtensionContext context) {
+    return NamespaceRegistry.methodStore(context)
+        .getOrComputeIfAbsent(
+            NamespaceRegistry.TEARDOWN_STORAGE_KEY,
+            key -> new TeardownStorage(),
+            TeardownStorage.class);
+  }
 
-    public static TeardownStorage get(ExtensionContext context) {
-        return NamespaceRegistry.methodStore(context).get(
-                NamespaceRegistry.TEARDOWN_STORAGE_KEY, TeardownStorage.class);
-    }
+  public static TeardownStorage get(ExtensionContext context) {
+    return NamespaceRegistry.methodStore(context)
+        .get(NamespaceRegistry.TEARDOWN_STORAGE_KEY, TeardownStorage.class);
+  }
 
-    public void push(String name, Runnable action) {
-        actions.addLast(new TeardownAction(name, action));
-    }
+  public void push(String name, Runnable action) {
+    actions.addLast(new TeardownAction(name, action));
+  }
 
-    TeardownAction pollLast() {
-        return actions.pollLast();
-    }
+  TeardownAction pollLast() {
+    return actions.pollLast();
+  }
 
-    void clear() {
-        actions.clear();
-    }
+  void clear() {
+    actions.clear();
+  }
 }

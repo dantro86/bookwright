@@ -1,7 +1,14 @@
+import org.gradle.api.tasks.testing.Test
+import org.gradle.testing.jacoco.tasks.JacocoCoverageVerification
+import org.gradle.testing.jacoco.tasks.JacocoReport
+
 plugins {
     java
+    jacoco
     id("io.qameta.allure") version "2.12.0"
     id("io.freefair.lombok") version "8.13"
+    id("com.diffplug.spotless") version "8.8.0"
+    id("com.github.ben-manes.versions") version "0.54.0"
 }
 
 group = "io.bookwright"
@@ -14,6 +21,7 @@ object Versions {
     const val OKHTTP = "5.1.0"
     const val JACKSON = "2.19.2"
     const val ALLURE = "2.29.1"
+    const val ALLURE_CLI = "2.39.0"
     const val PLAYWRIGHT = "1.53.0"
     const val OWNER = "1.0.12"
     const val AWAITILITY = "4.3.0"
@@ -67,7 +75,7 @@ dependencies {
 }
 
 allure {
-    version = Versions.ALLURE
+    version = Versions.ALLURE_CLI
     adapter {
         autoconfigure = true
         frameworks {
@@ -78,15 +86,23 @@ allure {
     }
 }
 
-tasks.test {
-    dependsOn("validateVersion")
-    useJUnitPlatform {
-        val includeTags = System.getProperty("includeTags")
-        val excludeTags = System.getProperty("excludeTags")
-        if (!includeTags.isNullOrBlank()) includeTags(*includeTags.split(",").toTypedArray())
-        if (!excludeTags.isNullOrBlank()) excludeTags(*excludeTags.split(",").toTypedArray())
+spotless {
+    java {
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
     }
-    // Runtime test options are passed through to the JVM running the tests
+    format("projectFiles") {
+        target("*.md", "*.kts", "*.properties", ".github/**/*.yml", "docker/**/*.yml", "scripts/**/*.sh")
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
+fun Test.configureBookwrightTestRuntime() {
+    dependsOn("validateVersion")
+    useJUnitPlatform()
     listOf("STAND", "DB_PASSWORD", "SSH_PASSWORD", "test.seed").forEach { key ->
         (System.getProperty(key) ?: System.getenv(key))?.let { systemProperty(key, it) }
     }
@@ -98,6 +114,96 @@ tasks.test {
         events("passed", "failed", "skipped")
         showStandardStreams = System.getProperty("verbose") != null
     }
+}
+
+tasks.withType<Test>().configureEach {
+    configureBookwrightTestRuntime()
+}
+
+tasks.test {
+    useJUnitPlatform {
+        val includeTags = System.getProperty("includeTags")
+        val excludeTags = System.getProperty("excludeTags")
+        if (!includeTags.isNullOrBlank()) includeTags(*includeTags.split(",").toTypedArray())
+        if (!excludeTags.isNullOrBlank()) excludeTags(*excludeTags.split(",").toTypedArray())
+    }
+}
+
+val frameworkTest = tasks.register<Test>("frameworkTest") {
+    group = "verification"
+    description = "Runs deterministic self-tests for the framework infrastructure."
+    filter {
+        includeTestsMatching("io.bookwright.api.*")
+        includeTestsMatching("io.bookwright.config.*")
+        includeTestsMatching("io.bookwright.junit.*")
+        includeTestsMatching("io.bookwright.teardown.*")
+        includeTestsMatching("io.bookwright.ui.*")
+        includeTestsMatching("io.bookwright.util.*")
+        includeTestsMatching("io.bookwright.tests.framework.*")
+    }
+}
+
+tasks.register<Test>("apiTest") {
+    group = "verification"
+    description = "Runs API product scenarios."
+    filter { includeTestsMatching("io.bookwright.tests.api.*") }
+}
+
+tasks.register<Test>("uiTest") {
+    group = "verification"
+    description = "Runs Playwright product scenarios."
+    filter { includeTestsMatching("io.bookwright.tests.ui.*") }
+}
+
+tasks.register<Test>("dbTest") {
+    group = "verification"
+    description = "Runs database scenarios through the SSH tunnel."
+    filter { includeTestsMatching("io.bookwright.tests.db.*") }
+}
+
+val frameworkCoverageClasses = sourceSets.main.get().output.asFileTree.matching {
+    include(
+        "io/bookwright/api/**",
+        "io/bookwright/config/**",
+        "io/bookwright/junit/**",
+        "io/bookwright/teardown/**",
+        "io/bookwright/ui/**",
+        "io/bookwright/util/**",
+    )
+    exclude("io/bookwright/api/model/**")
+}
+
+val frameworkJacocoReport = tasks.register<JacocoReport>("frameworkJacocoReport") {
+    group = "verification"
+    description = "Generates JaCoCo coverage for framework self-tests."
+    dependsOn(frameworkTest)
+    executionData(layout.buildDirectory.file("jacoco/frameworkTest.exec"))
+    sourceDirectories.setFrom(sourceSets.main.get().allSource.srcDirs)
+    classDirectories.setFrom(frameworkCoverageClasses)
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+tasks.register<JacocoCoverageVerification>("frameworkJacocoVerification") {
+    group = "verification"
+    description = "Enforces the minimum framework self-test coverage."
+    dependsOn(frameworkJacocoReport)
+    executionData(layout.buildDirectory.file("jacoco/frameworkTest.exec"))
+    sourceDirectories.setFrom(sourceSets.main.get().allSource.srcDirs)
+    classDirectories.setFrom(frameworkCoverageClasses)
+    violationRules {
+        rule {
+            limit { minimum = "0.60".toBigDecimal() }
+        }
+    }
+}
+
+tasks.register("qualityGate") {
+    group = "verification"
+    description = "Runs deterministic local quality checks without external product systems."
+    dependsOn("spotlessCheck", "frameworkJacocoVerification", "validateVersion")
 }
 
 tasks.register("validateVersion") {

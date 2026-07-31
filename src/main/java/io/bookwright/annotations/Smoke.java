@@ -9,5 +9,4 @@ import org.junit.jupiter.api.Tag;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Tag(TestTags.SMOKE)
-public @interface Smoke {
-}
+public @interface Smoke {}

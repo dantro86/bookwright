@@ -9,5 +9,4 @@ import org.junit.jupiter.api.Tag;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Tag(TestTags.REGRESSION)
-public @interface Regression {
-}
+public @interface Regression {}

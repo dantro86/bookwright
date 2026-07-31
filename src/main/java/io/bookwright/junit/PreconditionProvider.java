@@ -9,40 +9,48 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 /**
- * Runs {@link Preconditions} declared on the test method (or class) just before
- * the test body. Reuses the class-level Guice injector, so preconditions go
- * through the same steps (and the same LIFO teardown) as the test itself.
+ * Runs {@link Preconditions} declared on the test method (or class) just before the test body.
+ * Reuses the class-level Guice injector, so preconditions go through the same steps (and the same
+ * LIFO teardown) as the test itself.
  */
 public class PreconditionProvider implements BeforeTestExecutionCallback {
 
-    @Override
-    public void beforeTestExecution(ExtensionContext context) {
-        Precondition[] preconditions = findAnnotation(context)
-                .map(Preconditions::value)
-                .orElseThrow(() -> new IllegalStateException(
+  @Override
+  public void beforeTestExecution(ExtensionContext context) {
+    Precondition[] preconditions =
+        findAnnotation(context)
+            .map(Preconditions::value)
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
                         "PreconditionProvider is registered but no @Preconditions annotation found on "
-                                + context.getDisplayName()));
+                            + context.getDisplayName()));
 
-        ApiSteps api = StepsParameterResolver.injectorFor(ApiSteps.class, context).getInstance(ApiSteps.class);
-        ExtensionContext.Store store = NamespaceRegistry.methodStore(context);
-        TestDataExtension.getOrCreate(context);
+    ApiSteps api =
+        StepsParameterResolver.injectorFor(ApiSteps.class, context).getInstance(ApiSteps.class);
+    ExtensionContext.Store store = NamespaceRegistry.methodStore(context);
+    TestDataExtension.getOrCreate(context);
 
-        execute(preconditions, api, store);
+    execute(preconditions, api, store);
+  }
+
+  static void execute(IPrecondition[] preconditions, ApiSteps api, ExtensionContext.Store store) {
+    for (IPrecondition precondition : preconditions) {
+      Allure.step("Precondition: " + precondition.title(), () -> precondition.execute(api, store));
     }
+  }
 
-    static void execute(IPrecondition[] preconditions, ApiSteps api, ExtensionContext.Store store) {
-        for (IPrecondition precondition : preconditions) {
-            Allure.step("Precondition: " + precondition.title(), () -> precondition.execute(api, store));
-        }
+  private Optional<Preconditions> findAnnotation(ExtensionContext context) {
+    Optional<Preconditions> onMethod =
+        context
+            .getTestMethod()
+            .flatMap(
+                m -> AnnotationSupport.findAnnotation((AnnotatedElement) m, Preconditions.class));
+    if (onMethod.isPresent()) {
+      return onMethod;
     }
-
-    private Optional<Preconditions> findAnnotation(ExtensionContext context) {
-        Optional<Preconditions> onMethod = context.getTestMethod()
-                .flatMap(m -> AnnotationSupport.findAnnotation((AnnotatedElement) m, Preconditions.class));
-        if (onMethod.isPresent()) {
-            return onMethod;
-        }
-        return context.getTestClass()
-                .flatMap(c -> AnnotationSupport.findAnnotation(c, Preconditions.class));
-    }
+    return context
+        .getTestClass()
+        .flatMap(c -> AnnotationSupport.findAnnotation(c, Preconditions.class));
+  }
 }

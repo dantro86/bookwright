@@ -14,23 +14,23 @@ import org.junit.jupiter.api.Test;
 @Feature("Inventory")
 class InventoryTest {
 
-    @Test
-    @DisplayName("Products can be sorted by name Z to A")
-    void productsCanBeSortedDescending(UiSteps ui) {
-        ui.loginAsStandardUser();
-        ui.sortByNameDescAndAssertOrder();
-    }
+  @Test
+  @DisplayName("Products can be sorted by name Z to A")
+  void productsCanBeSortedDescending(UiSteps ui) {
+    ui.loginAsStandardUser();
+    ui.sortByNameDescAndAssertOrder();
+  }
 
-    @Test
-    @DisplayName("Locked out user cannot log in")
-    void lockedOutUserCannotLogIn(UiSteps ui) {
-        ui.loginAsLockedOutUserAndExpectError();
-    }
+  @Test
+  @DisplayName("Locked out user cannot log in")
+  void lockedOutUserCannotLogIn(UiSteps ui) {
+    ui.loginAsLockedOutUserAndExpectError();
+  }
 
-    @Test
-    @DisplayName("Product with punctuation can be added by its visible name")
-    void productWithPunctuationCanBeAddedByVisibleName(UiSteps ui) {
-        ui.loginAsStandardUser();
-        ui.addToCart("Test.allTheThings() T-Shirt (Red)");
-    }
+  @Test
+  @DisplayName("Product with punctuation can be added by its visible name")
+  void productWithPunctuationCanBeAddedByVisibleName(UiSteps ui) {
+    ui.loginAsStandardUser();
+    ui.addToCart("Test.allTheThings() T-Shirt (Red)");
+  }
 }

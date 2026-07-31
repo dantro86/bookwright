@@ -10,26 +10,26 @@ import io.bookwright.teardown.TeardownStorage;
 
 public class DbModule extends AbstractModule {
 
-    private final TeardownStorage teardownStorage;
+  private final TeardownStorage teardownStorage;
 
-    public DbModule(TeardownStorage teardownStorage) {
-        this.teardownStorage = teardownStorage;
-    }
+  public DbModule(TeardownStorage teardownStorage) {
+    this.teardownStorage = teardownStorage;
+  }
 
-    @Override
-    protected void configure() {
-        bind(TeardownStorage.class).toInstance(teardownStorage);
-    }
+  @Override
+  protected void configure() {
+    bind(TeardownStorage.class).toInstance(teardownStorage);
+  }
 
-    @Provides
-    @Singleton
-    BookingDao bookingDao() {
-        return DbPool.jdbi().onDemand(BookingDao.class);
-    }
+  @Provides
+  @Singleton
+  BookingDao bookingDao() {
+    return DbPool.jdbi().onDemand(BookingDao.class);
+  }
 
-    @Provides
-    @Singleton
-    RoomDao roomDao() {
-        return DbPool.jdbi().onDemand(RoomDao.class);
-    }
+  @Provides
+  @Singleton
+  RoomDao roomDao() {
+    return DbPool.jdbi().onDemand(RoomDao.class);
+  }
 }

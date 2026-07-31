@@ -9,9 +9,9 @@ import retrofit2.http.POST;
 
 public interface AuthApi {
 
-    @POST("auth")
-    Call<AuthResponse> createToken(@Body AuthRequest request);
+  @POST("auth")
+  Call<AuthResponse> createToken(@Body AuthRequest request);
 
-    @GET("ping")
-    Call<Void> ping();
+  @GET("ping")
+  Call<Void> ping();
 }

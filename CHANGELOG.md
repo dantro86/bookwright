@@ -16,6 +16,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Added digest-pinned local services with explicit MySQL, SSH, and API health checks.
 - Added a dynamic-port local test launcher with isolated Compose projects and guaranteed cleanup.
 - Added validated local-password and strict private-key SSH profiles, documented in ADR 0005.
+- Added independent static, framework, API, UI, and DB-over-SSH CI quality gates with one required aggregate status.
+- Added a history-enabled merged Allure report published through GitHub Pages.
+- Added Spotless formatting, a 60% JaCoCo framework-core coverage gate, Gradle dependency verification, Dependabot, dependency review, and CodeQL.
+- Added ADRs for thin Retrofit/Playwright clients with Guice, JUnit-owned lifecycle and LIFO cleanup, and explicit wait boundaries.
+- Added a CI guide covering gate contracts, branch protection, local commands, and checksum maintenance.
 
 ### Changed
 
@@ -23,6 +28,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Registered class-scoped browser cleanup per worker thread to support concurrent test methods without leaking sessions.
 - Removed fixed API, SSH, and JDBC tunnel ports from the local execution path.
 - Removed demo DB and SSH credentials from the public `prod` stand.
+- Upgraded GitHub Actions to Node.js 24-based major versions where available.
+- Established Google Java Format as the repository-wide source baseline.
 
 ### Planned
 

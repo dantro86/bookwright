@@ -7,7 +7,9 @@
 ![Retrofit](https://img.shields.io/badge/Retrofit-3.0-48B983)
 ![Allure](https://img.shields.io/badge/Allure-2.29-FA6C0E)
 ![GitHub Release](https://img.shields.io/github/v/release/dantro86/bookwright?sort=semver)
-![tests](https://github.com/dantro86/bookwright/actions/workflows/tests.yml/badge.svg)
+[![Quality Gates](https://github.com/dantro86/bookwright/actions/workflows/tests.yml/badge.svg)](https://github.com/dantro86/bookwright/actions/workflows/tests.yml)
+[![CodeQL](https://github.com/dantro86/bookwright/actions/workflows/security.yml/badge.svg)](https://github.com/dantro86/bookwright/actions/workflows/security.yml)
+[![Allure Report](https://img.shields.io/badge/Allure_Report-live-FA6C0E)](https://dantro86.github.io/bookwright/)
 
 Example Java test-automation framework: API + UI + DB-over-SSH in one lean project.
 Distilled from a production framework — same architectural ideas.
@@ -83,6 +85,17 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 - **Tags** — `@Smoke`, `@Regression`, `@Api`, `@Ui`, `@Db` wrap JUnit `@Tag`;
   `@OwnerDanil` wraps Allure `@Owner`.
 
+## Quality gates
+
+CI runs static quality, framework self-tests, API, UI, and DB-over-SSH scenarios as independent gates.
+The final required status passes only when every gate succeeds. Their Allure results are then merged into one
+[history-enabled report](https://dantro86.github.io/bookwright/).
+
+Spotless defines one repository format, JaCoCo enforces at least 60% instruction coverage for the selected
+framework core, Gradle verifies dependency checksums, and separate workflows run CodeQL and dependency review.
+Dependabot proposes grouped Gradle and GitHub Actions updates. See the [CI guide](docs/ci.md) for commands,
+scope, and recommended branch-protection checks.
+
 ## Running
 
 ```bash
@@ -108,6 +121,12 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 # everything on the local stand + report
 ./scripts/run-local-tests.sh
 allure serve build/allure-results
+
+# deterministic framework checks without product systems
+./gradlew qualityGate
+
+# inspect available dependency updates
+./gradlew dependencyUpdates
 ```
 
 Headed browser: `./gradlew test -Dui.headless=false --tests "io.bookwright.tests.ui.*"`
@@ -123,6 +142,9 @@ Release notes are maintained in [CHANGELOG.md](CHANGELOG.md), and accepted impro
 Releases are tag-driven. After updating `projectVersion` and moving entries from `Unreleased` to a dated
 version in the changelog, push `v<projectVersion>`; CI verifies the tag, runs the full local stand, and
 creates the GitHub Release from that changelog section.
+
+Architecture decisions are recorded in [`docs/adr`](docs/adr), including thin clients and dependency injection,
+JUnit-owned lifecycle state, explicit cleanup, native Playwright waits, and explicit API consistency boundaries.
 
 ## Layout
 

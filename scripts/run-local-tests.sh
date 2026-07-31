@@ -33,7 +33,13 @@ echo "  API: http://127.0.0.1:$api_port"
 echo "  SSH: 127.0.0.1:$ssh_port"
 echo "  DB tunnel: dynamically assigned by JSch"
 
-./gradlew clean test \
+test_task="${BOOKWRIGHT_TEST_TASK:-test}"
+if [[ $# -gt 0 && "$1" != -* ]]; then
+  test_task="$1"
+  shift
+fi
+
+./gradlew clean "$test_task" \
   -DSTAND=local \
   -Dssh.port="$ssh_port" \
   -Dapi.base.url="http://127.0.0.1:$api_port" \

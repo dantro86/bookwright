@@ -11,10 +11,10 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Booking {
-    String firstname;
-    String lastname;
-    Integer totalprice;
-    Boolean depositpaid;
-    BookingDates bookingdates;
-    String additionalneeds;
+  String firstname;
+  String lastname;
+  Integer totalprice;
+  Boolean depositpaid;
+  BookingDates bookingdates;
+  String additionalneeds;
 }

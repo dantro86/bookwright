@@ -13,34 +13,34 @@ import retrofit2.Retrofit;
 
 public class ApiModule extends AbstractModule {
 
-    private final TeardownStorage teardownStorage;
+  private final TeardownStorage teardownStorage;
 
-    public ApiModule(TeardownStorage teardownStorage) {
-        this.teardownStorage = teardownStorage;
-    }
+  public ApiModule(TeardownStorage teardownStorage) {
+    this.teardownStorage = teardownStorage;
+  }
 
-    @Override
-    protected void configure() {
-        bind(MainConfig.class).toInstance(Configs.main());
-        bind(TeardownStorage.class).toInstance(teardownStorage);
-        bind(io.bookwright.steps.AuthApiSteps.class).in(Singleton.class);
-    }
+  @Override
+  protected void configure() {
+    bind(MainConfig.class).toInstance(Configs.main());
+    bind(TeardownStorage.class).toInstance(teardownStorage);
+    bind(io.bookwright.steps.AuthApiSteps.class).in(Singleton.class);
+  }
 
-    @Provides
-    @Singleton
-    Retrofit retrofit(MainConfig config) {
-        return RetrofitFactory.create(config.apiBaseUrl());
-    }
+  @Provides
+  @Singleton
+  Retrofit retrofit(MainConfig config) {
+    return RetrofitFactory.create(config.apiBaseUrl());
+  }
 
-    @Provides
-    @Singleton
-    AuthApi authApi(Retrofit retrofit) {
-        return retrofit.create(AuthApi.class);
-    }
+  @Provides
+  @Singleton
+  AuthApi authApi(Retrofit retrofit) {
+    return retrofit.create(AuthApi.class);
+  }
 
-    @Provides
-    @Singleton
-    BookingApi bookingApi(Retrofit retrofit) {
-        return retrofit.create(BookingApi.class);
-    }
+  @Provides
+  @Singleton
+  BookingApi bookingApi(Retrofit retrofit) {
+    return retrofit.create(BookingApi.class);
+  }
 }

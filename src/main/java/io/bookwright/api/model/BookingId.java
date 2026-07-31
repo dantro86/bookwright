@@ -8,5 +8,5 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class BookingId {
-    Integer bookingid;
+  Integer bookingid;
 }

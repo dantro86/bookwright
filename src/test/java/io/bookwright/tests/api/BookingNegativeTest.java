@@ -1,5 +1,7 @@
 package io.bookwright.tests.api;
 
+import static io.bookwright.junit.Precondition.BOOKING_EXISTS;
+
 import io.bookwright.annotations.Api;
 import io.bookwright.annotations.OwnerDanil;
 import io.bookwright.annotations.Regression;
@@ -13,27 +15,25 @@ import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.bookwright.junit.Precondition.BOOKING_EXISTS;
-
 @Api
 @Regression
 @OwnerDanil
 @Feature("Bookings")
 class BookingNegativeTest {
 
-    private static final int NONEXISTENT_ID = 999_999_999;
+  private static final int NONEXISTENT_ID = 999_999_999;
 
-    @Test
-    @Preconditions({BOOKING_EXISTS})
-    @DisplayName("Update without auth token is forbidden")
-    void updateWithoutTokenIsForbidden(ApiSteps api, TestStore store, TestData data) {
-        CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
-        api.bookings().assertUpdateWithoutTokenForbidden(existing.getBookingid(), data.booking());
-    }
+  @Test
+  @Preconditions({BOOKING_EXISTS})
+  @DisplayName("Update without auth token is forbidden")
+  void updateWithoutTokenIsForbidden(ApiSteps api, TestStore store, TestData data) {
+    CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
+    api.bookings().assertUpdateWithoutTokenForbidden(existing.getBookingid(), data.booking());
+  }
 
-    @Test
-    @DisplayName("Requesting a nonexistent booking returns 404")
-    void nonexistentBookingReturns404(ApiSteps api) {
-        api.bookings().assertBookingNotFound(NONEXISTENT_ID);
-    }
+  @Test
+  @DisplayName("Requesting a nonexistent booking returns 404")
+  void nonexistentBookingReturns404(ApiSteps api) {
+    api.bookings().assertBookingNotFound(NONEXISTENT_ID);
+  }
 }

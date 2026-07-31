@@ -17,58 +17,61 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
 /**
- * Hands tests ready-made Steps facades. One Guice injector per steps facade and
- * test method, cached in the method-scoped store so all injected objects share
- * the same per-test teardown storage.
+ * Hands tests ready-made Steps facades. One Guice injector per steps facade and test method, cached
+ * in the method-scoped store so all injected objects share the same per-test teardown storage.
  */
 public class StepsParameterResolver implements ParameterResolver {
 
-    private static final Set<Class<?>> SUPPORTED = Set.of(ApiSteps.class, UiSteps.class, DbSteps.class);
+  private static final Set<Class<?>> SUPPORTED =
+      Set.of(ApiSteps.class, UiSteps.class, DbSteps.class);
 
-    @Override
-    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-        Class<?> type = parameterContext.getParameter().getType();
-        return type == TestStore.class || SUPPORTED.contains(type);
-    }
+  @Override
+  public boolean supportsParameter(
+      ParameterContext parameterContext, ExtensionContext extensionContext) {
+    Class<?> type = parameterContext.getParameter().getType();
+    return type == TestStore.class || SUPPORTED.contains(type);
+  }
 
-    @Override
-    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-        Class<?> type = parameterContext.getParameter().getType();
-        if (type == TestStore.class) {
-            return new TestStore(extensionContext);
-        }
-        if (type == UiSteps.class) {
-            // Fresh browser context per UI test; closed when the method store closes
-            NamespaceRegistry.methodStore(extensionContext).getOrComputeIfAbsent(
-                    "browser-context-cleanup",
-                    key -> (AutoCloseable) BrowserManager::closeContext);
-            // Browser and Playwright are reused within a class and closed after it.
-            NamespaceRegistry.classStore(extensionContext).getOrComputeIfAbsent(
-                    "browser-session-cleanup-" + Thread.currentThread().threadId(),
-                    key -> BrowserManager.sessionResource(),
-                    AutoCloseable.class);
-        }
-        return injectorFor(type, extensionContext).getInstance(type);
+  @Override
+  public Object resolveParameter(
+      ParameterContext parameterContext, ExtensionContext extensionContext) {
+    Class<?> type = parameterContext.getParameter().getType();
+    if (type == TestStore.class) {
+      return new TestStore(extensionContext);
     }
+    if (type == UiSteps.class) {
+      // Fresh browser context per UI test; closed when the method store closes
+      NamespaceRegistry.methodStore(extensionContext)
+          .getOrComputeIfAbsent(
+              "browser-context-cleanup", key -> (AutoCloseable) BrowserManager::closeContext);
+      // Browser and Playwright are reused within a class and closed after it.
+      NamespaceRegistry.classStore(extensionContext)
+          .getOrComputeIfAbsent(
+              "browser-session-cleanup-" + Thread.currentThread().threadId(),
+              key -> BrowserManager.sessionResource(),
+              AutoCloseable.class);
+    }
+    return injectorFor(type, extensionContext).getInstance(type);
+  }
 
-    static Injector injectorFor(Class<?> stepsType, ExtensionContext context) {
-        ExtensionContext.Store store = NamespaceRegistry.methodStore(context);
-        return store.getOrComputeIfAbsent(
-                "guice-injector-" + stepsType.getSimpleName(),
-                key -> Guice.createInjector(moduleFor(stepsType, context)),
-                Injector.class);
-    }
+  static Injector injectorFor(Class<?> stepsType, ExtensionContext context) {
+    ExtensionContext.Store store = NamespaceRegistry.methodStore(context);
+    return store.getOrComputeIfAbsent(
+        "guice-injector-" + stepsType.getSimpleName(),
+        key -> Guice.createInjector(moduleFor(stepsType, context)),
+        Injector.class);
+  }
 
-    private static Module moduleFor(Class<?> stepsType, ExtensionContext context) {
-        if (stepsType == ApiSteps.class) {
-            return new ApiModule(TeardownStorage.getOrCreate(context));
-        }
-        if (stepsType == DbSteps.class) {
-            return new DbModule(TeardownStorage.getOrCreate(context));
-        }
-        if (stepsType == UiSteps.class) {
-            return new UiModule();
-        }
-        throw new IllegalArgumentException("Unsupported steps facade: " + stepsType.getName());
+  private static Module moduleFor(Class<?> stepsType, ExtensionContext context) {
+    if (stepsType == ApiSteps.class) {
+      return new ApiModule(TeardownStorage.getOrCreate(context));
     }
+    if (stepsType == DbSteps.class) {
+      return new DbModule(TeardownStorage.getOrCreate(context));
+    }
+    if (stepsType == UiSteps.class) {
+      return new UiModule();
+    }
+    throw new IllegalArgumentException("Unsupported steps facade: " + stepsType.getName());
+  }
 }
