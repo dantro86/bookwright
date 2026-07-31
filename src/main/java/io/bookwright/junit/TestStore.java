@@ -1,5 +1,6 @@
 package io.bookwright.junit;
 
+import io.bookwright.api.AuthSession;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
@@ -27,7 +28,7 @@ public class TestStore {
         store.put(key, value);
     }
 
-    public String authToken() {
-        return get(NamespaceRegistry.AUTH_TOKEN_KEY, String.class);
+    public AuthSession authSession() {
+        return get(NamespaceRegistry.AUTH_SESSION_KEY, AuthSession.class);
     }
 }

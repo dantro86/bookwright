@@ -53,7 +53,7 @@ class BookingSearchTest {
         Booking original = existing.getBooking();
 
         api.bookings().partialUpdate(existing.getBookingid(),
-                Booking.builder().firstname("Patched").build());
+                Booking.builder().firstname("Patched").build(), store.authSession());
 
         Booking after = api.bookings().get(existing.getBookingid());
         assertThat(after.getFirstname()).as("patched firstname").isEqualTo("Patched");

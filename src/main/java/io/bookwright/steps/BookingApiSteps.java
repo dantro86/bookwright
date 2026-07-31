@@ -1,6 +1,7 @@
 package io.bookwright.steps;
 
 import com.google.inject.Inject;
+import io.bookwright.api.AuthSession;
 import io.bookwright.api.BookingApi;
 import io.bookwright.api.model.Booking;
 import io.bookwright.api.model.BookingId;
@@ -28,7 +29,8 @@ public class BookingApiSteps {
 
     @Step("Create booking for {booking.firstname} {booking.lastname}")
     public CreatedBooking create(Booking booking) {
-        CreatedBooking created = Calls.unwrap(bookingApi.createBooking(booking), 200);
+        CreatedBooking created = Calls.body(
+                bookingApi.createBooking(booking), 200, "created booking");
         assertThat(created.getBookingid()).as("created booking id").isNotNull();
         teardown.push("delete booking " + created.getBookingid(),
                 () -> deleteQuietly(created.getBookingid()));
@@ -37,27 +39,31 @@ public class BookingApiSteps {
 
     @Step("Get booking {id}")
     public Booking get(int id) {
-        return Calls.unwrap(bookingApi.getBooking(id), 200);
+        return Calls.body(bookingApi.getBooking(id), 200, "booking " + id);
     }
 
     @Step("Get all booking ids")
     public List<BookingId> getIds() {
-        return Calls.unwrap(bookingApi.getBookingIds(), 200);
+        return Calls.body(bookingApi.getBookingIds(), 200, "booking id list");
     }
 
     @Step("Update booking {id}")
-    public Booking update(int id, Booking booking) {
-        return Calls.unwrap(bookingApi.updateBooking(id, booking, tokenCookie()), 200);
+    public Booking update(int id, Booking booking, AuthSession session) {
+        return Calls.body(
+                bookingApi.updateBooking(id, booking, session.cookie()), 200, "updated booking " + id);
     }
 
     @Step("Partially update booking {id}")
-    public Booking partialUpdate(int id, Booking partial) {
-        return Calls.unwrap(bookingApi.partialUpdateBooking(id, partial, tokenCookie()), 200);
+    public Booking partialUpdate(int id, Booking partial, AuthSession session) {
+        return Calls.body(
+                bookingApi.partialUpdateBooking(id, partial, session.cookie()),
+                200, "partially updated booking " + id);
     }
 
     @Step("Find booking ids by guest name {firstname} {lastname}")
     public List<BookingId> findIdsByName(String firstname, String lastname) {
-        return Calls.unwrap(bookingApi.findBookingIds(firstname, lastname), 200);
+        return Calls.body(
+                bookingApi.findBookingIds(firstname, lastname), 200, "booking search results");
     }
 
     /**
@@ -69,23 +75,25 @@ public class BookingApiSteps {
     @Step("Wait until booking {id} is searchable by guest name {firstname} {lastname}")
     public void waitUntilSearchableByName(int id, String firstname, String lastname) {
         Waits.await("booking %d in search results by name %s %s".formatted(id, firstname, lastname))
-                .until(() -> Calls.unwrap(bookingApi.findBookingIds(firstname, lastname), 200).stream()
+                .until(() -> Calls.body(
+                                bookingApi.findBookingIds(firstname, lastname),
+                                200, "booking search results").stream()
                         .anyMatch(found -> found.getBookingid() == id));
     }
 
     @Step("Check update without auth token is forbidden for booking {id}")
     public void assertUpdateWithoutTokenForbidden(int id, Booking booking) {
-        Calls.checkStatus(Calls.execute(bookingApi.updateBooking(id, booking, "")), 403);
+        Calls.expectStatus(bookingApi.updateBooking(id, booking, ""), 403);
     }
 
     @Step("Check booking {id} does not exist")
     public void assertBookingNotFound(int id) {
-        Calls.checkStatus(Calls.execute(bookingApi.getBooking(id)), 404);
+        Calls.expectStatus(bookingApi.getBooking(id), 404);
     }
 
     @Step("Delete booking {id}")
-    public void delete(int id) {
-        Calls.checkStatus(Calls.execute(bookingApi.deleteBooking(id, tokenCookie())), 201);
+    public void delete(int id, AuthSession session) {
+        Calls.expectStatus(bookingApi.deleteBooking(id, session.cookie()), 201);
     }
 
     @Step("Check booking {id} matches expected data")
@@ -95,10 +103,7 @@ public class BookingApiSteps {
     }
 
     private void deleteQuietly(int id) {
-        Calls.execute(bookingApi.deleteBooking(id, tokenCookie()));
-    }
-
-    private String tokenCookie() {
-        return "token=" + auth.token();
+        var response = Calls.response(bookingApi.deleteBooking(id, auth.session().cookie()));
+        Calls.expectStatus(response, 201, 404, 405);
     }
 }

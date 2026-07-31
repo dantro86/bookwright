@@ -12,12 +12,12 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 
 ## 1. Correctness and lifecycle
 
-- [ ] Replace the string token in JUnit Store with an explicit `AuthSession` value object and pass it to authorized operations.
-- [ ] Move teardown state from `ThreadLocal` to a method-scoped JUnit Store resource.
-- [ ] Add `teardown.failOnError=true|false`; preserve the primary failure and report cleanup failures correctly.
-- [ ] Add a run/class-scoped `CloseableResource` that closes `Browser` and then `Playwright`; continue closing each context after its test.
-- [ ] Restrict Awaitility exception handling to known transient failures; programming errors must fail immediately.
-- [ ] Introduce a small `ApiCallException`/`UnexpectedResponseException` and focused `body`, `response`, and `expectStatus` helpers.
+- [x] Replace the string token in JUnit Store with an explicit `AuthSession` value object and pass it to authorized operations.
+- [x] Move teardown state from `ThreadLocal` to a method-scoped JUnit Store resource.
+- [x] Add `teardown.failOnError=true|false`; preserve the primary failure and report cleanup failures correctly.
+- [x] Add a run/class-scoped `CloseableResource` that closes `Browser` and then `Playwright`; continue closing each context after its test.
+- [x] Restrict Awaitility exception handling to known transient failures; programming errors must fail immediately.
+- [x] Introduce a small `ApiCallException`/`UnexpectedResponseException` and focused `body`, `response`, and `expectStatus` helpers.
 - [ ] Design HTTP/Allure secret redaction separately before changing logging behavior.
 
 ## 2. Diagnostics and test quality

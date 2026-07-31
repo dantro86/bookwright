@@ -15,6 +15,7 @@ public class AuthSessionExtension implements BeforeTestExecutionCallback {
     public void beforeTestExecution(ExtensionContext context) {
         ApiSteps api = StepsParameterResolver.injectorFor(ApiSteps.class, context).getInstance(ApiSteps.class);
         Allure.step("Fixture: authenticate API session", () ->
-                NamespaceRegistry.methodStore(context).put(NamespaceRegistry.AUTH_TOKEN_KEY, api.auth().token()));
+                NamespaceRegistry.methodStore(context).put(
+                        NamespaceRegistry.AUTH_SESSION_KEY, api.auth().session()));
     }
 }

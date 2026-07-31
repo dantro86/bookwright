@@ -1,32 +1,42 @@
 package io.bookwright.teardown;
 
+import io.bookwright.junit.NamespaceRegistry;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
- * Per-test LIFO queue of cleanup actions. Steps push an action for every
- * entity they create; {@link TeardownExtension} drains the queue after each test
- * in reverse creation order.
- *
- * <p>ThreadLocal storage matches the JUnit parallel model: each test method
- * runs on one worker thread.</p>
+ * Method-scoped LIFO queue of cleanup actions. The instance lives in the JUnit
+ * Store, so ownership follows the test lifecycle rather than a worker thread.
  */
 public class TeardownStorage {
 
     public record TeardownAction(String name, Runnable action) {
     }
 
-    private static final ThreadLocal<Deque<TeardownAction>> ACTIONS = ThreadLocal.withInitial(ArrayDeque::new);
+    private final Deque<TeardownAction> actions = new ArrayDeque<>();
+
+    public static TeardownStorage getOrCreate(ExtensionContext context) {
+        return NamespaceRegistry.methodStore(context).getOrComputeIfAbsent(
+                NamespaceRegistry.TEARDOWN_STORAGE_KEY,
+                key -> new TeardownStorage(),
+                TeardownStorage.class);
+    }
+
+    public static TeardownStorage get(ExtensionContext context) {
+        return NamespaceRegistry.methodStore(context).get(
+                NamespaceRegistry.TEARDOWN_STORAGE_KEY, TeardownStorage.class);
+    }
 
     public void push(String name, Runnable action) {
-        ACTIONS.get().addLast(new TeardownAction(name, action));
+        actions.addLast(new TeardownAction(name, action));
     }
 
     TeardownAction pollLast() {
-        return ACTIONS.get().pollLast();
+        return actions.pollLast();
     }
 
-    static void clear() {
-        ACTIONS.remove();
+    void clear() {
+        actions.clear();
     }
 }

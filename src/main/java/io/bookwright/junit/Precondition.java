@@ -13,8 +13,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  */
 public enum Precondition implements IPrecondition {
 
-    AUTH_TOKEN("Obtain auth token",
-            (api, store) -> store.put(NamespaceRegistry.AUTH_TOKEN_KEY, api.auth().token())),
+    AUTH_SESSION("Obtain auth session",
+            (api, store) -> store.put(NamespaceRegistry.AUTH_SESSION_KEY, api.auth().session())),
 
     BOOKING_EXISTS("Create a booking",
             (api, store) -> {

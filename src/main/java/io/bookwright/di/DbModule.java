@@ -10,9 +10,15 @@ import io.bookwright.teardown.TeardownStorage;
 
 public class DbModule extends AbstractModule {
 
+    private final TeardownStorage teardownStorage;
+
+    public DbModule(TeardownStorage teardownStorage) {
+        this.teardownStorage = teardownStorage;
+    }
+
     @Override
     protected void configure() {
-        bind(TeardownStorage.class).in(Singleton.class);
+        bind(TeardownStorage.class).toInstance(teardownStorage);
     }
 
     @Provides

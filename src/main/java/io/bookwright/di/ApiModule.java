@@ -13,10 +13,16 @@ import retrofit2.Retrofit;
 
 public class ApiModule extends AbstractModule {
 
+    private final TeardownStorage teardownStorage;
+
+    public ApiModule(TeardownStorage teardownStorage) {
+        this.teardownStorage = teardownStorage;
+    }
+
     @Override
     protected void configure() {
         bind(MainConfig.class).toInstance(Configs.main());
-        bind(TeardownStorage.class).in(Singleton.class);
+        bind(TeardownStorage.class).toInstance(teardownStorage);
         bind(io.bookwright.steps.AuthApiSteps.class).in(Singleton.class);
     }
 

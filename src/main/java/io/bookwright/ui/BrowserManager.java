@@ -12,12 +12,42 @@ import lombok.extern.slf4j.Slf4j;
  * Per-thread Playwright lifecycle. One Playwright+Browser per worker thread
  * (expensive, reused between tests); one fresh BrowserContext+Page per test
  * (cheap, gives isolation). {@code closeContext()} is called by the resolver
- * after each UI test; the browser itself dies with the JVM.
+ * after each UI test; the owning class store closes Browser and then Playwright.
  */
 @Slf4j
 public final class BrowserManager {
 
-    private record Session(Playwright playwright, Browser browser) {
+    private static final class Session implements AutoCloseable {
+        private final Playwright playwright;
+        private final Browser browser;
+        private boolean closed;
+
+        private Session(Playwright playwright, Browser browser) {
+            this.playwright = playwright;
+            this.browser = browser;
+        }
+
+        private Browser browser() {
+            return browser;
+        }
+
+        private boolean isClosed() {
+            return closed;
+        }
+
+        @Override
+        public void close() {
+            if (closed) {
+                return;
+            }
+            try {
+                browser.close();
+            } finally {
+                playwright.close();
+                closed = true;
+                log.info("Playwright browser session closed");
+            }
+        }
     }
 
     private static final ThreadLocal<Session> SESSION = new ThreadLocal<>();
@@ -42,6 +72,12 @@ public final class BrowserManager {
         return PAGE.get();
     }
 
+    /** Captures the current thread's browser session for class-store cleanup. */
+    public static AutoCloseable sessionResource() {
+        Session captured = session();
+        return captured::close;
+    }
+
     public static void closeContext() {
         BrowserContext context = CONTEXT.get();
         if (context != null) {
@@ -56,12 +92,18 @@ public final class BrowserManager {
     }
 
     private static Browser browser() {
-        if (SESSION.get() == null) {
+        return session().browser();
+    }
+
+    private static Session session() {
+        Session current = SESSION.get();
+        if (current == null || current.isClosed()) {
             Playwright playwright = Playwright.create();
             Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
                     .setHeadless(Configs.main().uiHeadless()));
-            SESSION.set(new Session(playwright, browser));
+            current = new Session(playwright, browser);
+            SESSION.set(current);
         }
-        return SESSION.get().browser();
+        return current;
     }
 }

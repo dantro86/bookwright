@@ -1,6 +1,7 @@
 package io.bookwright.steps;
 
 import com.google.inject.Inject;
+import io.bookwright.api.AuthSession;
 import io.bookwright.api.AuthApi;
 import io.bookwright.api.model.AuthRequest;
 import io.bookwright.api.model.AuthResponse;
@@ -27,20 +28,24 @@ public class AuthApiSteps {
     @Step("Get auth token")
     public String token() {
         if (cachedToken == null) {
-            AuthResponse response = Calls.unwrap(authApi.createToken(AuthRequest.builder()
+            AuthResponse response = Calls.body(authApi.createToken(AuthRequest.builder()
                     .username(config.apiUsername())
                     .password(config.apiPassword())
-                    .build()), 200);
+                    .build()), 200, "auth token response");
             assertThat(response.getToken()).as("auth token").isNotBlank();
             cachedToken = response.getToken();
         }
         return cachedToken;
     }
 
+    @Step("Create authenticated API session")
+    public AuthSession session() {
+        return new AuthSession(token());
+    }
+
     @Step("Check API is alive")
     public void ping() {
-        Response<Void> response = Calls.execute(authApi.ping());
-        Calls.checkStatus(response, 201);
+        Calls.expectStatus(authApi.ping(), 201);
     }
 
     /**
@@ -51,6 +56,6 @@ public class AuthApiSteps {
     @Step("Wait until API is up")
     public void waitUntilApiUp() {
         Waits.awaitSlow("API /ping answers 201")
-                .until(() -> Calls.execute(authApi.ping()).code() == 201);
+                .until(() -> Calls.response(authApi.ping()).code() == 201);
     }
 }

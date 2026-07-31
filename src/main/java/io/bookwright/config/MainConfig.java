@@ -35,4 +35,8 @@ public interface MainConfig extends Config {
     @Key("ui.headless")
     @DefaultValue("true")
     boolean uiHeadless();
+
+    @Key("teardown.failOnError")
+    @DefaultValue("true")
+    boolean teardownFailOnError();
 }

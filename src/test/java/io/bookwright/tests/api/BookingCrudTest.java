@@ -39,7 +39,7 @@ class BookingCrudTest {
     void bookingCanBeUpdated(ApiSteps api, TestStore store) {
         CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
         Booking updated = BookingFactory.random();
-        api.bookings().update(existing.getBookingid(), updated);
+        api.bookings().update(existing.getBookingid(), updated, store.authSession());
         api.bookings().assertBookingMatches(existing.getBookingid(), updated);
     }
 
@@ -49,7 +49,7 @@ class BookingCrudTest {
     @DisplayName("Booking can be deleted")
     void bookingCanBeDeleted(ApiSteps api, TestStore store) {
         CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
-        api.bookings().delete(existing.getBookingid());
+        api.bookings().delete(existing.getBookingid(), store.authSession());
         assertThat(api.bookings().getIds())
                 .as("booking ids after deletion")
                 .noneMatch(id -> id.getBookingid().equals(existing.getBookingid()));

@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Declares test data setup: {@code @Preconditions({AUTH_TOKEN, BOOKING_EXISTS})}.
+ * Declares test data setup: {@code @Preconditions({AUTH_SESSION, BOOKING_EXISTS})}.
  * Executed by {@link PreconditionProvider} right before the test body,
  * each precondition wrapped in its own Allure step.
  */

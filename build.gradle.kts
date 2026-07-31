@@ -64,6 +64,8 @@ dependencies {
     implementation(platform("org.junit:junit-bom:${Versions.JUNIT}"))
     implementation("org.junit.jupiter:junit-jupiter")
     implementation("org.junit.platform:junit-platform-launcher")
+
+    testImplementation("com.squareup.okhttp3:mockwebserver")
 }
 
 allure {

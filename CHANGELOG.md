@@ -7,9 +7,20 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Added an explicit `AuthSession` value object for authorized API operations.
+- Added configurable teardown failure handling through `teardown.failOnError`.
+- Added focused API transport and response-contract exceptions with deterministic MockWebServer tests.
+- Added framework self-tests for authentication sessions and teardown order/error policy.
+
 ### Changed
 
 - Added a dynamic GitHub Release badge and marked the initial release milestone complete.
+- Moved teardown ownership from `ThreadLocal` state to the method-scoped JUnit Store.
+- Closed browser sessions through class-scoped JUnit resources while preserving per-test browser contexts.
+- Restricted Awaitility retries to transport-level `ApiCallException` failures.
+- Replaced generic Retrofit execution helpers with focused `body`, `response`, and `expectStatus` operations.
 
 ### Planned
 
