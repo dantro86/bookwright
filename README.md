@@ -38,9 +38,11 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 - **Preconditions** — `@Preconditions({BOOKING_EXISTS})` on a test: the `Precondition` enum holds named
   setup actions, `PreconditionProvider` runs them right before the test body (each as an Allure step)
   and shares created data with the test through the JUnit method-scoped store (`TestStore` parameter).
-- **Fixtures** — `@WithAuthSession` obtains an API token before the test (`store.authToken()`).
+- **Fixtures** — `@WithAuthSession` creates an explicit authentication value object before the test
+  (`store.authSession()`), which authorized API operations require.
 - **Teardown** — steps push a cleanup lambda into a per-test LIFO queue for every entity they create;
-  `TeardownExtension` drains it after each test. Cleanup failures are logged, never fail the test.
+  `TeardownExtension` drains it after each test. `teardown.failOnError` controls whether cleanup failures
+  fail an otherwise successful test; a primary test failure is never replaced.
 - **Extensions** — auto-registered via `META-INF/services` + `junit-platform.properties`
   (autodetection, parallel classes, fixed parallelism 4). `ScreenshotOnFailureExtension` attaches
   a screenshot + page HTML to Allure when a UI test fails.
@@ -111,7 +113,7 @@ src/main/java/io/bookwright/
 ├── teardown/     LIFO teardown queue + extension
 ├── ui/           BrowserManager + page objects (plain Playwright locators)
 └── util/         Calls, Waits, BookingFactory
-src/test/java/io/bookwright/tests/{api,ui,db}/
+src/test/java/io/bookwright/{teardown,tests/{api,db,framework,ui}}/
 ```
 
 ## Author

@@ -7,6 +7,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Planned
+
+- See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
+
+## [1.1.0] - 2026-07-31
+
 ### Added
 
 - Added an explicit `AuthSession` value object for authorized API operations.
@@ -21,10 +27,6 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Closed browser sessions through class-scoped JUnit resources while preserving per-test browser contexts.
 - Restricted Awaitility retries to transport-level `ApiCallException` failures.
 - Replaced generic Retrofit execution helpers with focused `body`, `response`, and `expectStatus` operations.
-
-### Planned
-
-- See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
 
 ## [1.0.0] - 2026-07-31
 
@@ -43,5 +45,6 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - MIT license, project documentation, and author/contact information.
 - Semantic Versioning, a validated single version source, Keep a Changelog, and tag-driven GitHub Releases.
 
-[Unreleased]: https://github.com/dantro86/bookwright/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/dantro86/bookwright/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/dantro86/bookwright/releases/tag/v1.1.0
 [1.0.0]: https://github.com/dantro86/bookwright/releases/tag/v1.0.0
