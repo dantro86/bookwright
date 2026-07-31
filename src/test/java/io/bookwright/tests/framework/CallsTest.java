@@ -3,9 +3,15 @@ package io.bookwright.tests.framework;
 import io.bookwright.api.ApiCallException;
 import io.bookwright.api.UnexpectedResponseException;
 import io.bookwright.util.Calls;
+import io.bookwright.util.Waits;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+import okhttp3.OkHttpClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.SocketPolicy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,6 +87,93 @@ class CallsTest {
                 .isInstanceOf(ApiCallException.class)
                 .hasMessageContaining("HTTP call failed")
                 .hasCauseInstanceOf(IOException.class);
+    }
+
+    @Test
+    void reportsMalformedJsonAsCallFailure() {
+        server.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .addHeader("Content-Type", "application/json")
+                .setBody("{\"value\":"));
+
+        assertThatThrownBy(() -> Calls.body(api.get(), 200, "test response"))
+                .isInstanceOf(ApiCallException.class)
+                .hasMessageContaining("HTTP call failed")
+                .hasCauseInstanceOf(IOException.class);
+    }
+
+    @Test
+    void reportsReadTimeoutAsTransportFailure() {
+        server.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody("{\"value\":\"late\"}")
+                .setBodyDelay(250, TimeUnit.MILLISECONDS));
+        api = api(new OkHttpClient.Builder()
+                .readTimeout(Duration.ofMillis(50))
+                .retryOnConnectionFailure(false)
+                .build());
+
+        assertThatThrownBy(() -> Calls.body(api.get(), 200, "slow response"))
+                .isInstanceOf(ApiCallException.class)
+                .hasCauseInstanceOf(SocketTimeoutException.class);
+    }
+
+    @Test
+    void callHelperDoesNotRetryDisconnectedRequest() {
+        server.enqueue(new MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START));
+        server.enqueue(success("explicit retry"));
+        api = api(new OkHttpClient.Builder().retryOnConnectionFailure(false).build());
+
+        assertThatThrownBy(() -> Calls.body(api.get(), 200, "disconnected response"))
+                .isInstanceOf(ApiCallException.class);
+        assertThat(server.getRequestCount()).isEqualTo(1);
+
+        assertThat(Calls.body(api.get(), 200, "explicit retry").value()).isEqualTo("explicit retry");
+        assertThat(server.getRequestCount()).isEqualTo(2);
+    }
+
+    @Test
+    void awaitilityRetriesTransientCallFailureAtTheCallSite() {
+        server.enqueue(new MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START));
+        server.enqueue(success("ready"));
+        api = api(new OkHttpClient.Builder().retryOnConnectionFailure(false).build());
+
+        Waits.await("test endpoint becomes available")
+                .pollInterval(Duration.ofMillis(5))
+                .atMost(Duration.ofSeconds(1))
+                .until(() -> Calls.body(api.get(), 200, "test response").value().equals("ready"));
+
+        assertThat(server.getRequestCount()).isEqualTo(2);
+    }
+
+    @Test
+    void awaitilityDoesNotRetryUnexpectedResponse() {
+        server.enqueue(new MockResponse().setResponseCode(503).setBody("temporarily unavailable"));
+        server.enqueue(success("must not be reached"));
+
+        assertThatThrownBy(() -> Waits.await("test endpoint returns expected contract")
+                .pollInterval(Duration.ofMillis(5))
+                .atMost(Duration.ofSeconds(1))
+                .until(() -> Calls.body(api.get(), 200, "test response").value().equals("ready")))
+                .isInstanceOf(UnexpectedResponseException.class)
+                .hasMessageContaining("got 503");
+        assertThat(server.getRequestCount()).isEqualTo(1);
+    }
+
+    private TestApi api(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(server.url("/"))
+                .client(client)
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build()
+                .create(TestApi.class);
+    }
+
+    private MockResponse success(String value) {
+        return new MockResponse()
+                .setResponseCode(200)
+                .addHeader("Content-Type", "application/json")
+                .setBody("{\"value\":\"%s\"}".formatted(value));
     }
 
     private interface TestApi {

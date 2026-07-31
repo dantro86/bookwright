@@ -6,12 +6,15 @@ diagnostic, and failure-handling contracts that ordinary API or UI tests may exe
 | Contract | Self-test |
 |---|---|
 | API transport and response contracts | `CallsTest` |
+| No-global-retry policy and explicit transient polling | `RetrofitFactoryTest`, `CallsTest` |
 | HTTP secret redaction and fail-closed body handling | `SafeHttpReportingInterceptorTest` |
 | Explicit auth-session safety | `AuthSessionTest` |
 | Configuration source order, overrides, and defaults | `MainConfigTest` |
 | Precondition order and method-store handoff | `PreconditionProviderTest` |
 | JUnit method-store isolation | `StoreIsolationTest` |
+| Concurrent Guice facade and Playwright context isolation | `StoreIsolationTest`, `BrowserContextIsolationTest` |
 | LIFO teardown and error policy | `TeardownExtensionTest` |
+| Concurrent auth, generated-data, and teardown isolation | `ParallelStateIsolationTest` |
 | Awaitility transient-failure policy and diagnostics | `WaitsTest` |
 | Deterministic and parallel-independent test data | `TestSeedsTest` |
 | Browser-before-Playwright resource closure | `BrowserManagerTest` |

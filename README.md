@@ -56,7 +56,9 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 - **Waits** — UI relies on Playwright's auto-retrying assertions; async API states are polled with
   Awaitility via `Waits` (shared defaults + mandatory alias, composed fluently at the call site).
   Examples: `AuthApiSteps.waitUntilApiUp()` (infrastructure warm-up),
-  `BookingApiSteps.waitUntilSearchableByName()` (eventual consistency).
+  `BookingApiSteps.waitUntilSearchableByName()` (eventual consistency). The shared OkHttp client never retries
+  implicitly; retries exist only at an explicit consistency boundary. See
+  [ADR 0004](docs/adr/0004-explicit-retries.md).
 - **Reproducible test data** — every test receives an isolated `TestData` sequence derived from one run seed
   and its JUnit identity. Parallel scheduling cannot change generated values. Allure records both seeds and
   an exact replay command; see [ADR 0003](docs/adr/0003-reproducible-test-data.md).
@@ -71,7 +73,7 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   product collections and cart → checkout → completion state transitions.
 - **Framework self-tests** — infrastructure contracts are verified independently from product scenarios:
   configuration precedence, preconditions, JUnit Store isolation, teardown policy, waits, deterministic data,
-  HTTP helpers, diagnostics, artifact isolation, and resource closure. See the
+  HTTP edge cases, concurrent state/browser isolation, diagnostics, artifact isolation, and resource closure. See the
   [verification matrix](docs/framework-self-tests.md).
 - **Tags** — `@Smoke`, `@Regression`, `@Api`, `@Ui`, `@Db` wrap JUnit `@Tag`;
   `@OwnerDanil` wraps Allure `@Owner`.

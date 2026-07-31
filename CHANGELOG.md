@@ -10,6 +10,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Added
 
 - Added a documented framework verification matrix and self-tests for configuration, preconditions, JUnit Store isolation, waits, UI artifact isolation, and browser resource closure.
+- Added concurrent isolation tests for JUnit Store, Guice facades, auth data, teardown queues, generated data, and Playwright contexts.
+- Added deterministic MockWebServer coverage for disconnects, timeouts, malformed JSON, explicit polling, and unexpected responses.
+- Added ADR 0004 documenting the explicit retry policy.
+
+### Changed
+
+- Disabled shared OkHttp connection retries so every Retrofit call executes once unless a step explicitly polls a transient state.
+- Registered class-scoped browser cleanup per worker thread to support concurrent test methods without leaking sessions.
 
 ### Planned
 

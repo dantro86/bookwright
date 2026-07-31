@@ -22,6 +22,7 @@ public final class RetrofitFactory {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(Duration.ofSeconds(15))
                 .readTimeout(Duration.ofSeconds(30))
+                .retryOnConnectionFailure(false)
                 // restful-booker answers 418 to requests without an Accept header
                 .addInterceptor(chain -> chain.proceed(chain.request().newBuilder()
                         .header("Accept", "application/json")

@@ -29,7 +29,7 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 - [x] Replace derived selector slugs with locators scoped to the visible product/card.
 - [x] Make randomized test data reproducible with a configurable seed recorded in Allure.
 - [x] Add framework self-tests for API helpers, config precedence, preconditions, JUnit Store isolation, teardown order/error policy, waits, UI artifacts, and resource closure.
-- [ ] Add parallel-isolation tests and use MockWebServer for deterministic HTTP edge cases.
+- [x] Add parallel-isolation tests and use MockWebServer for deterministic HTTP edge cases.
 
 ## 3. Reproducible and secure infrastructure
 

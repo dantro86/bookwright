@@ -44,7 +44,7 @@ public class StepsParameterResolver implements ParameterResolver {
                     key -> (AutoCloseable) BrowserManager::closeContext);
             // Browser and Playwright are reused within a class and closed after it.
             NamespaceRegistry.classStore(extensionContext).getOrComputeIfAbsent(
-                    "browser-session-cleanup",
+                    "browser-session-cleanup-" + Thread.currentThread().threadId(),
                     key -> BrowserManager.sessionResource(),
                     AutoCloseable.class);
         }
