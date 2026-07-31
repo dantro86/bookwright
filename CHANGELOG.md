@@ -7,6 +7,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed
+
+- Expanded the author profile to document the production, leadership, and AI-first quality engineering experience behind bookwright.
+
 ### Planned
 
 - See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.

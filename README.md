@@ -118,7 +118,25 @@ src/test/java/io/bookwright/{teardown,tests/{api,db,framework,ui}}/
 
 ## Author
 
-**Danil Trofimov** — test automation engineer.
-Built as a showcase of the approaches I use in production test frameworks.
+[**Danil Trofimov**](https://www.linkedin.com/in/dantro/)
+
+**Senior SDET & QA Lead** · Java · Playwright · Python · CI/CD Quality Gates · AI-Powered Automation
+
+I am a QA automation engineer turned AI-first quality systems builder, with 16 years in testing and
+the last 7 focused on designing automation frameworks and scaling QA teams across fintech, iGaming,
+and e-commerce.
+
+At B2Broker, I lead test automation for B2Core, a financial platform built on Kubernetes and
+microservices. I designed and built its Java automation framework from scratch with Playwright,
+OkHttp, and JUnit 5, helping move the team from manual regression cycles toward continuous delivery
+backed by automated quality checks.
+
+My current focus is agentic quality engineering: Claude-powered workflows that generate tests from
+code and requirements, diagnose failures, review test quality, and connect the entire process through
+custom skills and MCP integrations.
+
+I care about eliminating repetitive work through autonomous pipelines, keeping architecture clean,
+and treating quality as an engineering system rather than a checklist. **bookwright** is a public,
+educational expression of those principles.
 
 [LinkedIn](https://www.linkedin.com/in/dantro/) · [GitHub](https://github.com/dantro86)
