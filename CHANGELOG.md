@@ -13,6 +13,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Added Playwright traces and bounded browser-event diagnostics to failed UI test artifacts.
 - Added UI diagnostics self-tests and an architecture decision record for artifact lifecycle and security.
 - Added a UI scenario proving that products with punctuation are selected by their visible name.
+- Added deterministic per-test data generation with configurable run seeds, Allure replay metadata, parallel-isolation tests, and ADR 0003.
 
 ### Changed
 
@@ -22,6 +23,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Replaced screenshot-only UI failure handling with independent screenshot, HTML, diagnostics, and trace capture.
 - Replaced derived product selector slugs with product-card scoped locators.
 - Strengthened login, sorting, cart, checkout overview, and order completion assertions.
+- Replaced global UUID, thread-local random, and current-date test data with explicit per-test `TestData` sequences.
 
 ### Planned
 

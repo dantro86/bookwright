@@ -2,7 +2,7 @@ package io.bookwright.junit;
 
 import io.bookwright.api.model.CreatedBooking;
 import io.bookwright.steps.ApiSteps;
-import io.bookwright.util.BookingFactory;
+import io.bookwright.util.TestData;
 import java.util.function.BiConsumer;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
@@ -18,7 +18,11 @@ public enum Precondition implements IPrecondition {
 
     BOOKING_EXISTS("Create a booking",
             (api, store) -> {
-                CreatedBooking created = api.bookings().create(BookingFactory.random());
+                TestData data = store.get(NamespaceRegistry.TEST_DATA_KEY, TestData.class);
+                if (data == null) {
+                    throw new IllegalStateException("TestDataExtension did not initialize test data");
+                }
+                CreatedBooking created = api.bookings().create(data.booking());
                 store.put(NamespaceRegistry.BOOKING_KEY, created);
             });
 

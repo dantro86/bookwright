@@ -57,6 +57,9 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   Awaitility via `Waits` (shared defaults + mandatory alias, composed fluently at the call site).
   Examples: `AuthApiSteps.waitUntilApiUp()` (infrastructure warm-up),
   `BookingApiSteps.waitUntilSearchableByName()` (eventual consistency).
+- **Reproducible test data** — every test receives an isolated `TestData` sequence derived from one run seed
+  and its JUnit identity. Parallel scheduling cannot change generated values. Allure records both seeds and
+  an exact replay command; see [ADR 0003](docs/adr/0003-reproducible-test-data.md).
 - **Safe HTTP reporting** — one interceptor produces sanitized logs and Allure attachments. Sensitive
   headers, query parameters, JSON fields, and form fields are redacted; unknown body formats are omitted.
   The rationale and trade-offs are documented in [ADR 0001](docs/adr/0001-safe-http-reporting.md).
@@ -87,6 +90,9 @@ docker compose -f docker/docker-compose.yml down -v
 # by tags
 ./gradlew test -DincludeTags=smoke
 ./gradlew test -DincludeTags=regression -DexcludeTags=ui
+
+# replay the exact generated data from an Allure failure
+./gradlew test -Dtest.seed=4242 --tests "io.bookwright.tests.api.BookingCrudTest.bookingCanBeCreated"
 
 # everything + report
 docker compose -f docker/docker-compose.yml up -d
@@ -121,7 +127,7 @@ src/main/java/io/bookwright/
 ├── steps/        ApiSteps / UiSteps / DbSteps facades
 ├── teardown/     LIFO teardown queue + extension
 ├── ui/           BrowserManager + page objects (plain Playwright locators)
-└── util/         Calls, Waits, BookingFactory
+└── util/         Calls, Waits, deterministic TestData and factories
 src/test/java/io/bookwright/{teardown,tests/{api,db,framework,ui}}/
 ```
 

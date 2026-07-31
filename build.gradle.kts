@@ -86,8 +86,8 @@ tasks.test {
         if (!includeTags.isNullOrBlank()) includeTags(*includeTags.split(",").toTypedArray())
         if (!excludeTags.isNullOrBlank()) excludeTags(*excludeTags.split(",").toTypedArray())
     }
-    // Every STAND/secret knob is passed through to the JVM running the tests
-    listOf("STAND", "DB_PASSWORD", "SSH_PASSWORD").forEach { key ->
+    // Runtime test options are passed through to the JVM running the tests
+    listOf("STAND", "DB_PASSWORD", "SSH_PASSWORD", "test.seed").forEach { key ->
         (System.getProperty(key) ?: System.getenv(key))?.let { systemProperty(key, it) }
     }
     testLogging {

@@ -18,6 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Feature("Hotel DB")
 class SeededBookingsTest {
 
+    private static final LocalDate FIXED_CHECKIN = LocalDate.of(2040, 6, 15);
+
     @Test
     @DisplayName("Seeded schema contains the expected bookings")
     void seededBookingsArePresent(DbSteps db) {
@@ -32,8 +34,8 @@ class SeededBookingsTest {
                 .roomId(1)
                 .guestFirstName("Tunnel")
                 .guestLastName("Tester")
-                .checkin(LocalDate.now().plusDays(1))
-                .checkout(LocalDate.now().plusDays(3))
+                .checkin(FIXED_CHECKIN)
+                .checkout(FIXED_CHECKIN.plusDays(2))
                 .depositPaid(true)
                 .build());
         assertThat(inserted.getGuestLastName()).isEqualTo("Tester");

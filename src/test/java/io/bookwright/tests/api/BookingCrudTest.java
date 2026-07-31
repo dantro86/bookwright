@@ -10,7 +10,7 @@ import io.bookwright.junit.Preconditions;
 import io.bookwright.junit.TestStore;
 import io.bookwright.junit.WithAuthSession;
 import io.bookwright.steps.ApiSteps;
-import io.bookwright.util.BookingFactory;
+import io.bookwright.util.TestData;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +26,8 @@ class BookingCrudTest {
 
     @Test
     @DisplayName("Booking can be created and read back")
-    void bookingCanBeCreated(ApiSteps api) {
-        Booking booking = BookingFactory.random();
+    void bookingCanBeCreated(ApiSteps api, TestData data) {
+        Booking booking = data.booking();
         CreatedBooking created = api.bookings().create(booking);
         api.bookings().assertBookingMatches(created.getBookingid(), booking);
     }
@@ -36,9 +36,9 @@ class BookingCrudTest {
     @WithAuthSession
     @Preconditions({BOOKING_EXISTS})
     @DisplayName("Booking can be updated")
-    void bookingCanBeUpdated(ApiSteps api, TestStore store) {
+    void bookingCanBeUpdated(ApiSteps api, TestStore store, TestData data) {
         CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
-        Booking updated = BookingFactory.random();
+        Booking updated = data.booking();
         api.bookings().update(existing.getBookingid(), updated, store.authSession());
         api.bookings().assertBookingMatches(existing.getBookingid(), updated);
     }
