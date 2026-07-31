@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.bookwright"
-version = "1.0-SNAPSHOT"
+version = providers.gradleProperty("projectVersion").get()
 
 object Versions {
     const val JUNIT = "5.13.4"
@@ -79,6 +79,7 @@ allure {
 }
 
 tasks.test {
+    dependsOn("validateVersion")
     useJUnitPlatform {
         val includeTags = System.getProperty("includeTags")
         val excludeTags = System.getProperty("excludeTags")
@@ -92,5 +93,36 @@ tasks.test {
     testLogging {
         events("passed", "failed", "skipped")
         showStandardStreams = System.getProperty("verbose") != null
+    }
+}
+
+tasks.register("validateVersion") {
+    group = "verification"
+    description = "Checks that projectVersion is valid SemVer and matches a release tag when present."
+
+    doLast {
+        val projectVersion = project.version.toString()
+        val semVer = Regex(
+            """^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"""
+        )
+        check(semVer.matches(projectVersion)) {
+            "projectVersion '$projectVersion' is not valid Semantic Versioning"
+        }
+
+        val releaseTag = System.getenv("GITHUB_REF_NAME")
+            ?.takeIf { System.getenv("GITHUB_REF_TYPE") == "tag" }
+        if (releaseTag != null) {
+            check(releaseTag == "v$projectVersion") {
+                "Release tag '$releaseTag' does not match projectVersion '$projectVersion' (expected v$projectVersion)"
+            }
+        }
+    }
+}
+
+tasks.register("printVersion") {
+    group = "help"
+    description = "Prints the current bookwright version."
+    doLast {
+        println(project.version)
     }
 }

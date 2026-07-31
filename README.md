@@ -85,6 +85,17 @@ allure serve build/allure-results
 Headed browser: `./gradlew test -Dui.headless=false --tests "io.bookwright.tests.ui.*"`
 (any config key can be overridden the same way — system properties beat the stand file).
 
+## Versioning
+
+bookwright follows [Semantic Versioning](https://semver.org/). The current version has a single source of
+truth in `gradle.properties`; `./gradlew printVersion` prints it and `./gradlew validateVersion` verifies it.
+Release notes are maintained in [CHANGELOG.md](CHANGELOG.md), and accepted improvements are tracked in
+[ROADMAP.md](ROADMAP.md).
+
+Releases are tag-driven. After updating `projectVersion` and moving entries from `Unreleased` to a dated
+version in the changelog, push `v<projectVersion>`; CI verifies the tag, runs the full local stand, and
+creates the GitHub Release from that changelog section.
+
 ## Layout
 
 ```
