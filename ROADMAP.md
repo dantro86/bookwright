@@ -8,7 +8,7 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 - [x] Add a Keep a Changelog changelog.
 - [x] Validate the version and release tag in Gradle.
 - [x] Add an automated, tag-driven GitHub Release workflow.
-- [ ] Create the initial `v1.0.0` tag and GitHub Release.
+- [x] Create the initial `v1.0.0` tag and GitHub Release.
 
 ## 1. Correctness and lifecycle
 

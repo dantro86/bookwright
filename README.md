@@ -6,6 +6,7 @@
 ![Playwright](https://img.shields.io/badge/Playwright-1.53-2EAD33?logo=playwright)
 ![Retrofit](https://img.shields.io/badge/Retrofit-3.0-48B983)
 ![Allure](https://img.shields.io/badge/Allure-2.29-FA6C0E)
+![GitHub Release](https://img.shields.io/github/v/release/dantro86/bookwright?sort=semver)
 ![tests](https://github.com/dantro86/bookwright/actions/workflows/tests.yml/badge.svg)
 
 Example Java test-automation framework: API + UI + DB-over-SSH in one lean project.

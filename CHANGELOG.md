@@ -7,6 +7,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed
+
+- Added a dynamic GitHub Release badge and marked the initial release milestone complete.
+
 ### Planned
 
 - See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
