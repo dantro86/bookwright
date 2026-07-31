@@ -5,7 +5,10 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.Tracing;
+import com.microsoft.playwright.options.ViewportSize;
 import io.bookwright.config.Configs;
+import java.nio.file.Path;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -50,26 +53,74 @@ public final class BrowserManager {
         }
     }
 
+    private static final class TestContext {
+        private final BrowserContext context;
+        private final Page page;
+        private final UiDiagnostics diagnostics;
+        private boolean tracing;
+
+        private TestContext(BrowserContext context, Page page, UiDiagnostics diagnostics) {
+            this.context = context;
+            this.page = page;
+            this.diagnostics = diagnostics;
+            this.tracing = true;
+        }
+
+        private void stopTrace(Path path) {
+            if (!tracing) {
+                return;
+            }
+            context.tracing().stop(new Tracing.StopOptions().setPath(path));
+            tracing = false;
+        }
+
+        private void discardTrace() {
+            if (!tracing) {
+                return;
+            }
+            context.tracing().stop();
+            tracing = false;
+        }
+    }
+
     private static final ThreadLocal<Session> SESSION = new ThreadLocal<>();
-    private static final ThreadLocal<BrowserContext> CONTEXT = new ThreadLocal<>();
-    private static final ThreadLocal<Page> PAGE = new ThreadLocal<>();
+    private static final ThreadLocal<TestContext> TEST_CONTEXT = new ThreadLocal<>();
 
     private BrowserManager() {
     }
 
     public static Page page() {
-        if (PAGE.get() == null) {
+        if (TEST_CONTEXT.get() == null) {
             BrowserContext context = browser().newContext(new Browser.NewContextOptions()
                     .setViewportSize(1920, 1080));
-            CONTEXT.set(context);
-            PAGE.set(context.newPage());
+            context.tracing().start(new Tracing.StartOptions()
+                    .setScreenshots(true)
+                    .setSnapshots(true)
+                    .setSources(true));
+            Page page = context.newPage();
+            UiDiagnostics diagnostics = new UiDiagnostics();
+            bindDiagnostics(page, diagnostics);
+            TEST_CONTEXT.set(new TestContext(context, page, diagnostics));
         }
-        return PAGE.get();
+        return TEST_CONTEXT.get().page;
     }
 
     /** The page of the currently running test on this thread, or null if none. */
     public static Page activePageOrNull() {
-        return PAGE.get();
+        TestContext current = TEST_CONTEXT.get();
+        return current == null ? null : current.page;
+    }
+
+    public static String diagnosticsReport() {
+        TestContext current = requiredTestContext();
+        ViewportSize viewport = current.page.viewportSize();
+        int width = viewport == null ? 0 : viewport.width;
+        int height = viewport == null ? 0 : viewport.height;
+        return current.diagnostics.report(current.page.url(), width, height);
+    }
+
+    public static void saveTrace(Path path) {
+        requiredTestContext().stopTrace(path);
     }
 
     /** Captures the current thread's browser session for class-store cleanup. */
@@ -79,20 +130,43 @@ public final class BrowserManager {
     }
 
     public static void closeContext() {
-        BrowserContext context = CONTEXT.get();
-        if (context != null) {
+        TestContext current = TEST_CONTEXT.get();
+        if (current != null) {
             try {
-                context.close();
+                current.discardTrace();
+            } catch (RuntimeException e) {
+                log.warn("Failed to stop Playwright trace: {}", e.getMessage());
+            }
+            try {
+                current.context.close();
             } catch (RuntimeException e) {
                 log.warn("Failed to close browser context: {}", e.getMessage());
             }
         }
-        CONTEXT.remove();
-        PAGE.remove();
+        TEST_CONTEXT.remove();
     }
 
     private static Browser browser() {
         return session().browser();
+    }
+
+    private static TestContext requiredTestContext() {
+        TestContext current = TEST_CONTEXT.get();
+        if (current == null) {
+            throw new IllegalStateException("No active Playwright test context");
+        }
+        return current;
+    }
+
+    private static void bindDiagnostics(Page page, UiDiagnostics diagnostics) {
+        page.onConsoleMessage(message -> {
+            if ("error".equalsIgnoreCase(message.type())) {
+                diagnostics.recordConsoleError(message.text(), message.location());
+            }
+        });
+        page.onPageError(diagnostics::recordPageError);
+        page.onRequestFailed(request -> diagnostics.recordFailedRequest(
+                request.method(), request.url(), request.resourceType(), request.failure()));
     }
 
     private static Session session() {

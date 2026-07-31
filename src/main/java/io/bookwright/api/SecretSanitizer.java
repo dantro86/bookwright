@@ -38,6 +38,14 @@ public final class SecretSanitizer {
         return safe.build().toString();
     }
 
+    public static String url(String url) {
+        try {
+            return url(HttpUrl.get(url));
+        } catch (IllegalArgumentException e) {
+            return "[URL OMITTED]";
+        }
+    }
+
     public static String headers(Headers headers) {
         if (headers.size() == 0) {
             return "<none>";

@@ -44,8 +44,8 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   `TeardownExtension` drains it after each test. `teardown.failOnError` controls whether cleanup failures
   fail an otherwise successful test; a primary test failure is never replaced.
 - **Extensions** — auto-registered via `META-INF/services` + `junit-platform.properties`
-  (autodetection, parallel classes, fixed parallelism 4). `ScreenshotOnFailureExtension` attaches
-  a screenshot + page HTML to Allure when a UI test fails.
+  (autodetection, parallel classes, fixed parallelism 4). `UiArtifactsOnFailureExtension` attaches
+  a screenshot, page HTML, Playwright trace, and browser diagnostics when a UI test fails.
 - **Config** — Owner interfaces with MERGE policy: system properties > env vars >
   `stands/${STAND}/stand.properties`. Switch stands with `-DSTAND=local` (default `prod`).
   No secrets in the repo: local demo passwords are documented non-secrets, real ones come from env
@@ -60,6 +60,9 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 - **Safe HTTP reporting** — one interceptor produces sanitized logs and Allure attachments. Sensitive
   headers, query parameters, JSON fields, and form fields are redacted; unknown body formats are omitted.
   The rationale and trade-offs are documented in [ADR 0001](docs/adr/0001-safe-http-reporting.md).
+- **UI failure diagnostics** — every UI test gets an isolated tracing session and bounded event capture
+  for console errors, page errors, and failed requests. Failure artifacts include the current URL and
+  viewport; successful-test traces are discarded. See [ADR 0002](docs/adr/0002-ui-failure-artifacts.md).
 - **Tags** — `@Smoke`, `@Regression`, `@Api`, `@Ui`, `@Db` wrap JUnit `@Tag`;
   `@OwnerDanil` wraps Allure `@Owner`.
 

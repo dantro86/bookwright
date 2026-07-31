@@ -10,12 +10,15 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Added
 
 - Added safe HTTP request/response reporting with redaction tests and an architecture decision record.
+- Added Playwright traces and bounded browser-event diagnostics to failed UI test artifacts.
+- Added UI diagnostics self-tests and an architecture decision record for artifact lifecycle and security.
 
 ### Changed
 
 - Expanded the author profile to document the production, leadership, and AI-first quality engineering experience behind bookwright.
 - Replaced raw OkHttp body logging and `AllureOkHttp3` attachments with sanitized diagnostics.
 - Protected authentication values in Allure step parameters, API exceptions, and object string representations.
+- Replaced screenshot-only UI failure handling with independent screenshot, HTML, diagnostics, and trace capture.
 
 ### Planned
 
