@@ -7,6 +7,13 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Planned
+
+- See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
+- Add managed new/existing user fixtures and API-authenticated Playwright contexts for UI scenarios.
+
+## [1.3.0] - 2026-08-01
+
 ### Added
 
 - Added a documented framework verification matrix and self-tests for configuration, preconditions, JUnit Store isolation, waits, UI artifact isolation, and browser resource closure.
@@ -30,11 +37,6 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Removed demo DB and SSH credentials from the public `prod` stand.
 - Upgraded GitHub Actions to Node.js 24-based major versions where available.
 - Established Google Java Format as the repository-wide source baseline.
-
-### Planned
-
-- See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
-- Add managed new/existing user fixtures and API-authenticated Playwright contexts for UI scenarios.
 
 ## [1.2.0] - 2026-07-31
 
@@ -90,7 +92,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - MIT license, project documentation, and author/contact information.
 - Semantic Versioning, a validated single version source, Keep a Changelog, and tag-driven GitHub Releases.
 
-[Unreleased]: https://github.com/dantro86/bookwright/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/dantro86/bookwright/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/dantro86/bookwright/releases/tag/v1.3.0
 [1.2.0]: https://github.com/dantro86/bookwright/releases/tag/v1.2.0
 [1.1.0]: https://github.com/dantro86/bookwright/releases/tag/v1.1.0
 [1.0.0]: https://github.com/dantro86/bookwright/releases/tag/v1.0.0
