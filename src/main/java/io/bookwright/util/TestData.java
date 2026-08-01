@@ -2,6 +2,7 @@ package io.bookwright.util;
 
 import io.bookwright.api.model.Booking;
 import io.bookwright.api.model.LocalBooking;
+import io.bookwright.api.model.UserRegistration;
 import java.util.SplittableRandom;
 
 /**
@@ -37,6 +38,14 @@ public final class TestData {
         .checkout(booking.getBookingdates().getCheckout())
         .depositPaid(booking.getDepositpaid())
         .build();
+  }
+
+  public UserRegistration user() {
+    String suffix = Long.toUnsignedString(testSeed, 36);
+    return new UserRegistration(
+        "new.%s@bookwright.dev".formatted(suffix),
+        "Bw!%sAa9".formatted(suffix),
+        "New User %s".formatted(suffix.substring(0, Math.min(8, suffix.length()))));
   }
 
   public long runSeed() {

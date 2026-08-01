@@ -18,6 +18,12 @@ The local Java booking application belongs to the opt-in Compose `integrated` pr
 for `integrationTest` and the complete `test` task, then discovers and forwards its random host port just like the
 restful-booker and SSH ports. Focused API and DB tasks skip the application image build.
 
+The integrated application also owns the demo user lifecycle. At startup it creates one configured existing user
+with a PBKDF2 password hash. Tests may register isolated users through `POST /api/users`, obtain one-hour sessions
+through `POST /api/auth/sessions`, and delete their own users through an authenticated API call. Session tokens are
+stored only as SHA-256 hashes. The protected `/app/bookings` page accepts the same HTTP-only session cookie that the
+fixture injects into Playwright.
+
 Local passwords are published demo values. The validator permits this profile only when all of these conditions
 hold: `STAND=local`, `ssh.auth.mode=PASSWORD`, host-key checking is disabled, and the SSH host is loopback.
 

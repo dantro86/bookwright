@@ -111,7 +111,7 @@ jobs:
           retention-days: 14
 
   integration:
-    name: API to DB integration
+    name: Integrated application
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -120,7 +120,7 @@ jobs:
           distribution: temurin
           java-version: 21
       - uses: gradle/actions/setup-gradle@v6
-      - name: Run the local booking system across API and DB boundaries
+      - name: Run API, UI, user-fixture, and DB cross-layer scenarios
         run: ./scripts/run-local-tests.sh integrationTest
       - name: Upload integration test results
         if: always()
@@ -151,7 +151,7 @@ jobs:
             "API" "$API_RESULT" \
             "UI" "$UI_RESULT" \
             "DB over SSH" "$DB_SSH_RESULT" \
-            "API to DB" "$INTEGRATION_RESULT"
+            "Integrated system" "$INTEGRATION_RESULT"
           test "$QUALITY_RESULT" = success
           test "$FRAMEWORK_RESULT" = success
           test "$API_RESULT" = success

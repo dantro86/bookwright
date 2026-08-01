@@ -51,6 +51,17 @@ class TestSeedsTest {
   }
 
   @Test
+  void newUsersAreReproducibleAndUniqueByTestIdentity() {
+    TestData first = data(RUN_SEED, "firstUserTest");
+    TestData replay = data(RUN_SEED, "firstUserTest");
+    TestData second = data(RUN_SEED, "secondUserTest");
+
+    assertThat(first.user()).isEqualTo(replay.user());
+    assertThat(first.user().email()).isNotEqualTo(second.user().email());
+    assertThat(first.user().password()).hasSizeGreaterThanOrEqualTo(10);
+  }
+
+  @Test
   void parallelSchedulingDoesNotChangePerTestData() throws Exception {
     List<String> testIds = List.of("test-a", "test-b", "test-c", "test-d");
     List<Booking> expected = testIds.stream().map(id -> data(RUN_SEED, id).booking()).toList();

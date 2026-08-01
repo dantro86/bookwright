@@ -12,15 +12,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Added a minimal Java booking application backed by the same private MySQL service used by database tests.
 - Added an API → DB-over-SSH verification → API cleanup scenario with deterministic data and LIFO fallback cleanup.
 - Added an independent integration quality gate and merged its results into the published Allure report.
+- Added `NEW` and `EXISTING` user fixtures with typed, secret-safe credentials, profiles, and API sessions.
+- Added local user registration, PBKDF2 password storage, hashed session tokens, authenticated cleanup, and a protected UI page.
+- Added Playwright session-cookie injection and concurrent integration scenarios for new, existing, missing, and rejected sessions.
 
 ### Changed
 
 - Extended the isolated local launcher with an opt-in `integrated` Compose profile and dynamically discovered application port.
+- Removed form submission from unrelated local-application scenarios; Sauce Demo examples retain it because the public target exposes no supported authentication API.
 
 ### Planned
 
 - See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
-- Add managed new/existing user fixtures and API-authenticated Playwright contexts for UI scenarios.
 
 ## [1.3.0] - 2026-08-01
 

@@ -9,6 +9,7 @@ diagnostic, and failure-handling contracts that ordinary API or UI tests may exe
 | No-global-retry policy and explicit transient polling | `RetrofitFactoryTest`, `CallsTest` |
 | HTTP secret redaction and fail-closed body handling | `SafeHttpReportingInterceptorTest` |
 | Explicit auth-session safety | `AuthSessionTest` |
+| Typed user credentials/session redaction | `UserSessionTest` |
 | Configuration source order, overrides, and defaults | `MainConfigTest` |
 | Local-only password SSH and strict private-key profiles | `InfrastructureConfigValidatorTest` |
 | Precondition order and method-store handoff | `PreconditionProviderTest` |
@@ -17,7 +18,7 @@ diagnostic, and failure-handling contracts that ordinary API or UI tests may exe
 | LIFO teardown and error policy | `TeardownExtensionTest` |
 | Concurrent auth, generated-data, and teardown isolation | `ParallelStateIsolationTest` |
 | Awaitility transient-failure policy and diagnostics | `WaitsTest` |
-| Deterministic and parallel-independent test data | `TestSeedsTest` |
+| Deterministic and parallel-independent booking/user data | `TestSeedsTest` |
 | Browser-before-Playwright resource closure | `BrowserManagerTest` |
 | Bounded and sanitized browser diagnostics | `UiDiagnosticsTest` |
 | Independent capture of UI failure artifacts | `UiArtifactsOnFailureExtensionTest` |

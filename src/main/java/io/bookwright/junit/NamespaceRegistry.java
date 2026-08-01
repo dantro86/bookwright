@@ -15,6 +15,7 @@ public class NamespaceRegistry {
   public static final String BOOKING_KEY = "createdBooking";
   public static final String TEARDOWN_STORAGE_KEY = "teardownStorage";
   public static final String TEST_DATA_KEY = "testData";
+  public static final String TEST_USER_KEY = "testUser";
 
   public ExtensionContext.Store classStore(ExtensionContext context) {
     Class<?> testClass = context.getRequiredTestClass();

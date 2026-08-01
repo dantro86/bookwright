@@ -23,6 +23,14 @@ public interface MainConfig extends Config {
   @DefaultValue("http://localhost:3002")
   String localBookingBaseUrl();
 
+  @Key("local.user.email")
+  @DefaultValue("existing.user@bookwright.dev")
+  String localExistingUserEmail();
+
+  @Key("local.user.password")
+  @DefaultValue("existing_demo_password")
+  String localExistingUserPassword();
+
   @Key("ui.base.url")
   String uiBaseUrl();
 

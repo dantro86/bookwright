@@ -50,11 +50,11 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 
 - [x] Add a small local booking application backed by the same MySQL database.
 - [x] Demonstrate an end-to-end API → DB verification → cleanup scenario through the SSH tunnel.
-- [ ] Add explicit user-fixture modes for a newly registered user and a configured existing user.
-- [ ] Introduce user lifecycle management: create unique users through the API, expose typed credentials/session data, and register cleanup where the environment permits it.
-- [ ] Authenticate UI fixtures through the API and inject cookies, local storage, or Playwright storage state into a fresh browser context.
-- [ ] Keep form-based login only for scenarios that explicitly test authentication UI; unrelated UI tests must start from an authenticated browser state.
-- [ ] Verify fresh-user and existing-user isolation under parallel execution, including expired or rejected API sessions.
+- [x] Add explicit user-fixture modes for a newly registered user and a configured existing user.
+- [x] Introduce user lifecycle management: create unique users through the API, expose typed credentials/session data, and register cleanup where the environment permits it.
+- [x] Authenticate UI fixtures through the API and inject cookies, local storage, or Playwright storage state into a fresh browser context.
+- [x] Keep form-based login out of unrelated local-application scenarios; the external Sauce Demo examples retain it because that demo exposes no supported authentication API.
+- [x] Verify fresh-user and existing-user isolation under parallel execution, including missing or rejected API sessions.
 - [ ] Keep the public restful-booker profile as a lightweight external API example.
 
 ## 6. Advanced learning examples

@@ -1,27 +1,19 @@
 package io.bookwright.localapp;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.sql.DataSource;
 
-final class BookingRepository implements AutoCloseable {
+final class BookingRepository {
 
-  private final HikariDataSource dataSource;
+  private final DataSource dataSource;
 
-  BookingRepository(DatabaseConfig config) {
-    HikariConfig hikari = new HikariConfig();
-    hikari.setJdbcUrl(
-        "jdbc:mysql://%s:%d/%s".formatted(config.host(), config.port(), config.name()));
-    hikari.setUsername(config.user());
-    hikari.setPassword(config.password());
-    hikari.setMaximumPoolSize(4);
-    hikari.setConnectionTimeout(10_000);
-    dataSource = new HikariDataSource(hikari);
+  BookingRepository(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
   boolean isReady() {
@@ -89,10 +81,5 @@ final class BookingRepository implements AutoCloseable {
         result.getDate("checkin").toLocalDate(),
         result.getDate("checkout").toLocalDate(),
         result.getBoolean("deposit_paid"));
-  }
-
-  @Override
-  public void close() {
-    dataSource.close();
   }
 }

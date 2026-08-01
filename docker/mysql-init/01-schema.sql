@@ -17,6 +17,21 @@ CREATE TABLE booking (
     CONSTRAINT fk_booking_room FOREIGN KEY (room_id) REFERENCES room (id)
 );
 
+CREATE TABLE app_user (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(190) NOT NULL UNIQUE,
+    display_name VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_session (
+    token_hash CHAR(64) PRIMARY KEY,
+    user_id INT NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    CONSTRAINT fk_session_user FOREIGN KEY (user_id) REFERENCES app_user (id) ON DELETE CASCADE
+);
+
 INSERT INTO room (name, type, price) VALUES
     ('101', 'single', 80.00),
     ('102', 'double', 120.00),

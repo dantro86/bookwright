@@ -107,7 +107,7 @@ fun Test.configureBookwrightTestRuntime() {
     listOf("STAND", "DB_PASSWORD", "SSH_PASSWORD", "test.seed").forEach { key ->
         (System.getProperty(key) ?: System.getenv(key))?.let { systemProperty(key, it) }
     }
-    val configPrefixes = listOf("api.", "ui.", "db.", "ssh.", "teardown.", "local.booking.")
+    val configPrefixes = listOf("api.", "ui.", "db.", "ssh.", "teardown.", "local.booking.", "local.user.")
     System.getProperties().stringPropertyNames()
         .filter { key -> configPrefixes.any(key::startsWith) }
         .forEach { key -> systemProperty(key, System.getProperty(key)) }

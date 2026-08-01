@@ -32,4 +32,8 @@ public class TestStore {
   public AuthSession authSession() {
     return get(NamespaceRegistry.AUTH_SESSION_KEY, AuthSession.class);
   }
+
+  public TestUser testUser() {
+    return get(NamespaceRegistry.TEST_USER_KEY, TestUser.class);
+  }
 }

@@ -29,7 +29,7 @@ public class StepsParameterResolver implements ParameterResolver {
   public boolean supportsParameter(
       ParameterContext parameterContext, ExtensionContext extensionContext) {
     Class<?> type = parameterContext.getParameter().getType();
-    return type == TestStore.class || SUPPORTED.contains(type);
+    return type == TestStore.class || type == TestUser.class || SUPPORTED.contains(type);
   }
 
   @Override
@@ -38,6 +38,15 @@ public class StepsParameterResolver implements ParameterResolver {
     Class<?> type = parameterContext.getParameter().getType();
     if (type == TestStore.class) {
       return new TestStore(extensionContext);
+    }
+    if (type == TestUser.class) {
+      TestUser user =
+          NamespaceRegistry.methodStore(extensionContext)
+              .get(NamespaceRegistry.TEST_USER_KEY, TestUser.class);
+      if (user == null) {
+        throw new IllegalStateException("TestUser requires @UserFixture on the test or class");
+      }
+      return user;
     }
     if (type == UiSteps.class) {
       // Fresh browser context per UI test; closed when the method store closes
@@ -70,7 +79,7 @@ public class StepsParameterResolver implements ParameterResolver {
       return new DbModule(TeardownStorage.getOrCreate(context));
     }
     if (stepsType == UiSteps.class) {
-      return new UiModule();
+      return new UiModule(context);
     }
     throw new IllegalArgumentException("Unsupported steps facade: " + stepsType.getName());
   }

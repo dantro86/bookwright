@@ -6,7 +6,10 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.Tracing;
+import com.microsoft.playwright.options.Cookie;
+import com.microsoft.playwright.options.SameSiteAttribute;
 import com.microsoft.playwright.options.ViewportSize;
+import io.bookwright.api.model.UserSession;
 import io.bookwright.config.Configs;
 import java.nio.file.Path;
 import lombok.extern.slf4j.Slf4j;
@@ -96,9 +99,28 @@ public final class BrowserManager {
   }
 
   public static Page page() {
+    return page(null, null);
+  }
+
+  /** Creates an isolated context authenticated through an API-issued session cookie. */
+  public static Page page(UserSession userSession, String applicationBaseUrl) {
     if (TEST_CONTEXT.get() == null) {
       BrowserContext context =
           browser().newContext(new Browser.NewContextOptions().setViewportSize(1920, 1080));
+      if (userSession != null) {
+        if (applicationBaseUrl == null || applicationBaseUrl.isBlank()) {
+          context.close();
+          throw new IllegalArgumentException(
+              "Application base URL is required for an authenticated context");
+        }
+        context.addCookies(
+            java.util.List.of(
+                new Cookie(UserSession.COOKIE_NAME, userSession.accessToken())
+                    .setUrl(applicationBaseUrl)
+                    .setHttpOnly(true)
+                    .setSameSite(SameSiteAttribute.LAX)
+                    .setExpires(userSession.expiresAt().getEpochSecond())));
+      }
       context
           .tracing()
           .start(

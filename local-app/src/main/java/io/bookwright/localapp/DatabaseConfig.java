@@ -1,6 +1,14 @@
 package io.bookwright.localapp;
 
-record DatabaseConfig(String host, int port, String name, String user, String password) {
+record DatabaseConfig(
+    String host,
+    int port,
+    String name,
+    String user,
+    String password,
+    String existingUserEmail,
+    String existingUserPassword,
+    String existingUserName) {
 
   static DatabaseConfig fromEnvironment() {
     return new DatabaseConfig(
@@ -8,7 +16,10 @@ record DatabaseConfig(String host, int port, String name, String user, String pa
         Integer.parseInt(environment("DB_PORT", "3306")),
         environment("DB_NAME", "hotel"),
         environment("DB_USER", "qa"),
-        requiredEnvironment("DB_PASSWORD"));
+        requiredEnvironment("DB_PASSWORD"),
+        environment("EXISTING_USER_EMAIL", "existing.user@bookwright.dev"),
+        environment("EXISTING_USER_PASSWORD", "existing_demo_password"),
+        environment("EXISTING_USER_NAME", "Existing User"));
   }
 
   private static String environment(String key, String defaultValue) {

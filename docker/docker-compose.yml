@@ -61,6 +61,9 @@ services:
       DB_NAME: hotel
       DB_USER: qa
       DB_PASSWORD: ${DB_PASSWORD:-qa_local}
+      EXISTING_USER_EMAIL: existing.user@bookwright.dev
+      EXISTING_USER_PASSWORD: existing_demo_password
+      EXISTING_USER_NAME: Existing User
     ports:
       - "127.0.0.1::8080"
     networks:

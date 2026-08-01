@@ -12,6 +12,9 @@ Public demo systems are useful for showing Retrofit and Playwright, but they can
 
 bookwright includes a small Java application in the `local-app` Gradle module. It uses the JDK HTTP server, Jackson, HikariCP, and JDBC rather than introducing a production web framework solely for the demo.
 
+The application later gained a deliberately small user/session boundary and protected HTML page so the framework
+can demonstrate API-authenticated browser fixtures. That decision is documented separately in [ADR 0010](0010-user-fixtures-and-api-authenticated-ui.md).
+
 The application and tests share one MySQL service on the private Compose network:
 
 1. Retrofit creates a booking through the application's HTTP API.

@@ -3,8 +3,10 @@ package io.bookwright.steps;
 import com.google.inject.Inject;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
 import io.bookwright.config.MainConfig;
+import io.bookwright.junit.TestUser;
 import io.bookwright.ui.CheckoutPage;
 import io.bookwright.ui.InventoryPage;
+import io.bookwright.ui.LocalBookingsPage;
 import io.bookwright.ui.LoginPage;
 import io.qameta.allure.Step;
 import java.util.List;
@@ -31,23 +33,48 @@ public class UiSteps {
   private final InventoryPage inventoryPage;
   private final CheckoutPage checkoutPage;
   private final MainConfig config;
+  private final LocalBookingsPage localBookingsPage;
 
   @Inject
   public UiSteps(
       LoginPage loginPage,
       InventoryPage inventoryPage,
       CheckoutPage checkoutPage,
+      LocalBookingsPage localBookingsPage,
       MainConfig config) {
     this.loginPage = loginPage;
     this.inventoryPage = inventoryPage;
     this.checkoutPage = checkoutPage;
+    this.localBookingsPage = localBookingsPage;
     this.config = config;
+  }
+
+  @Step("Open the local bookings UI as API-authenticated user {user.profile.email}")
+  public void openLocalBookingsAs(TestUser user) {
+    localBookingsPage.open();
+    PlaywrightAssertions.assertThat(localBookingsPage.title()).hasText("Bookings");
+    PlaywrightAssertions.assertThat(localBookingsPage.currentUser())
+        .hasText(user.profile().email());
+    PlaywrightAssertions.assertThat(localBookingsPage.welcomeMessage())
+        .hasText("Welcome, " + user.profile().displayName());
+  }
+
+  @Step("Open the local bookings UI without a session")
+  public void openLocalBookingsAndExpectAuthenticationRequired() {
+    localBookingsPage.open();
+    PlaywrightAssertions.assertThat(localBookingsPage.title()).hasText("Authentication required");
+    PlaywrightAssertions.assertThat(localBookingsPage.authenticationError())
+        .containsText("Session is missing, invalid, or expired");
   }
 
   @Step("Log in as the configured standard user")
   public void loginAsStandardUser() {
     loginPage.open();
     loginPage.login(config.uiUser(), config.uiPassword());
+    assertInventoryIsReady();
+  }
+
+  private void assertInventoryIsReady() {
     PlaywrightAssertions.assertThat(inventoryPage.title()).hasText("Products");
     PlaywrightAssertions.assertThat(inventoryPage.inventoryItems())
         .hasCount(DEFAULT_PRODUCT_ORDER.size());

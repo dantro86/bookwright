@@ -9,7 +9,7 @@ bookwright separates fast framework verification from product-system scenarios. 
 | API | `run-local-tests.sh apiTest` | Retrofit scenarios against the digest-pinned local API |
 | UI | `uiTest` | Playwright scenarios against Sauce Demo |
 | DB over SSH | `run-local-tests.sh dbTest` | JDBI scenarios through the local SSH bastion |
-| API to DB | `run-local-tests.sh integrationTest` | A real local API persists to MySQL, is verified through the SSH tunnel, and cleans up through the API |
+| Integrated application | `run-local-tests.sh integrationTest` | Real booking persistence plus `NEW`/`EXISTING` user fixtures and API-authenticated Playwright UI |
 
 Each test gate uploads an independent Allure result artifact. A successful `main` run merges those artifacts, restores the previous report history, generates one report, and publishes it to GitHub Pages.
 

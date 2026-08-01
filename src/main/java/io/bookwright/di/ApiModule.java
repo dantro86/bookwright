@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import io.bookwright.api.AuthApi;
 import io.bookwright.api.BookingApi;
 import io.bookwright.api.LocalBookingApi;
+import io.bookwright.api.LocalUserApi;
 import io.bookwright.api.RetrofitFactory;
 import io.bookwright.config.Configs;
 import io.bookwright.config.MainConfig;
@@ -49,5 +50,11 @@ public class ApiModule extends AbstractModule {
   @Singleton
   LocalBookingApi localBookingApi(MainConfig config) {
     return RetrofitFactory.create(config.localBookingBaseUrl()).create(LocalBookingApi.class);
+  }
+
+  @Provides
+  @Singleton
+  LocalUserApi localUserApi(MainConfig config) {
+    return RetrofitFactory.create(config.localBookingBaseUrl()).create(LocalUserApi.class);
   }
 }

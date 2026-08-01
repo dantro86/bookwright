@@ -41,8 +41,10 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 - **Preconditions** — `@Preconditions({BOOKING_EXISTS})` on a test: the `Precondition` enum holds named
   setup actions, `PreconditionProvider` runs them right before the test body (each as an Allure step)
   and shares created data with the test through the JUnit method-scoped store (`TestStore` parameter).
-- **Fixtures** — `@WithAuthSession` creates an explicit authentication value object before the test
-  (`store.authSession()`), which authorized API operations require.
+- **Fixtures** — `@WithAuthSession` creates an explicit authentication value object for restful-booker.
+  The integrated system adds `@UserFixture(NEW|EXISTING)`: a new user is registered through the API and
+  cleaned up automatically, while an existing user comes from Owner configuration. Tests receive one typed
+  `TestUser` containing redacted credentials, profile, and API-issued session.
 - **Teardown** — steps push a cleanup lambda into a per-test LIFO queue for every entity they create;
   `TeardownExtension` drains it after each test. `teardown.failOnError` controls whether cleanup failures
   fail an otherwise successful test; a primary test failure is never replaced.
@@ -65,6 +67,10 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   MySQL service. `ApiDatabaseBookingTest` creates and reads through Retrofit, verifies persistence through
   JDBI over SSH, deletes through the API, and confirms database cleanup. The application runs only under the
   Compose `integrated` profile; see [ADR 0009](docs/adr/0009-integrated-local-system.md).
+- **API-authenticated UI** — `UserFixtureExtension` obtains a real application session before Playwright creates
+  its per-test context. `BrowserManager` injects the HTTP-only session cookie, so unrelated UI scenarios open a
+  protected page without submitting a login form. Form login remains only in tests that exercise authentication UI;
+  see [ADR 0010](docs/adr/0010-user-fixtures-and-api-authenticated-ui.md).
 - **Waits** — UI relies on Playwright's auto-retrying assertions; async API states are polled with
   Awaitility via `Waits` (shared defaults + mandatory alias, composed fluently at the call site).
   Examples: `AuthApiSteps.waitUntilApiUp()` (infrastructure warm-up),
@@ -84,7 +90,7 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   button inside that card; no selector slug is derived from display text. Assertions verify complete
   product collections and cart → checkout → completion state transitions.
 - **Framework self-tests** — infrastructure contracts are verified independently from product scenarios:
-  configuration precedence, preconditions, JUnit Store isolation, teardown policy, waits, deterministic data,
+  configuration precedence, preconditions, typed user sessions, JUnit Store isolation, teardown policy, waits, deterministic data,
   HTTP edge cases, concurrent state/browser isolation, diagnostics, artifact isolation, and resource closure. See the
   [verification matrix](docs/framework-self-tests.md).
 - **Tags** — `@Smoke`, `@Regression`, `@Api`, `@Ui`, `@Db` wrap JUnit `@Tag`;
@@ -92,7 +98,7 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 
 ## Quality gates
 
-CI runs static quality, framework self-tests, API, UI, DB-over-SSH, and API-to-DB integration scenarios as independent gates.
+CI runs static quality, framework self-tests, API, UI, DB-over-SSH, and integrated application scenarios as independent gates.
 The final required status passes only when every gate succeeds. Their Allure results are then merged into one
 [history-enabled report](https://dantro86.github.io/bookwright/).
 
@@ -116,7 +122,7 @@ scope, and recommended branch-protection checks.
 # API tests against the digest-pinned local restful-booker
 ./scripts/run-local-tests.sh --tests "io.bookwright.tests.api.*"
 
-# local Java API -> MySQL verification over SSH -> API cleanup
+# local Java API -> MySQL verification, user fixtures, and API-authenticated UI
 ./scripts/run-local-tests.sh integrationTest
 
 # by tags
