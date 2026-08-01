@@ -48,8 +48,8 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 
 ## 5. Integrated local system
 
-- [ ] Add a small local booking application backed by the same MySQL database.
-- [ ] Demonstrate an end-to-end API → DB verification → cleanup scenario through the SSH tunnel.
+- [x] Add a small local booking application backed by the same MySQL database.
+- [x] Demonstrate an end-to-end API → DB verification → cleanup scenario through the SSH tunnel.
 - [ ] Add explicit user-fixture modes for a newly registered user and a configured existing user.
 - [ ] Introduce user lifecycle management: create unique users through the API, expose typed credentials/session data, and register cleanup where the environment permits it.
 - [ ] Authenticate UI fixtures through the API and inject cookies, local storage, or Playwright storage state into a fresh browser context.

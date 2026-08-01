@@ -26,6 +26,7 @@ Owner (config) · Awaitility · JDBI + HikariCP · JSch (SSH tunnel) · Lombok �
 | API   | [restful-booker](https://restful-booker.herokuapp.com) (or the dockerized copy on stand `local`) |
 | UI    | [saucedemo.com](https://www.saucedemo.com)                    |
 | DB    | Local MySQL from `docker/`, reachable **only** through an SSH tunnel via the bastion container |
+| Integrated | Local Java booking API backed by the same MySQL used by DB assertions |
 
 ## Architecture
 
@@ -60,6 +61,10 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   `run-local-tests.sh` creates an isolated Compose project, discovers dynamic API/SSH ports, and lets JSch reserve
   the tunnel port, so concurrent checkouts do not compete for fixed host ports. Configuration examples are in the
   [infrastructure profiles guide](docs/infrastructure.md).
+- **Cross-layer verification** — the `local-app` module exposes a real booking API backed by the same private
+  MySQL service. `ApiDatabaseBookingTest` creates and reads through Retrofit, verifies persistence through
+  JDBI over SSH, deletes through the API, and confirms database cleanup. The application runs only under the
+  Compose `integrated` profile; see [ADR 0009](docs/adr/0009-integrated-local-system.md).
 - **Waits** — UI relies on Playwright's auto-retrying assertions; async API states are polled with
   Awaitility via `Waits` (shared defaults + mandatory alias, composed fluently at the call site).
   Examples: `AuthApiSteps.waitUntilApiUp()` (infrastructure warm-up),
@@ -87,7 +92,7 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 
 ## Quality gates
 
-CI runs static quality, framework self-tests, API, UI, and DB-over-SSH scenarios as independent gates.
+CI runs static quality, framework self-tests, API, UI, DB-over-SSH, and API-to-DB integration scenarios as independent gates.
 The final required status passes only when every gate succeeds. Their Allure results are then merged into one
 [history-enabled report](https://dantro86.github.io/bookwright/).
 
@@ -110,6 +115,9 @@ scope, and recommended branch-protection checks.
 
 # API tests against the digest-pinned local restful-booker
 ./scripts/run-local-tests.sh --tests "io.bookwright.tests.api.*"
+
+# local Java API -> MySQL verification over SSH -> API cleanup
+./scripts/run-local-tests.sh integrationTest
 
 # by tags
 ./gradlew test -DincludeTags=smoke
@@ -160,7 +168,8 @@ src/main/java/io/bookwright/
 ├── teardown/     LIFO teardown queue + extension
 ├── ui/           BrowserManager + page objects (plain Playwright locators)
 └── util/         Calls, Waits, deterministic TestData and factories
-src/test/java/io/bookwright/{api,config,junit,teardown,ui,util,tests/{api,db,framework,ui}}/
+local-app/         minimal Java booking application backed by the shared MySQL
+src/test/java/io/bookwright/{api,config,junit,teardown,ui,util,tests/{api,db,framework,integration,ui}}/
 ```
 
 ## Author

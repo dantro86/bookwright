@@ -7,6 +7,16 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- Added a minimal Java booking application backed by the same private MySQL service used by database tests.
+- Added an API → DB-over-SSH verification → API cleanup scenario with deterministic data and LIFO fallback cleanup.
+- Added an independent integration quality gate and merged its results into the published Allure report.
+
+### Changed
+
+- Extended the isolated local launcher with an opt-in `integrated` Compose profile and dynamically discovered application port.
+
 ### Planned
 
 - See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.

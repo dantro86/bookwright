@@ -12,4 +12,6 @@ public class ApiSteps {
   @Inject private AuthApiSteps auth;
 
   @Inject private BookingApiSteps bookings;
+
+  @Inject private LocalBookingApiSteps localBookings;
 }

@@ -50,5 +50,30 @@ services:
       retries: 30
       start_period: 5s
 
+  local-booking-app:
+    profiles: ["integrated"]
+    build:
+      context: ..
+      dockerfile: docker/local-booking-app/Dockerfile
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: hotel
+      DB_USER: qa
+      DB_PASSWORD: ${DB_PASSWORD:-qa_local}
+    ports:
+      - "127.0.0.1::8080"
+    networks:
+      - private
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "java", "-cp", "/app/lib/*", "io.bookwright.localapp.HealthProbe"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
+
 networks:
   private:

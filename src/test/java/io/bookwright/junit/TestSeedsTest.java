@@ -42,6 +42,15 @@ class TestSeedsTest {
   }
 
   @Test
+  void localBookingsAreReproducibleAndReferenceSeededRooms() {
+    TestData first = data(RUN_SEED, "integratedBookingTest");
+    TestData replay = data(RUN_SEED, "integratedBookingTest");
+
+    assertThat(first.localBooking()).isEqualTo(replay.localBooking());
+    assertThat(first.localBooking().getRoomId()).isBetween(1, 5);
+  }
+
+  @Test
   void parallelSchedulingDoesNotChangePerTestData() throws Exception {
     List<String> testIds = List.of("test-a", "test-b", "test-c", "test-d");
     List<Booking> expected = testIds.stream().map(id -> data(RUN_SEED, id).booking()).toList();

@@ -88,6 +88,7 @@ allure {
 
 spotless {
     java {
+        target("src/**/*.java", "local-app/src/**/*.java")
         googleJavaFormat()
         removeUnusedImports()
         trimTrailingWhitespace()
@@ -106,7 +107,7 @@ fun Test.configureBookwrightTestRuntime() {
     listOf("STAND", "DB_PASSWORD", "SSH_PASSWORD", "test.seed").forEach { key ->
         (System.getProperty(key) ?: System.getenv(key))?.let { systemProperty(key, it) }
     }
-    val configPrefixes = listOf("api.", "ui.", "db.", "ssh.", "teardown.")
+    val configPrefixes = listOf("api.", "ui.", "db.", "ssh.", "teardown.", "local.booking.")
     System.getProperties().stringPropertyNames()
         .filter { key -> configPrefixes.any(key::startsWith) }
         .forEach { key -> systemProperty(key, System.getProperty(key)) }
@@ -159,6 +160,12 @@ tasks.register<Test>("dbTest") {
     group = "verification"
     description = "Runs database scenarios through the SSH tunnel."
     filter { includeTestsMatching("io.bookwright.tests.db.*") }
+}
+
+tasks.register<Test>("integrationTest") {
+    group = "verification"
+    description = "Runs cross-layer API-to-database scenarios against the integrated local system."
+    filter { includeTestsMatching("io.bookwright.tests.integration.*") }
 }
 
 val frameworkCoverageClasses = sourceSets.main.get().output.asFileTree.matching {

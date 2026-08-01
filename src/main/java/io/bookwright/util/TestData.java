@@ -1,6 +1,7 @@
 package io.bookwright.util;
 
 import io.bookwright.api.model.Booking;
+import io.bookwright.api.model.LocalBooking;
 import java.util.SplittableRandom;
 
 /**
@@ -23,6 +24,19 @@ public final class TestData {
 
   public Booking booking() {
     return bookings.next();
+  }
+
+  public LocalBooking localBooking() {
+    Booking booking = booking();
+    int roomId = (int) Math.floorMod(testSeed, 5) + 1;
+    return LocalBooking.builder()
+        .roomId(roomId)
+        .guestFirstName(booking.getFirstname())
+        .guestLastName(booking.getLastname())
+        .checkin(booking.getBookingdates().getCheckin())
+        .checkout(booking.getBookingdates().getCheckout())
+        .depositPaid(booking.getDepositpaid())
+        .build();
   }
 
   public long runSeed() {

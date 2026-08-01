@@ -7,11 +7,16 @@ Use the launcher instead of invoking Compose and Gradle separately:
 ```bash
 ./scripts/run-local-tests.sh
 ./scripts/run-local-tests.sh --tests "io.bookwright.tests.db.*"
+./scripts/run-local-tests.sh integrationTest
 ```
 
 The launcher creates a uniquely named Compose project, waits for every service health check, discovers the
 randomly published API and SSH ports, and forwards them to the Gradle test worker. JSch asks the operating system
 for a free local tunnel port. An EXIT trap removes containers, networks, and volumes on success or failure.
+
+The local Java booking application belongs to the opt-in Compose `integrated` profile. The launcher enables it
+for `integrationTest` and the complete `test` task, then discovers and forwards its random host port just like the
+restful-booker and SSH ports. Focused API and DB tasks skip the application image build.
 
 Local passwords are published demo values. The validator permits this profile only when all of these conditions
 hold: `STAND=local`, `ssh.auth.mode=PASSWORD`, host-key checking is disabled, and the SSH host is loopback.

@@ -110,10 +110,30 @@ jobs:
           path: build/allure-results
           retention-days: 14
 
+  integration:
+    name: API to DB integration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Run the local booking system across API and DB boundaries
+        run: ./scripts/run-local-tests.sh integrationTest
+      - name: Upload integration test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: allure-results-integration
+          path: build/allure-results
+          retention-days: 14
+
   quality-gate:
     name: Required quality gate
     if: always()
-    needs: [quality, framework, api, ui, db-ssh]
+    needs: [quality, framework, api, ui, db-ssh, integration]
     runs-on: ubuntu-latest
     steps:
       - name: Verify every gate passed
@@ -123,23 +143,26 @@ jobs:
           API_RESULT: ${{ needs.api.result }}
           UI_RESULT: ${{ needs.ui.result }}
           DB_SSH_RESULT: ${{ needs['db-ssh'].result }}
+          INTEGRATION_RESULT: ${{ needs.integration.result }}
         run: |
           printf '%-20s %s\n' \
             "Static quality" "$QUALITY_RESULT" \
             "Framework" "$FRAMEWORK_RESULT" \
             "API" "$API_RESULT" \
             "UI" "$UI_RESULT" \
-            "DB over SSH" "$DB_SSH_RESULT"
+            "DB over SSH" "$DB_SSH_RESULT" \
+            "API to DB" "$INTEGRATION_RESULT"
           test "$QUALITY_RESULT" = success
           test "$FRAMEWORK_RESULT" = success
           test "$API_RESULT" = success
           test "$UI_RESULT" = success
           test "$DB_SSH_RESULT" = success
+          test "$INTEGRATION_RESULT" = success
 
   allure-report:
     name: Build Allure report
     if: github.event_name != 'pull_request'
-    needs: [framework, api, ui, db-ssh]
+    needs: [framework, api, ui, db-ssh, integration]
     runs-on: ubuntu-latest
     permissions:
       contents: read

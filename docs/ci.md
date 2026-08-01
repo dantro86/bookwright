@@ -1,6 +1,6 @@
 # CI quality gates
 
-bookwright separates fast framework verification from product-system scenarios. The required GitHub status is `Required quality gate`, which succeeds only when all five inputs pass.
+bookwright separates fast framework verification from product-system scenarios. The required GitHub status is `Required quality gate`, which succeeds only when all six inputs pass.
 
 | Gate | Gradle command | Contract |
 |---|---|---|
@@ -9,6 +9,7 @@ bookwright separates fast framework verification from product-system scenarios. 
 | API | `run-local-tests.sh apiTest` | Retrofit scenarios against the digest-pinned local API |
 | UI | `uiTest` | Playwright scenarios against Sauce Demo |
 | DB over SSH | `run-local-tests.sh dbTest` | JDBI scenarios through the local SSH bastion |
+| API to DB | `run-local-tests.sh integrationTest` | A real local API persists to MySQL, is verified through the SSH tunnel, and cleans up through the API |
 
 Each test gate uploads an independent Allure result artifact. A successful `main` run merges those artifacts, restores the previous report history, generates one report, and publishes it to GitHub Pages.
 

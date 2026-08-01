@@ -19,6 +19,10 @@ public interface MainConfig extends Config {
   @Key("api.password")
   String apiPassword();
 
+  @Key("local.booking.base.url")
+  @DefaultValue("http://localhost:3002")
+  String localBookingBaseUrl();
+
   @Key("ui.base.url")
   String uiBaseUrl();
 
