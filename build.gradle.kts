@@ -5,10 +5,10 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 plugins {
     java
     jacoco
-    id("io.qameta.allure") version "2.12.0"
-    id("io.freefair.lombok") version "8.13"
-    id("com.diffplug.spotless") version "8.8.0"
-    id("com.github.ben-manes.versions") version "0.54.0"
+    id("io.qameta.allure") version "4.1.0"
+    id("io.freefair.lombok") version "9.5.0"
+    id("com.diffplug.spotless") version "8.9.0"
+    id("com.github.ben-manes.versions") version "0.58.0"
 }
 
 group = "io.bookwright"
