@@ -14,12 +14,12 @@ jobs:
     name: Static quality
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@v6.2.0
       - name: Validate source and build configuration
         run: ./gradlew spotlessCheck validateVersion compileJava compileTestJava
 
@@ -27,12 +27,12 @@ jobs:
     name: Framework self-tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@v6.2.0
       - name: Run framework tests and coverage gate
         run: ./gradlew frameworkJacocoVerification
       - name: Upload framework test results
@@ -54,12 +54,12 @@ jobs:
     name: API scenarios
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@v6.2.0
       - name: Run API tests against the local stand
         run: ./scripts/run-local-tests.sh apiTest
       - name: Upload API test results
@@ -74,12 +74,12 @@ jobs:
     name: UI scenarios
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@v6.2.0
       - name: Run Playwright tests
         run: ./gradlew uiTest
       - name: Upload UI test results
@@ -94,12 +94,12 @@ jobs:
     name: DB over SSH scenarios
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@v6.2.0
       - name: Run DB tests through the local SSH bastion
         run: ./scripts/run-local-tests.sh dbTest
       - name: Upload DB/SSH test results
@@ -114,12 +114,12 @@ jobs:
     name: Integrated application
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v6
+      - uses: gradle/actions/setup-gradle@v6.2.0
       - name: Run API, UI, user-fixture, and DB cross-layer scenarios
         run: ./scripts/run-local-tests.sh integrationTest
       - name: Upload integration test results
@@ -167,13 +167,13 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v6
-      - uses: actions/download-artifact@v7
+      - uses: gradle/actions/setup-gradle@v6.2.0
+      - uses: actions/download-artifact@v8
         with:
           pattern: allure-results-*
           path: build/allure-results
@@ -196,7 +196,7 @@ jobs:
           path: build/reports/allure-report/allureReport
           retention-days: 30
       - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: build/reports/allure-report/allureReport
 
@@ -214,4 +214,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
