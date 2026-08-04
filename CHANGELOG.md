@@ -9,17 +9,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
-- Added a minimal Java booking application backed by the same private MySQL service used by database tests.
-- Added an API → DB-over-SSH verification → API cleanup scenario with deterministic data and LIFO fallback cleanup.
-- Added an independent integration quality gate and merged its results into the published Allure report.
-- Added `NEW` and `EXISTING` user fixtures with typed, secret-safe credentials, profiles, and API sessions.
-- Added local user registration, PBKDF2 password storage, hashed session tokens, authenticated cleanup, and a protected UI page.
-- Added Playwright session-cookie injection and concurrent integration scenarios for new, existing, missing, and rejected sessions.
+- A minimal Java booking application backed by the same private MySQL service used by database tests.
+- An API → DB-over-SSH verification → API cleanup scenario with deterministic data and LIFO fallback cleanup.
+- An independent integration quality gate whose results are merged into the published Allure report.
+- `NEW` and `EXISTING` user fixtures with typed, secret-safe credentials, profiles, and API sessions.
+- Local user registration, PBKDF2 password storage, hashed session tokens, authenticated cleanup, and a protected UI page.
+- Playwright session-cookie injection and concurrent integration scenarios for new, existing, missing, and rejected sessions.
+- A changelog style gate that prevents release-note bullets from repeating their section heading.
 
 ### Changed
 
-- Extended the isolated local launcher with an opt-in `integrated` Compose profile and dynamically discovered application port.
-- Removed form submission from unrelated local-application scenarios; Sauce Demo examples retain it because the public target exposes no supported authentication API.
+- The isolated local launcher now supports an opt-in `integrated` Compose profile and dynamically discovers the application port.
+- Unrelated local-application scenarios no longer submit a login form; Sauce Demo examples retain it because the public target exposes no supported authentication API.
 
 ### Planned
 
@@ -29,18 +30,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
-- Added a documented framework verification matrix and self-tests for configuration, preconditions, JUnit Store isolation, waits, UI artifact isolation, and browser resource closure.
-- Added concurrent isolation tests for JUnit Store, Guice facades, auth data, teardown queues, generated data, and Playwright contexts.
-- Added deterministic MockWebServer coverage for disconnects, timeouts, malformed JSON, explicit polling, and unexpected responses.
-- Added ADR 0004 documenting the explicit retry policy.
-- Added digest-pinned local services with explicit MySQL, SSH, and API health checks.
-- Added a dynamic-port local test launcher with isolated Compose projects and guaranteed cleanup.
-- Added validated local-password and strict private-key SSH profiles, documented in ADR 0005.
-- Added independent static, framework, API, UI, and DB-over-SSH CI quality gates with one required aggregate status.
-- Added a history-enabled merged Allure report published through GitHub Pages.
-- Added Spotless formatting, a 60% JaCoCo framework-core coverage gate, Gradle dependency verification, Dependabot, dependency review, and CodeQL.
-- Added ADRs for thin Retrofit/Playwright clients with Guice, JUnit-owned lifecycle and LIFO cleanup, and explicit wait boundaries.
-- Added a CI guide covering gate contracts, branch protection, local commands, and checksum maintenance.
+- A documented framework verification matrix and self-tests for configuration, preconditions, JUnit Store isolation, waits, UI artifact isolation, and browser resource closure.
+- Concurrent isolation tests for JUnit Store, Guice facades, auth data, teardown queues, generated data, and Playwright contexts.
+- Deterministic MockWebServer coverage for disconnects, timeouts, malformed JSON, explicit polling, and unexpected responses.
+- ADR 0004 documenting the explicit retry policy.
+- Digest-pinned local services with explicit MySQL, SSH, and API health checks.
+- A dynamic-port local test launcher with isolated Compose projects and guaranteed cleanup.
+- Validated local-password and strict private-key SSH profiles, documented in ADR 0005.
+- Independent static, framework, API, UI, and DB-over-SSH CI quality gates with one required aggregate status.
+- A history-enabled merged Allure report published through GitHub Pages.
+- Spotless formatting, a 60% JaCoCo framework-core coverage gate, Gradle dependency verification, Dependabot, dependency review, and CodeQL.
+- ADRs for thin Retrofit/Playwright clients with Guice, JUnit-owned lifecycle and LIFO cleanup, and explicit wait boundaries.
+- A CI guide covering gate contracts, branch protection, local commands, and checksum maintenance.
 
 ### Changed
 
@@ -55,11 +56,11 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
-- Added safe HTTP request/response reporting with redaction tests and an architecture decision record.
-- Added Playwright traces and bounded browser-event diagnostics to failed UI test artifacts.
-- Added UI diagnostics self-tests and an architecture decision record for artifact lifecycle and security.
-- Added a UI scenario proving that products with punctuation are selected by their visible name.
-- Added deterministic per-test data generation with configurable run seeds, Allure replay metadata, parallel-isolation tests, and ADR 0003.
+- Safe HTTP request/response reporting with redaction tests and an architecture decision record.
+- Playwright traces and bounded browser-event diagnostics for failed UI tests.
+- UI diagnostics self-tests and an architecture decision record for artifact lifecycle and security.
+- A UI scenario proving that products with punctuation are selected by their visible name.
+- Deterministic per-test data generation with configurable run seeds, Allure replay metadata, parallel-isolation tests, and ADR 0003.
 
 ### Changed
 
@@ -75,14 +76,14 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
-- Added an explicit `AuthSession` value object for authorized API operations.
-- Added configurable teardown failure handling through `teardown.failOnError`.
-- Added focused API transport and response-contract exceptions with deterministic MockWebServer tests.
-- Added framework self-tests for authentication sessions and teardown order/error policy.
+- An explicit `AuthSession` value object for authorized API operations.
+- Configurable teardown failure handling through `teardown.failOnError`.
+- Focused API transport and response-contract exceptions with deterministic MockWebServer tests.
+- Framework self-tests for authentication sessions and teardown order/error policy.
 
 ### Changed
 
-- Added a dynamic GitHub Release badge and marked the initial release milestone complete.
+- The README now displays a dynamic GitHub Release badge, and the initial release milestone is complete.
 - Moved teardown ownership from `ThreadLocal` state to the method-scoped JUnit Store.
 - Closed browser sessions through class-scoped JUnit resources while preserving per-test browser contexts.
 - Restricted Awaitility retries to transport-level `ApiCallException` failures.

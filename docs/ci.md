@@ -4,7 +4,7 @@ bookwright separates fast framework verification from product-system scenarios. 
 
 | Gate | Gradle command | Contract |
 |---|---|---|
-| Static quality | `spotlessCheck validateVersion compileJava compileTestJava` | Formatting, version metadata, and compilation |
+| Static quality | `spotlessCheck validateVersion validateChangelogStyle compileJava compileTestJava` | Formatting, release-note style, version metadata, and compilation |
 | Framework | `frameworkJacocoVerification` | Deterministic self-tests and at least 60% instruction coverage of selected framework packages |
 | API | `run-local-tests.sh apiTest` | Retrofit scenarios against the digest-pinned local API |
 | UI | `uiTest` | Playwright scenarios against Sauce Demo |

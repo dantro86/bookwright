@@ -22,7 +22,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
 
       - name: Validate tag and project version
-        run: ./gradlew validateVersion printVersion
+        run: ./gradlew validateVersion validateChangelogStyle printVersion
 
       - name: Run full verification
         run: ./scripts/run-local-tests.sh

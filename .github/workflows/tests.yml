@@ -21,7 +21,7 @@ jobs:
           java-version: 21
       - uses: gradle/actions/setup-gradle@v6
       - name: Validate source and build configuration
-        run: ./gradlew spotlessCheck validateVersion compileJava compileTestJava
+        run: ./gradlew spotlessCheck validateVersion validateChangelogStyle compileJava compileTestJava
 
   framework:
     name: Framework self-tests

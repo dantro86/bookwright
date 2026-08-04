@@ -210,7 +210,7 @@ tasks.register<JacocoCoverageVerification>("frameworkJacocoVerification") {
 tasks.register("qualityGate") {
     group = "verification"
     description = "Runs deterministic local quality checks without external product systems."
-    dependsOn("spotlessCheck", "frameworkJacocoVerification", "validateVersion")
+    dependsOn("spotlessCheck", "frameworkJacocoVerification", "validateVersion", "validateChangelogStyle")
 }
 
 tasks.register("validateVersion") {
@@ -233,6 +233,32 @@ tasks.register("validateVersion") {
                 "Release tag '$releaseTag' does not match projectVersion '$projectVersion' (expected v$projectVersion)"
             }
         }
+    }
+}
+
+tasks.register("validateChangelogStyle") {
+    group = "verification"
+    description = "Rejects changelog bullets that repeat their section heading."
+
+    doLast {
+        val repeatedPrefixes = mapOf(
+            "Added" to "Added ",
+            "Changed" to "Changed ",
+            "Deprecated" to "Deprecated ",
+            "Removed" to "Removed ",
+            "Fixed" to "Fixed ",
+            "Security" to "Security ",
+        )
+        var section: String? = null
+        val violations = mutableListOf<String>()
+        file("CHANGELOG.md").readLines().forEachIndexed { index, line ->
+            if (line.startsWith("### ")) section = line.removePrefix("### ").trim()
+            val repeated = repeatedPrefixes[section]
+            if (repeated != null && line.startsWith("- $repeated")) {
+                violations += "CHANGELOG.md:${index + 1}: '$section' bullet repeats '$repeated'"
+            }
+        }
+        check(violations.isEmpty()) { violations.joinToString(System.lineSeparator()) }
     }
 }
 
