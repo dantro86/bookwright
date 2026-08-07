@@ -6,9 +6,10 @@ import io.bookwright.annotations.Db;
 import io.bookwright.annotations.OwnerDanil;
 import io.bookwright.annotations.Smoke;
 import io.bookwright.db.BookingRow;
+import io.bookwright.fixtures.database.HotelDatabaseFixtures;
 import io.bookwright.steps.DbSteps;
+import io.bookwright.util.TestData;
 import io.qameta.allure.Feature;
-import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,28 +19,18 @@ import org.junit.jupiter.api.Test;
 @Feature("Hotel DB")
 class SeededBookingsTest {
 
-  private static final LocalDate FIXED_CHECKIN = LocalDate.of(2040, 6, 15);
-
   @Test
   @DisplayName("Seeded schema contains the expected bookings")
-  void seededBookingsArePresent(DbSteps db) {
-    db.assertBookingCountAtLeast(10);
-    db.assertGuestHasBooking("Wilson");
+  void seededBookingsArePresent(DbSteps db, HotelDatabaseFixtures fixtures) {
+    db.assertBookingCountAtLeast(fixtures.minimumBookingCount());
+    db.assertGuestHasBooking(fixtures.seededGuestLastName());
   }
 
   @Test
   @DisplayName("Booking can be inserted and read back through the tunnel")
-  void bookingCanBeInserted(DbSteps db) {
-    BookingRow inserted =
-        db.insert(
-            BookingRow.builder()
-                .roomId(1)
-                .guestFirstName("Tunnel")
-                .guestLastName("Tester")
-                .checkin(FIXED_CHECKIN)
-                .checkout(FIXED_CHECKIN.plusDays(2))
-                .depositPaid(true)
-                .build());
-    assertThat(inserted.getGuestLastName()).isEqualTo("Tester");
+  void bookingCanBeInserted(DbSteps db, TestData data) {
+    BookingRow expected = data.databaseBooking();
+    BookingRow inserted = db.insert(expected);
+    assertThat(inserted.getGuestLastName()).isEqualTo(expected.getGuestLastName());
   } // row removed by LIFO teardown
 }

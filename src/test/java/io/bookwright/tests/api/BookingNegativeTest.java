@@ -21,8 +21,6 @@ import org.junit.jupiter.api.Test;
 @Feature("Bookings")
 class BookingNegativeTest {
 
-  private static final int NONEXISTENT_ID = 999_999_999;
-
   @Test
   @Preconditions({BOOKING_EXISTS})
   @DisplayName("Update without auth token is forbidden")
@@ -35,7 +33,7 @@ class BookingNegativeTest {
 
   @Test
   @DisplayName("Requesting a nonexistent booking returns 404")
-  void nonexistentBookingReturns404(ApiSteps api) {
-    api.restfulBooker().bookings().assertBookingNotFound(NONEXISTENT_ID);
+  void nonexistentBookingReturns404(ApiSteps api, TestData data) {
+    api.restfulBooker().bookings().assertBookingNotFound(data.nonexistentBookingId());
   }
 }

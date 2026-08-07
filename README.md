@@ -48,7 +48,10 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 - **Fixtures** — `@WithAuthSession` creates an explicit authentication value object for restful-booker.
   The integrated system adds `@UserFixture(NEW|EXISTING)`: a new user is registered through the API and
   cleaned up automatically, while an existing user comes from Owner configuration. Tests receive one typed
-  `TestUser` containing redacted credentials, profile, and API-issued session.
+  `TestUser` containing redacted credentials, profile, and API-issued session. Stable product scenarios use
+  typed `SauceDemoFixtures`, `LocalUserFixtures`, and `HotelDatabaseFixtures`; unique payloads come from the
+  deterministic per-test `TestData` sequence. Steps accept these ready values instead of inventing scenarios;
+  see [ADR 0012](docs/adr/0012-typed-fixture-ownership.md).
 - **Teardown** — steps push a cleanup lambda into a per-test LIFO queue for every entity they create;
   `TeardownExtension` drains it after each test. `teardown.failOnError` controls whether cleanup failures
   fail an otherwise successful test; a primary test failure is never replaced.
@@ -172,6 +175,7 @@ src/main/java/io/bookwright/
 ├── annotations/  tags + owners (6 annotations, not 133)
 ├── api/          target/domain Retrofit interfaces + shared transport and DTOs
 ├── config/       Owner configs + Configs entry point
+├── fixtures/     immutable target-owned product scenarios
 ├── db/           SshTunnel, DbPool, DAO, row mapper
 ├── di/           Guice modules (Api, Ui, Db)
 ├── junit/        extensions: preconditions, fixtures, resolver, screenshots, tunnel lifecycle

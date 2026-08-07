@@ -80,11 +80,11 @@ The audit baseline is the system bookwright actually tests, not a copied enterpr
 
 ### 6.2 Test data and fixtures
 
-- [ ] Move Sauce Demo accounts, expected catalog, checkout customer, sort options, and authentication-error inputs into typed fixture objects.
-- [ ] Move scenario values such as patch payloads, invalid credentials, product selection, and nonexistent identifiers into `TestData` or focused fixture factories.
-- [ ] Keep product assertions explicit while separating expected product fixtures from UI action steps.
-- [ ] Make steps accept ready credentials, request models, expected values, or typed fixtures; steps must not invent scenario-specific data.
-- [ ] Add source-level architecture checks for credentials, emails, passwords, and scenario payload literals inside steps and product tests.
+- [x] Move Sauce Demo accounts, expected catalog, checkout customer, sort options, and authentication-error inputs into typed fixture objects.
+- [x] Move scenario values such as patch payloads, invalid credentials, product selection, and nonexistent identifiers into `TestData` or focused fixture factories.
+- [x] Keep product assertions explicit while separating expected product fixtures from UI action steps.
+- [x] Make steps accept ready credentials, request models, expected values, or typed fixtures; steps must not invent scenario-specific data.
+- [x] Add source-level architecture checks for credentials, emails, passwords, and scenario payload literals inside steps and product tests.
 
 ### 6.3 Preconditions and typed state
 

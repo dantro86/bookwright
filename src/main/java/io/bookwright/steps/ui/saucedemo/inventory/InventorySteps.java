@@ -2,20 +2,11 @@ package io.bookwright.steps.ui.saucedemo.inventory;
 
 import com.google.inject.Inject;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
+import io.bookwright.fixtures.saucedemo.SauceDemoFixtures.Catalog;
 import io.bookwright.ui.InventoryPage;
 import io.qameta.allure.Step;
-import java.util.List;
 
 public class InventorySteps {
-
-  private static final List<String> DEFAULT_PRODUCT_ORDER =
-      List.of(
-          "Sauce Labs Backpack",
-          "Sauce Labs Bike Light",
-          "Sauce Labs Bolt T-Shirt",
-          "Sauce Labs Fleece Jacket",
-          "Sauce Labs Onesie",
-          "Test.allTheThings() T-Shirt (Red)");
 
   private final InventoryPage page;
 
@@ -25,27 +16,29 @@ public class InventorySteps {
   }
 
   @Step("Verify the Sauce Demo inventory is ready")
-  public void assertReady() {
-    PlaywrightAssertions.assertThat(page.title()).hasText("Products");
-    PlaywrightAssertions.assertThat(page.inventoryItems()).hasCount(DEFAULT_PRODUCT_ORDER.size());
+  public void assertReady(Catalog expected) {
+    PlaywrightAssertions.assertThat(page.title()).hasText(expected.title());
+    PlaywrightAssertions.assertThat(page.inventoryItems()).hasCount(expected.products().size());
     PlaywrightAssertions.assertThat(page.itemNames())
-        .hasText(DEFAULT_PRODUCT_ORDER.toArray(String[]::new));
+        .hasText(expected.products().toArray(String[]::new));
     PlaywrightAssertions.assertThat(page.cartLink()).isVisible();
   }
 
   @Step("Sort Sauce Demo products by name Z to A and verify order")
-  public void sortByNameDescAndAssertOrder() {
-    page.sortBy("za");
-    PlaywrightAssertions.assertThat(page.sortSelect()).hasValue("za");
+  public void sortByNameDescAndAssertOrder(Catalog expected) {
+    page.sortBy(expected.descendingSortValue());
+    PlaywrightAssertions.assertThat(page.sortSelect()).hasValue(expected.descendingSortValue());
     PlaywrightAssertions.assertThat(page.itemNames())
-        .hasText(DEFAULT_PRODUCT_ORDER.reversed().toArray(String[]::new));
+        .hasText(expected.descendingProducts().toArray(String[]::new));
   }
 
   @Step("Add Sauce Demo product '{productName}' to the cart")
-  public void addToCart(String productName) {
+  public void addToCart(String productName, Catalog expected) {
     page.addToCart(productName);
-    PlaywrightAssertions.assertThat(page.cartBadge()).hasText("1");
-    PlaywrightAssertions.assertThat(page.productActionButton(productName)).hasText("Remove");
+    PlaywrightAssertions.assertThat(page.cartBadge())
+        .hasText(Integer.toString(expected.cartCountAfterSingleAdd()));
+    PlaywrightAssertions.assertThat(page.productActionButton(productName))
+        .hasText(expected.removeButtonText());
   }
 
   @Step("Open the Sauce Demo cart")

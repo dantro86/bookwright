@@ -6,6 +6,9 @@ import com.google.inject.Module;
 import io.bookwright.di.ApiModule;
 import io.bookwright.di.DbModule;
 import io.bookwright.di.UiModule;
+import io.bookwright.fixtures.database.HotelDatabaseFixtures;
+import io.bookwright.fixtures.local.LocalUserFixtures;
+import io.bookwright.fixtures.saucedemo.SauceDemoFixtures;
 import io.bookwright.steps.ApiSteps;
 import io.bookwright.steps.DbSteps;
 import io.bookwright.steps.UiSteps;
@@ -29,7 +32,12 @@ public class StepsParameterResolver implements ParameterResolver {
   public boolean supportsParameter(
       ParameterContext parameterContext, ExtensionContext extensionContext) {
     Class<?> type = parameterContext.getParameter().getType();
-    return type == TestStore.class || type == TestUser.class || SUPPORTED.contains(type);
+    return type == TestStore.class
+        || type == TestUser.class
+        || type == SauceDemoFixtures.class
+        || type == LocalUserFixtures.class
+        || type == HotelDatabaseFixtures.class
+        || SUPPORTED.contains(type);
   }
 
   @Override
@@ -38,6 +46,15 @@ public class StepsParameterResolver implements ParameterResolver {
     Class<?> type = parameterContext.getParameter().getType();
     if (type == TestStore.class) {
       return new TestStore(extensionContext);
+    }
+    if (type == SauceDemoFixtures.class) {
+      return SauceDemoFixtures.from(io.bookwright.config.Configs.main());
+    }
+    if (type == LocalUserFixtures.class) {
+      return LocalUserFixtures.from(io.bookwright.config.Configs.main());
+    }
+    if (type == HotelDatabaseFixtures.class) {
+      return HotelDatabaseFixtures.seeded();
     }
     if (type == TestUser.class) {
       TestUser user =

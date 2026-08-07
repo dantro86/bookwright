@@ -2,9 +2,9 @@ package io.bookwright.steps.ui.saucedemo.checkout;
 
 import com.google.inject.Inject;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
+import io.bookwright.fixtures.saucedemo.SauceDemoFixtures.Checkout;
 import io.bookwright.ui.CheckoutPage;
 import io.qameta.allure.Step;
-import java.util.regex.Pattern;
 
 public class CheckoutSteps {
 
@@ -16,19 +16,20 @@ public class CheckoutSteps {
   }
 
   @Step("Check out Sauce Demo product '{productName}' and verify completion")
-  public void completeAndAssert(String productName) {
-    PlaywrightAssertions.assertThat(page.cartItems()).hasCount(1);
+  public void completeAndAssert(String productName, Checkout expected) {
+    PlaywrightAssertions.assertThat(page.cartItems()).hasCount(expected.overviewItemCount());
     PlaywrightAssertions.assertThat(page.itemNames()).hasText(new String[] {productName});
     page.startCheckout();
-    page.fillCustomerInfo("Test", "Guest", "00100");
-    PlaywrightAssertions.assertThat(page.cartItems()).hasCount(1);
+    page.fillCustomerInfo(
+        expected.customer().firstName(),
+        expected.customer().lastName(),
+        expected.customer().postalCode());
+    PlaywrightAssertions.assertThat(page.cartItems()).hasCount(expected.overviewItemCount());
     PlaywrightAssertions.assertThat(page.itemNames()).hasText(new String[] {productName});
     page.finish();
-    PlaywrightAssertions.assertThat(page.completeHeader()).hasText("Thank you for your order!");
-    PlaywrightAssertions.assertThat(page.completeText())
-        .containsText("Your order has been dispatched");
-    PlaywrightAssertions.assertThat(page.cartItems()).hasCount(0);
-    PlaywrightAssertions.assertThat(page.page())
-        .hasURL(Pattern.compile(".*/checkout-complete\\.html"));
+    PlaywrightAssertions.assertThat(page.completeHeader()).hasText(expected.completeHeader());
+    PlaywrightAssertions.assertThat(page.completeText()).containsText(expected.completeText());
+    PlaywrightAssertions.assertThat(page.cartItems()).hasCount(expected.completedCartItemCount());
+    PlaywrightAssertions.assertThat(page.page()).hasURL(expected.completeUrl());
   }
 }

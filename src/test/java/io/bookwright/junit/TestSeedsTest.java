@@ -62,6 +62,16 @@ class TestSeedsTest {
   }
 
   @Test
+  void generatedScenarioFixturesAreReproducible() {
+    TestData first = data(RUN_SEED, "scenarioFixtures");
+    TestData replay = data(RUN_SEED, "scenarioFixtures");
+
+    assertThat(first.bookingPatch()).isEqualTo(replay.bookingPatch());
+    assertThat(first.nonexistentBookingId()).isEqualTo(replay.nonexistentBookingId());
+    assertThat(first.databaseBooking()).isEqualTo(replay.databaseBooking());
+  }
+
+  @Test
   void parallelSchedulingDoesNotChangePerTestData() throws Exception {
     List<String> testIds = List.of("test-a", "test-b", "test-c", "test-d");
     List<Booking> expected = testIds.stream().map(id -> data(RUN_SEED, id).booking()).toList();

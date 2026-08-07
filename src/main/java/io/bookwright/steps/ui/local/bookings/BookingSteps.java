@@ -2,6 +2,7 @@ package io.bookwright.steps.ui.local.bookings;
 
 import com.google.inject.Inject;
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
+import io.bookwright.fixtures.local.LocalUserFixtures.UiExpectations;
 import io.bookwright.junit.TestUser;
 import io.bookwright.ui.LocalBookingsPage;
 import io.qameta.allure.Step;
@@ -16,19 +17,19 @@ public class BookingSteps {
   }
 
   @Step("Open the local bookings UI as API-authenticated user {user.profile.email}")
-  public void openAs(TestUser user) {
+  public void openAs(TestUser user, UiExpectations expected) {
     page.open();
-    PlaywrightAssertions.assertThat(page.title()).hasText("Bookings");
+    PlaywrightAssertions.assertThat(page.title()).hasText(expected.authenticatedTitle());
     PlaywrightAssertions.assertThat(page.currentUser()).hasText(user.profile().email());
     PlaywrightAssertions.assertThat(page.welcomeMessage())
-        .hasText("Welcome, " + user.profile().displayName());
+        .hasText(expected.welcomeFor(user.profile().displayName()));
   }
 
   @Step("Open the local bookings UI without a session")
-  public void openAndExpectAuthenticationRequired() {
+  public void openAndExpectAuthenticationRequired(UiExpectations expected) {
     page.open();
-    PlaywrightAssertions.assertThat(page.title()).hasText("Authentication required");
+    PlaywrightAssertions.assertThat(page.title()).hasText(expected.authenticationRequiredTitle());
     PlaywrightAssertions.assertThat(page.authenticationError())
-        .containsText("Session is missing, invalid, or expired");
+        .containsText(expected.authenticationError());
   }
 }

@@ -13,6 +13,7 @@ import io.bookwright.junit.Preconditions;
 import io.bookwright.junit.TestStore;
 import io.bookwright.junit.WithAuthSession;
 import io.bookwright.steps.ApiSteps;
+import io.bookwright.util.TestData;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,19 +54,17 @@ class BookingSearchTest {
   @WithAuthSession
   @Preconditions({BOOKING_EXISTS})
   @DisplayName("PATCH updates only the provided fields")
-  void partialUpdateChangesOnlyProvidedFields(ApiSteps api, TestStore store) {
+  void partialUpdateChangesOnlyProvidedFields(ApiSteps api, TestStore store, TestData data) {
     CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
     Booking original = existing.getBooking();
 
+    Booking patch = data.bookingPatch();
     api.restfulBooker()
         .bookings()
-        .partialUpdate(
-            existing.getBookingid(),
-            Booking.builder().firstname("Patched").build(),
-            store.authSession());
+        .partialUpdate(existing.getBookingid(), patch, store.authSession());
 
     Booking after = api.restfulBooker().bookings().get(existing.getBookingid());
-    assertThat(after.getFirstname()).as("patched firstname").isEqualTo("Patched");
+    assertThat(after.getFirstname()).as("patched firstname").isEqualTo(patch.getFirstname());
     assertThat(after.getLastname()).as("untouched lastname").isEqualTo(original.getLastname());
     assertThat(after.getTotalprice())
         .as("untouched totalprice")

@@ -3,6 +3,7 @@ package io.bookwright.util;
 import io.bookwright.api.model.Booking;
 import io.bookwright.api.model.LocalBooking;
 import io.bookwright.api.model.UserRegistration;
+import io.bookwright.db.BookingRow;
 import java.util.SplittableRandom;
 
 /**
@@ -27,6 +28,14 @@ public final class TestData {
     return bookings.next();
   }
 
+  public Booking bookingPatch() {
+    return Booking.builder().firstname("Patched-" + Long.toUnsignedString(testSeed, 36)).build();
+  }
+
+  public int nonexistentBookingId() {
+    return 900_000_000 + (int) Math.floorMod(testSeed, 99_999_999);
+  }
+
   public LocalBooking localBooking() {
     Booking booking = booking();
     int roomId = (int) Math.floorMod(testSeed, 5) + 1;
@@ -37,6 +46,18 @@ public final class TestData {
         .checkin(booking.getBookingdates().getCheckin())
         .checkout(booking.getBookingdates().getCheckout())
         .depositPaid(booking.getDepositpaid())
+        .build();
+  }
+
+  public BookingRow databaseBooking() {
+    LocalBooking booking = localBooking();
+    return BookingRow.builder()
+        .roomId(booking.getRoomId())
+        .guestFirstName(booking.getGuestFirstName())
+        .guestLastName(booking.getGuestLastName())
+        .checkin(booking.getCheckin())
+        .checkout(booking.getCheckout())
+        .depositPaid(booking.getDepositPaid())
         .build();
   }
 
