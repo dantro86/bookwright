@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 public class TestDataExtension
     implements BeforeEachCallback, BeforeTestExecutionCallback, ParameterResolver {
 
+  static final String TEST_DATA_KEY = "testData";
   private static final Logger LOG = LoggerFactory.getLogger(TestDataExtension.class);
   private static final long RUN_SEED = TestSeeds.resolveRunSeed();
 
@@ -52,8 +53,7 @@ public class TestDataExtension
 
   public static TestData getOrCreate(ExtensionContext context) {
     ExtensionContext.Store store = NamespaceRegistry.methodStore(context);
-    return store.getOrComputeIfAbsent(
-        NamespaceRegistry.TEST_DATA_KEY, ignored -> create(context), TestData.class);
+    return store.getOrComputeIfAbsent(TEST_DATA_KEY, ignored -> create(context), TestData.class);
   }
 
   private static TestData create(ExtensionContext context) {

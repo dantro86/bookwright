@@ -1,6 +1,8 @@
 package io.bookwright.junit;
 
 import io.bookwright.api.AuthSession;
+import io.bookwright.api.model.CreatedBooking;
+import io.bookwright.util.TestData;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
@@ -12,10 +14,14 @@ public class TestStore {
   private final ExtensionContext.Store store;
 
   TestStore(ExtensionContext context) {
-    this.store = NamespaceRegistry.methodStore(context);
+    this(NamespaceRegistry.methodStore(context));
   }
 
-  public <T> T get(String key, Class<T> type) {
+  TestStore(ExtensionContext.Store store) {
+    this.store = store;
+  }
+
+  <T> T getRequired(String key, Class<T> type) {
     T value = store.get(key, type);
     if (value == null) {
       throw new IllegalStateException(
@@ -25,15 +31,27 @@ public class TestStore {
     return value;
   }
 
-  public void put(String key, Object value) {
+  void put(String key, Object value) {
     store.put(key, value);
   }
 
   public AuthSession authSession() {
-    return get(NamespaceRegistry.AUTH_SESSION_KEY, AuthSession.class);
+    return getRequired(AuthSessionExtension.AUTH_SESSION_KEY, AuthSession.class);
   }
 
   public TestUser testUser() {
-    return get(NamespaceRegistry.TEST_USER_KEY, TestUser.class);
+    return getRequired(UserFixtureExtension.TEST_USER_KEY, TestUser.class);
+  }
+
+  public TestData testData() {
+    return getRequired(TestDataExtension.TEST_DATA_KEY, TestData.class);
+  }
+
+  public CreatedBooking booking() {
+    return getRequired(Precondition.BOOKING_KEY, CreatedBooking.class);
+  }
+
+  void putBooking(CreatedBooking booking) {
+    put(Precondition.BOOKING_KEY, booking);
   }
 }

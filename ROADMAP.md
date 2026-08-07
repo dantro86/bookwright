@@ -88,14 +88,14 @@ The audit baseline is the system bookwright actually tests, not a copied enterpr
 
 ### 6.3 Preconditions and typed state
 
-- [ ] Define the boundary explicitly: identity selection (`NEW`/`EXISTING`) remains a parameterized user fixture, while dependent product state is prepared through `@Preconditions`.
-- [ ] Consolidate API authorization setup so tests use one precondition/fixture path instead of combining `@WithAuthSession` and `AUTH_SESSION` semantics.
-- [ ] Add typed booking and fixture accessors to `TestStore`; product tests must not call generic string-key access.
-- [ ] Move `AUTH_SESSION_KEY` to `AuthSessionExtension`, booking state ownership to the booking precondition/fixture, `TEST_DATA_KEY` to `TestDataExtension`, `TEST_USER_KEY` to `UserFixtureExtension`, and `TEARDOWN_STORAGE_KEY` to `TeardownStorage`.
-- [ ] Reduce `NamespaceRegistry` to class-scoped and method-scoped namespace creation only.
-- [ ] Make generic `TestStore.get/put` internal after all test-facing state has typed accessors.
-- [ ] For find-or-create preconditions, query first and branch on the returned collection; do not use expected exceptions as normal control flow.
-- [ ] Preserve method-scoped ownership and LIFO cleanup for every entity created by a precondition or fixture.
+- [x] Define the boundary explicitly: identity selection (`NEW`/`EXISTING`) remains a parameterized user fixture, while dependent product state is prepared through `@Preconditions`.
+- [x] Consolidate API authorization setup so tests use one precondition/fixture path instead of combining `@WithAuthSession` and `AUTH_SESSION` semantics.
+- [x] Add typed booking and fixture accessors to `TestStore`; product tests must not call generic string-key access.
+- [x] Move `AUTH_SESSION_KEY` to `AuthSessionExtension`, booking state ownership to the booking precondition/fixture, `TEST_DATA_KEY` to `TestDataExtension`, `TEST_USER_KEY` to `UserFixtureExtension`, and `TEARDOWN_STORAGE_KEY` to `TeardownStorage`.
+- [x] Reduce `NamespaceRegistry` to class-scoped and method-scoped namespace creation only.
+- [x] Make generic `TestStore.get/put` internal after all test-facing state has typed accessors.
+- [x] For find-or-create preconditions, query first and branch on the returned collection; do not use expected exceptions as normal control flow.
+- [x] Preserve method-scoped ownership and LIFO cleanup for every entity created by a precondition or fixture.
 
 ### 6.4 Wait contracts and diagnostics
 

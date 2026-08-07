@@ -8,7 +8,6 @@ import io.bookwright.annotations.OwnerDanil;
 import io.bookwright.annotations.Regression;
 import io.bookwright.api.model.Booking;
 import io.bookwright.api.model.CreatedBooking;
-import io.bookwright.junit.NamespaceRegistry;
 import io.bookwright.junit.Preconditions;
 import io.bookwright.junit.TestStore;
 import io.bookwright.junit.WithAuthSession;
@@ -28,7 +27,7 @@ class BookingSearchTest {
   @Preconditions({BOOKING_EXISTS})
   @DisplayName("Booking can be found by guest name")
   void bookingCanBeFoundByName(ApiSteps api, TestStore store) {
-    CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
+    CreatedBooking existing = store.booking();
     Booking booking = existing.getBooking();
     assertThat(
             api.restfulBooker()
@@ -42,7 +41,7 @@ class BookingSearchTest {
   @Preconditions({BOOKING_EXISTS})
   @DisplayName("Created booking becomes searchable (Awaitility polling)")
   void createdBookingBecomesSearchable(ApiSteps api, TestStore store) {
-    CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
+    CreatedBooking existing = store.booking();
     Booking booking = existing.getBooking();
     api.restfulBooker()
         .bookings()
@@ -55,7 +54,7 @@ class BookingSearchTest {
   @Preconditions({BOOKING_EXISTS})
   @DisplayName("PATCH updates only the provided fields")
   void partialUpdateChangesOnlyProvidedFields(ApiSteps api, TestStore store, TestData data) {
-    CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
+    CreatedBooking existing = store.booking();
     Booking original = existing.getBooking();
 
     Booking patch = data.bookingPatch();

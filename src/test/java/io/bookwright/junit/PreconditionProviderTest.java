@@ -17,7 +17,7 @@ class PreconditionProviderTest {
   @Test
   void executesPreconditionsInDeclarationOrderAndSharesStoreData() {
     List<String> order = new ArrayList<>();
-    ExtensionContext.Store store = inMemoryStore();
+    TestStore store = new TestStore(inMemoryStore());
     IPrecondition first =
         precondition(
             "first",
@@ -30,7 +30,7 @@ class PreconditionProviderTest {
             "second",
             (api, state) -> {
               order.add("second");
-              assertThat(state.get("fixture", String.class)).isEqualTo("ready");
+              assertThat(state.getRequired("fixture", String.class)).isEqualTo("ready");
             });
 
     PreconditionProvider.execute(new IPrecondition[] {first, second}, new ApiSteps(), store);
@@ -54,7 +54,9 @@ class PreconditionProviderTest {
     assertThatThrownBy(
             () ->
                 PreconditionProvider.execute(
-                    new IPrecondition[] {failing, unreachable}, new ApiSteps(), inMemoryStore()))
+                    new IPrecondition[] {failing, unreachable},
+                    new ApiSteps(),
+                    new TestStore(inMemoryStore())))
         .isInstanceOf(IllegalStateException.class)
         .hasMessage("fixture failed");
     assertThat(order).containsExactly("failing");
@@ -68,7 +70,7 @@ class PreconditionProviderTest {
       }
 
       @Override
-      public void execute(ApiSteps api, ExtensionContext.Store store) {
+      public void execute(ApiSteps api, TestStore store) {
         action.execute(api, store);
       }
     };
@@ -94,6 +96,6 @@ class PreconditionProviderTest {
 
   @FunctionalInterface
   private interface PreconditionAction {
-    void execute(ApiSteps api, ExtensionContext.Store store);
+    void execute(ApiSteps api, TestStore store);
   }
 }

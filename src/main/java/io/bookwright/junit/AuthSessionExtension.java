@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  */
 public class AuthSessionExtension implements BeforeTestExecutionCallback {
 
+  static final String AUTH_SESSION_KEY = "authSession";
+
   @Override
   public void beforeTestExecution(ExtensionContext context) {
     ApiSteps api =
@@ -19,6 +21,6 @@ public class AuthSessionExtension implements BeforeTestExecutionCallback {
         "Fixture: authenticate API session",
         () ->
             NamespaceRegistry.methodStore(context)
-                .put(NamespaceRegistry.AUTH_SESSION_KEY, api.restfulBooker().auth().session()));
+                .put(AUTH_SESSION_KEY, api.restfulBooker().auth().session()));
   }
 }

@@ -6,7 +6,6 @@ import io.bookwright.annotations.Api;
 import io.bookwright.annotations.OwnerDanil;
 import io.bookwright.annotations.Regression;
 import io.bookwright.api.model.CreatedBooking;
-import io.bookwright.junit.NamespaceRegistry;
 import io.bookwright.junit.Preconditions;
 import io.bookwright.junit.TestStore;
 import io.bookwright.steps.ApiSteps;
@@ -25,7 +24,7 @@ class BookingNegativeTest {
   @Preconditions({BOOKING_EXISTS})
   @DisplayName("Update without auth token is forbidden")
   void updateWithoutTokenIsForbidden(ApiSteps api, TestStore store, TestData data) {
-    CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
+    CreatedBooking existing = store.booking();
     api.restfulBooker()
         .bookings()
         .assertUpdateWithoutTokenForbidden(existing.getBookingid(), data.booking());

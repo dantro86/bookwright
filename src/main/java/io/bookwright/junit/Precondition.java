@@ -4,37 +4,29 @@ import io.bookwright.api.model.CreatedBooking;
 import io.bookwright.steps.ApiSteps;
 import io.bookwright.util.TestData;
 import java.util.function.BiConsumer;
-import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * Catalog of test preconditions. Each constant pairs a human-readable title with the setup action;
- * results are shared with the test through the method-scoped store (see {@link NamespaceRegistry}
- * keys).
+ * results are shared with the test through typed accessors on the method-scoped {@link TestStore}.
  */
 public enum Precondition implements IPrecondition {
-  AUTH_SESSION(
-      "Obtain auth session",
-      (api, store) ->
-          store.put(NamespaceRegistry.AUTH_SESSION_KEY, api.restfulBooker().auth().session())),
-
   BOOKING_EXISTS(
       "Create a booking",
       (api, store) -> {
-        TestData data = store.get(NamespaceRegistry.TEST_DATA_KEY, TestData.class);
-        if (data == null) {
-          throw new IllegalStateException("TestDataExtension did not initialize test data");
-        }
+        TestData data = store.testData();
         CreatedBooking created =
             api.restfulBooker()
                 .bookings()
                 .create(data.booking(), api.restfulBooker().auth().session());
-        store.put(NamespaceRegistry.BOOKING_KEY, created);
+        store.putBooking(created);
       });
 
-  private final String title;
-  private final BiConsumer<ApiSteps, ExtensionContext.Store> action;
+  static final String BOOKING_KEY = "createdBooking";
 
-  Precondition(String title, BiConsumer<ApiSteps, ExtensionContext.Store> action) {
+  private final String title;
+  private final BiConsumer<ApiSteps, TestStore> action;
+
+  Precondition(String title, BiConsumer<ApiSteps, TestStore> action) {
     this.title = title;
     this.action = action;
   }
@@ -45,7 +37,7 @@ public enum Precondition implements IPrecondition {
   }
 
   @Override
-  public void execute(ApiSteps api, ExtensionContext.Store store) {
+  public void execute(ApiSteps api, TestStore store) {
     action.accept(api, store);
   }
 }

@@ -8,6 +8,7 @@ diagnostic, and failure-handling contracts that ordinary API or UI tests may exe
 | API transport and response contracts | `CallsTest` |
 | Target/domain API and steps ownership | `DomainArchitectureTest` |
 | Typed fixture ownership and secret-safe diagnostics | `FixtureArchitectureTest` |
+| Owner-local JUnit keys and typed test state | `StateOwnershipArchitectureTest` |
 | No-global-retry policy and explicit transient polling | `RetrofitFactoryTest`, `CallsTest` |
 | HTTP secret redaction and fail-closed body handling | `SafeHttpReportingInterceptorTest` |
 | Explicit auth-session safety | `AuthSessionTest` |

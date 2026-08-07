@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 /** Resolves user identity before parameter resolution creates an authenticated browser context. */
 public class UserFixtureExtension implements BeforeEachCallback {
 
+  static final String TEST_USER_KEY = "testUser";
+
   @Override
   public void beforeEach(ExtensionContext context) {
     UserFixture fixture =
@@ -32,7 +34,18 @@ public class UserFixtureExtension implements BeforeEachCallback {
         Allure.step(
             "Fixture: provide %s user".formatted(fixture.value().name().toLowerCase()),
             () -> createUser(fixture.value(), api, context));
-    NamespaceRegistry.methodStore(context).put(NamespaceRegistry.TEST_USER_KEY, user);
+    NamespaceRegistry.methodStore(context).put(TEST_USER_KEY, user);
+  }
+
+  public static java.util.Optional<TestUser> find(ExtensionContext context) {
+    return java.util.Optional.ofNullable(
+        NamespaceRegistry.methodStore(context).get(TEST_USER_KEY, TestUser.class));
+  }
+
+  public static TestUser require(ExtensionContext context) {
+    return find(context)
+        .orElseThrow(
+            () -> new IllegalStateException("TestUser requires @UserFixture on the test or class"));
   }
 
   private TestUser createUser(UserFixtureMode mode, ApiSteps api, ExtensionContext context) {

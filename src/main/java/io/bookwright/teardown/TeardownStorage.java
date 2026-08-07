@@ -11,21 +11,19 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  */
 public class TeardownStorage {
 
+  private static final String STORE_KEY = "teardownStorage";
+
   public record TeardownAction(String name, Runnable action) {}
 
   private final Deque<TeardownAction> actions = new ArrayDeque<>();
 
   public static TeardownStorage getOrCreate(ExtensionContext context) {
     return NamespaceRegistry.methodStore(context)
-        .getOrComputeIfAbsent(
-            NamespaceRegistry.TEARDOWN_STORAGE_KEY,
-            key -> new TeardownStorage(),
-            TeardownStorage.class);
+        .getOrComputeIfAbsent(STORE_KEY, key -> new TeardownStorage(), TeardownStorage.class);
   }
 
   public static TeardownStorage get(ExtensionContext context) {
-    return NamespaceRegistry.methodStore(context)
-        .get(NamespaceRegistry.TEARDOWN_STORAGE_KEY, TeardownStorage.class);
+    return NamespaceRegistry.methodStore(context).get(STORE_KEY, TeardownStorage.class);
   }
 
   public void push(String name, Runnable action) {

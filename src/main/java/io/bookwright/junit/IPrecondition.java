@@ -1,7 +1,6 @@
 package io.bookwright.junit;
 
 import io.bookwright.steps.ApiSteps;
-import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * A single named precondition. Implemented by the {@link Precondition} enum; the interface exists
@@ -11,5 +10,5 @@ public interface IPrecondition {
 
   String title();
 
-  void execute(ApiSteps api, ExtensionContext.Store store);
+  void execute(ApiSteps api, TestStore store);
 }

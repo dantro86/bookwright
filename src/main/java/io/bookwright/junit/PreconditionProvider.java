@@ -28,13 +28,12 @@ public class PreconditionProvider implements BeforeTestExecutionCallback {
 
     ApiSteps api =
         StepsParameterResolver.injectorFor(ApiSteps.class, context).getInstance(ApiSteps.class);
-    ExtensionContext.Store store = NamespaceRegistry.methodStore(context);
     TestDataExtension.getOrCreate(context);
 
-    execute(preconditions, api, store);
+    execute(preconditions, api, new TestStore(context));
   }
 
-  static void execute(IPrecondition[] preconditions, ApiSteps api, ExtensionContext.Store store) {
+  static void execute(IPrecondition[] preconditions, ApiSteps api, TestStore store) {
     for (IPrecondition precondition : preconditions) {
       Allure.step("Precondition: " + precondition.title(), () -> precondition.execute(api, store));
     }

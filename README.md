@@ -44,7 +44,9 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
 
 - **Preconditions** — `@Preconditions({BOOKING_EXISTS})` on a test: the `Precondition` enum holds named
   setup actions, `PreconditionProvider` runs them right before the test body (each as an Allure step)
-  and shares created data with the test through the JUnit method-scoped store (`TestStore` parameter).
+  and shares created data through typed `TestStore` accessors. Every Store key is hidden beside its owning
+  extension or storage component; `NamespaceRegistry` creates scopes only. See
+  [ADR 0013](docs/adr/0013-owned-junit-state.md).
 - **Fixtures** — `@WithAuthSession` creates an explicit authentication value object for restful-booker.
   The integrated system adds `@UserFixture(NEW|EXISTING)`: a new user is registered through the API and
   cleaned up automatically, while an existing user comes from Owner configuration. Tests receive one typed
