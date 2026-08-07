@@ -40,7 +40,7 @@ public class UserFixtureExtension implements BeforeEachCallback {
       UserCredentials credentials =
           new UserCredentials(
               Configs.main().localExistingUserEmail(), Configs.main().localExistingUserPassword());
-      UserSession session = api.users().login(credentials);
+      UserSession session = api.local().auth().login(credentials);
       return new TestUser(mode, credentials, session.user(), session);
     }
 
@@ -48,9 +48,9 @@ public class UserFixtureExtension implements BeforeEachCallback {
     UserRegistration registration = data.user();
     UserCredentials credentials =
         new UserCredentials(registration.email(), registration.password());
-    UserProfile profile = api.users().register(registration);
-    UserSession session = api.users().login(credentials);
-    api.users().registerCleanup(session);
+    UserProfile profile = api.local().users().register(registration);
+    UserSession session = api.local().auth().login(credentials);
+    api.local().users().registerCleanup(session);
     return new TestUser(mode, credentials, profile, session);
   }
 }

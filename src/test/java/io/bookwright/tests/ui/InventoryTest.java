@@ -17,20 +17,22 @@ class InventoryTest {
   @Test
   @DisplayName("Products can be sorted by name Z to A")
   void productsCanBeSortedDescending(UiSteps ui) {
-    ui.loginAsStandardUser();
-    ui.sortByNameDescAndAssertOrder();
+    ui.sauceDemo().login().asStandardUser();
+    ui.sauceDemo().inventory().assertReady();
+    ui.sauceDemo().inventory().sortByNameDescAndAssertOrder();
   }
 
   @Test
   @DisplayName("Locked out user cannot log in")
   void lockedOutUserCannotLogIn(UiSteps ui) {
-    ui.loginAsLockedOutUserAndExpectError();
+    ui.sauceDemo().login().asLockedOutUserAndExpectError();
   }
 
   @Test
   @DisplayName("Product with punctuation can be added by its visible name")
   void productWithPunctuationCanBeAddedByVisibleName(UiSteps ui) {
-    ui.loginAsStandardUser();
-    ui.addToCart("Test.allTheThings() T-Shirt (Red)");
+    ui.sauceDemo().login().asStandardUser();
+    ui.sauceDemo().inventory().assertReady();
+    ui.sauceDemo().inventory().addToCart("Test.allTheThings() T-Shirt (Red)");
   }
 }

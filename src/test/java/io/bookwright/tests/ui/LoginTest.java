@@ -17,12 +17,13 @@ class LoginTest {
   @Test
   @DisplayName("Standard user can log in")
   void standardUserCanLogIn(UiSteps ui) {
-    ui.loginAsStandardUser();
+    ui.sauceDemo().login().asStandardUser();
+    ui.sauceDemo().inventory().assertReady();
   }
 
   @Test
   @DisplayName("Invalid password shows an error")
   void invalidPasswordShowsError(UiSteps ui) {
-    ui.loginWithInvalidPasswordAndExpectError();
+    ui.sauceDemo().login().withInvalidPasswordAndExpectError();
   }
 }

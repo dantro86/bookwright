@@ -19,6 +19,6 @@ public class AuthSessionExtension implements BeforeTestExecutionCallback {
         "Fixture: authenticate API session",
         () ->
             NamespaceRegistry.methodStore(context)
-                .put(NamespaceRegistry.AUTH_SESSION_KEY, api.auth().session()));
+                .put(NamespaceRegistry.AUTH_SESSION_KEY, api.restfulBooker().auth().session()));
   }
 }

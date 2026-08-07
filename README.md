@@ -36,6 +36,10 @@ test ──> Steps facade (@Step, Allure) ──> Retrofit API interface / Playw
               └── wired by Guice modules, injected into tests by StepsParameterResolver
 ```
 
+API and UI ownership is explicit at every call site: target facades expose focused domains such as
+`api.restfulBooker().health()`, `api.local().users()`, and `ui.sauceDemo().inventory()`. Retrofit clients and
+steps mirror the same target/domain package structure; see [ADR 0011](docs/adr/0011-domain-boundaries.md).
+
 Key mechanisms (all in `src/main/java/io/bookwright`):
 
 - **Preconditions** — `@Preconditions({BOOKING_EXISTS})` on a test: the `Precondition` enum holds named
@@ -73,8 +77,8 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   see [ADR 0010](docs/adr/0010-user-fixtures-and-api-authenticated-ui.md).
 - **Waits** — UI relies on Playwright's auto-retrying assertions; async API states are polled with
   Awaitility via `Waits` (shared defaults + mandatory alias, composed fluently at the call site).
-  Examples: `AuthApiSteps.waitUntilApiUp()` (infrastructure warm-up),
-  `BookingApiSteps.waitUntilSearchableByName()` (eventual consistency). The shared OkHttp client never retries
+  Examples: `HealthSteps.waitUntilUp()` (infrastructure warm-up),
+  `BookingSteps.waitUntilSearchableByName()` (eventual consistency). The shared OkHttp client never retries
   implicitly; retries exist only at an explicit consistency boundary. See
   [ADR 0004](docs/adr/0004-explicit-retries.md).
 - **Reproducible test data** — every test receives an isolated `TestData` sequence derived from one run seed
@@ -157,20 +161,21 @@ Releases are tag-driven. After updating `projectVersion` and moving entries from
 version in the changelog, push `v<projectVersion>`; CI verifies the tag, runs the full local stand, and
 creates the GitHub Release from that changelog section.
 
-Architecture decisions are recorded in [`docs/adr`](docs/adr), including thin clients and dependency injection,
-JUnit-owned lifecycle state, explicit cleanup, native Playwright waits, and explicit API consistency boundaries.
+Architecture decisions are recorded in [`docs/adr`](docs/adr), including target/domain ownership, thin clients
+and dependency injection, JUnit-owned lifecycle state, explicit cleanup, native Playwright waits, and explicit
+API consistency boundaries.
 
 ## Layout
 
 ```
 src/main/java/io/bookwright/
 ├── annotations/  tags + owners (6 annotations, not 133)
-├── api/          Retrofit interfaces + RetrofitFactory (+model/ DTOs)
+├── api/          target/domain Retrofit interfaces + shared transport and DTOs
 ├── config/       Owner configs + Configs entry point
 ├── db/           SshTunnel, DbPool, DAO, row mapper
 ├── di/           Guice modules (Api, Ui, Db)
 ├── junit/        extensions: preconditions, fixtures, resolver, screenshots, tunnel lifecycle
-├── steps/        ApiSteps / UiSteps / DbSteps facades
+├── steps/        compact target facades + focused target/domain steps
 ├── teardown/     LIFO teardown queue + extension
 ├── ui/           BrowserManager + page objects (plain Playwright locators)
 └── util/         Calls, Waits, deterministic TestData and factories

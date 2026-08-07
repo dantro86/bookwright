@@ -14,7 +14,8 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 public enum Precondition implements IPrecondition {
   AUTH_SESSION(
       "Obtain auth session",
-      (api, store) -> store.put(NamespaceRegistry.AUTH_SESSION_KEY, api.auth().session())),
+      (api, store) ->
+          store.put(NamespaceRegistry.AUTH_SESSION_KEY, api.restfulBooker().auth().session())),
 
   BOOKING_EXISTS(
       "Create a booking",
@@ -23,7 +24,10 @@ public enum Precondition implements IPrecondition {
         if (data == null) {
           throw new IllegalStateException("TestDataExtension did not initialize test data");
         }
-        CreatedBooking created = api.bookings().create(data.booking());
+        CreatedBooking created =
+            api.restfulBooker()
+                .bookings()
+                .create(data.booking(), api.restfulBooker().auth().session());
         store.put(NamespaceRegistry.BOOKING_KEY, created);
       });
 

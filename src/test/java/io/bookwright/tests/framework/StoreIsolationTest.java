@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.bookwright.junit.TestStore;
 import io.bookwright.steps.ApiSteps;
-import io.bookwright.steps.AuthApiSteps;
+import io.bookwright.steps.restfulbooker.auth.AuthSteps;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.AfterAll;
@@ -15,7 +15,7 @@ class StoreIsolationTest {
 
   private static final String KEY = "method-isolation-probe";
   private static final Set<ApiSteps> API_FACADES = ConcurrentHashMap.newKeySet();
-  private static final Set<AuthApiSteps> AUTH_STEPS = ConcurrentHashMap.newKeySet();
+  private static final Set<AuthSteps> AUTH_STEPS = ConcurrentHashMap.newKeySet();
 
   @Test
   void firstMethodOwnsItsStore(TestStore store, ApiSteps api) {
@@ -40,7 +40,7 @@ class StoreIsolationTest {
 
     store.put(KEY, value);
     API_FACADES.add(api);
-    AUTH_STEPS.add(api.auth());
+    AUTH_STEPS.add(api.restfulBooker().auth());
 
     assertThat(store.get(KEY, String.class)).isEqualTo(value);
   }

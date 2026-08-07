@@ -19,8 +19,10 @@ class CheckoutTest {
   @Test
   @DisplayName("Standard user can check out a backpack")
   void standardUserCanCheckout(UiSteps ui) {
-    ui.loginAsStandardUser();
-    ui.addToCart(PRODUCT);
-    ui.checkoutAndAssertOrderComplete(PRODUCT);
+    ui.sauceDemo().login().asStandardUser();
+    ui.sauceDemo().inventory().assertReady();
+    ui.sauceDemo().inventory().addToCart(PRODUCT);
+    ui.sauceDemo().inventory().openCart();
+    ui.sauceDemo().checkout().completeAndAssert(PRODUCT);
   }
 }

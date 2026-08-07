@@ -28,12 +28,14 @@ class BookingNegativeTest {
   @DisplayName("Update without auth token is forbidden")
   void updateWithoutTokenIsForbidden(ApiSteps api, TestStore store, TestData data) {
     CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
-    api.bookings().assertUpdateWithoutTokenForbidden(existing.getBookingid(), data.booking());
+    api.restfulBooker()
+        .bookings()
+        .assertUpdateWithoutTokenForbidden(existing.getBookingid(), data.booking());
   }
 
   @Test
   @DisplayName("Requesting a nonexistent booking returns 404")
   void nonexistentBookingReturns404(ApiSteps api) {
-    api.bookings().assertBookingNotFound(NONEXISTENT_ID);
+    api.restfulBooker().bookings().assertBookingNotFound(NONEXISTENT_ID);
   }
 }

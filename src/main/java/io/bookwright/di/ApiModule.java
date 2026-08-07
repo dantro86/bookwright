@@ -3,11 +3,10 @@ package io.bookwright.di;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import io.bookwright.api.AuthApi;
-import io.bookwright.api.BookingApi;
-import io.bookwright.api.LocalBookingApi;
-import io.bookwright.api.LocalUserApi;
+import com.google.inject.name.Named;
 import io.bookwright.api.RetrofitFactory;
+import io.bookwright.api.local.users.UsersApi;
+import io.bookwright.api.restfulbooker.health.HealthApi;
 import io.bookwright.config.Configs;
 import io.bookwright.config.MainConfig;
 import io.bookwright.teardown.TeardownStorage;
@@ -25,36 +24,58 @@ public class ApiModule extends AbstractModule {
   protected void configure() {
     bind(MainConfig.class).toInstance(Configs.main());
     bind(TeardownStorage.class).toInstance(teardownStorage);
-    bind(io.bookwright.steps.AuthApiSteps.class).in(Singleton.class);
+    bind(io.bookwright.steps.restfulbooker.auth.AuthSteps.class).in(Singleton.class);
   }
 
   @Provides
   @Singleton
-  Retrofit retrofit(MainConfig config) {
+  @Named("restfulBooker")
+  Retrofit restfulBookerRetrofit(MainConfig config) {
     return RetrofitFactory.create(config.apiBaseUrl());
   }
 
   @Provides
   @Singleton
-  AuthApi authApi(Retrofit retrofit) {
-    return retrofit.create(AuthApi.class);
+  @Named("local")
+  Retrofit localRetrofit(MainConfig config) {
+    return RetrofitFactory.create(config.localBookingBaseUrl());
   }
 
   @Provides
   @Singleton
-  BookingApi bookingApi(Retrofit retrofit) {
-    return retrofit.create(BookingApi.class);
+  io.bookwright.api.restfulbooker.auth.AuthApi restfulBookerAuthApi(
+      @Named("restfulBooker") Retrofit retrofit) {
+    return retrofit.create(io.bookwright.api.restfulbooker.auth.AuthApi.class);
   }
 
   @Provides
   @Singleton
-  LocalBookingApi localBookingApi(MainConfig config) {
-    return RetrofitFactory.create(config.localBookingBaseUrl()).create(LocalBookingApi.class);
+  HealthApi healthApi(@Named("restfulBooker") Retrofit retrofit) {
+    return retrofit.create(HealthApi.class);
   }
 
   @Provides
   @Singleton
-  LocalUserApi localUserApi(MainConfig config) {
-    return RetrofitFactory.create(config.localBookingBaseUrl()).create(LocalUserApi.class);
+  io.bookwright.api.restfulbooker.bookings.BookingsApi restfulBookerBookingsApi(
+      @Named("restfulBooker") Retrofit retrofit) {
+    return retrofit.create(io.bookwright.api.restfulbooker.bookings.BookingsApi.class);
+  }
+
+  @Provides
+  @Singleton
+  io.bookwright.api.local.auth.AuthApi localAuthApi(@Named("local") Retrofit retrofit) {
+    return retrofit.create(io.bookwright.api.local.auth.AuthApi.class);
+  }
+
+  @Provides
+  @Singleton
+  UsersApi usersApi(@Named("local") Retrofit retrofit) {
+    return retrofit.create(UsersApi.class);
+  }
+
+  @Provides
+  @Singleton
+  io.bookwright.api.local.bookings.BookingsApi localBookingsApi(@Named("local") Retrofit retrofit) {
+    return retrofit.create(io.bookwright.api.local.bookings.BookingsApi.class);
   }
 }

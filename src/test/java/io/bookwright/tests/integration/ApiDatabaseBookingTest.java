@@ -24,15 +24,15 @@ class ApiDatabaseBookingTest {
   @Test
   @DisplayName("API booking is persisted to MySQL and removed through the API")
   void apiBookingIsPersistedAndCleanedUp(ApiSteps api, DbSteps db, TestData data) {
-    LocalBooking created = api.localBookings().create(data.localBooking());
+    LocalBooking created = api.local().bookings().create(data.localBooking());
 
-    assertThat(api.localBookings().get(created.getId()))
+    assertThat(api.local().bookings().get(created.getId()))
         .as("booking returned by the local API")
         .usingRecursiveComparison()
         .isEqualTo(created);
     db.assertBookingMatches(created);
 
-    api.localBookings().delete(created.getId());
+    api.local().bookings().delete(created.getId());
     db.assertBookingAbsent(created.getId());
   }
 }

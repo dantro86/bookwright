@@ -25,11 +25,12 @@ import org.junit.jupiter.api.Test;
 class BookingCrudTest {
 
   @Test
+  @WithAuthSession
   @DisplayName("Booking can be created and read back")
-  void bookingCanBeCreated(ApiSteps api, TestData data) {
+  void bookingCanBeCreated(ApiSteps api, TestStore store, TestData data) {
     Booking booking = data.booking();
-    CreatedBooking created = api.bookings().create(booking);
-    api.bookings().assertBookingMatches(created.getBookingid(), booking);
+    CreatedBooking created = api.restfulBooker().bookings().create(booking, store.authSession());
+    api.restfulBooker().bookings().assertBookingMatches(created.getBookingid(), booking);
   }
 
   @Test
@@ -39,8 +40,8 @@ class BookingCrudTest {
   void bookingCanBeUpdated(ApiSteps api, TestStore store, TestData data) {
     CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
     Booking updated = data.booking();
-    api.bookings().update(existing.getBookingid(), updated, store.authSession());
-    api.bookings().assertBookingMatches(existing.getBookingid(), updated);
+    api.restfulBooker().bookings().update(existing.getBookingid(), updated, store.authSession());
+    api.restfulBooker().bookings().assertBookingMatches(existing.getBookingid(), updated);
   }
 
   @Test
@@ -49,8 +50,8 @@ class BookingCrudTest {
   @DisplayName("Booking can be deleted")
   void bookingCanBeDeleted(ApiSteps api, TestStore store) {
     CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
-    api.bookings().delete(existing.getBookingid(), store.authSession());
-    assertThat(api.bookings().getIds())
+    api.restfulBooker().bookings().delete(existing.getBookingid(), store.authSession());
+    assertThat(api.restfulBooker().bookings().getIds())
         .as("booking ids after deletion")
         .noneMatch(id -> id.getBookingid().equals(existing.getBookingid()));
   }

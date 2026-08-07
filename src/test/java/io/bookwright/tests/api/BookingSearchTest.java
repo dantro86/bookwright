@@ -29,7 +29,10 @@ class BookingSearchTest {
   void bookingCanBeFoundByName(ApiSteps api, TestStore store) {
     CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
     Booking booking = existing.getBooking();
-    assertThat(api.bookings().findIdsByName(booking.getFirstname(), booking.getLastname()))
+    assertThat(
+            api.restfulBooker()
+                .bookings()
+                .findIdsByName(booking.getFirstname(), booking.getLastname()))
         .as("bookings found by guest name")
         .anyMatch(id -> id.getBookingid().equals(existing.getBookingid()));
   }
@@ -40,7 +43,8 @@ class BookingSearchTest {
   void createdBookingBecomesSearchable(ApiSteps api, TestStore store) {
     CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
     Booking booking = existing.getBooking();
-    api.bookings()
+    api.restfulBooker()
+        .bookings()
         .waitUntilSearchableByName(
             existing.getBookingid(), booking.getFirstname(), booking.getLastname());
   }
@@ -53,13 +57,14 @@ class BookingSearchTest {
     CreatedBooking existing = store.get(NamespaceRegistry.BOOKING_KEY, CreatedBooking.class);
     Booking original = existing.getBooking();
 
-    api.bookings()
+    api.restfulBooker()
+        .bookings()
         .partialUpdate(
             existing.getBookingid(),
             Booking.builder().firstname("Patched").build(),
             store.authSession());
 
-    Booking after = api.bookings().get(existing.getBookingid());
+    Booking after = api.restfulBooker().bookings().get(existing.getBookingid());
     assertThat(after.getFirstname()).as("patched firstname").isEqualTo("Patched");
     assertThat(after.getLastname()).as("untouched lastname").isEqualTo(original.getLastname());
     assertThat(after.getTotalprice())

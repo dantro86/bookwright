@@ -1,4 +1,4 @@
-package io.bookwright.api;
+package io.bookwright.api.local.bookings;
 
 import io.bookwright.api.model.LocalBooking;
 import retrofit2.Call;
@@ -8,7 +8,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-public interface LocalBookingApi {
+public interface BookingsApi {
 
   @POST("api/bookings")
   Call<LocalBooking> create(@Body LocalBooking booking);

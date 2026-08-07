@@ -33,7 +33,7 @@ class UserFixtureUiAuthenticationTest {
     assertThat(user.mode()).isEqualTo(UserFixtureMode.NEW);
     assertThat(user.profile().email()).startsWith("new.");
 
-    ui.openLocalBookingsAs(user);
+    ui.local().bookings().openAs(user);
   }
 
   @Test
@@ -42,19 +42,20 @@ class UserFixtureUiAuthenticationTest {
   void existingUserStartsWithAuthenticatedBrowserState(TestUser user, UiSteps ui) {
     assertThat(user.mode()).isEqualTo(UserFixtureMode.EXISTING);
 
-    ui.openLocalBookingsAs(user);
+    ui.local().bookings().openAs(user);
   }
 
   @Test
   @DisplayName("UI rejects a browser context without an API session")
   void missingSessionIsRejected(UiSteps ui) {
-    ui.openLocalBookingsAndExpectAuthenticationRequired();
+    ui.local().bookings().openAndExpectAuthenticationRequired();
   }
 
   @Test
   @DisplayName("API rejects invalid user credentials")
   void invalidCredentialsAreRejected(ApiSteps api) {
-    api.users()
+    api.local()
+        .auth()
         .expectLoginRejected(
             new UserCredentials("existing.user@bookwright.dev", "incorrect-password"));
   }

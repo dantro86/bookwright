@@ -8,12 +8,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Accessors(fluent = true)
 public class ApiSteps {
-
-  @Inject private AuthApiSteps auth;
-
-  @Inject private BookingApiSteps bookings;
-
-  @Inject private LocalBookingApiSteps localBookings;
-
-  @Inject private UserApiSteps users;
+  @Inject private io.bookwright.steps.restfulbooker.RestfulBookerSteps restfulBooker;
+  @Inject private io.bookwright.steps.local.LocalApiSteps local;
 }

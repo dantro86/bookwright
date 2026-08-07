@@ -9,6 +9,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- Explicit target/domain API and steps boundaries enforced by architecture self-tests and ADR 0011.
+
 - A minimal Java booking application backed by the same private MySQL service used by database tests.
 - An API → DB-over-SSH verification → API cleanup scenario with deterministic data and LIFO fallback cleanup.
 - An independent integration quality gate whose results are merged into the published Allure report.
@@ -18,6 +20,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - A changelog style gate that prevents release-note bullets from repeating their section heading.
 
 ### Changed
+
+- Split restful-booker health, auth, and bookings from local auth, users, and bookings, with compact target facades for API and UI tests.
+- Replaced the monolithic UI steps class with focused Sauce Demo login, inventory, and checkout domains plus local booking UI steps.
 
 - The isolated local launcher now supports an opt-in `integrated` Compose profile and dynamically discovers the application port.
 - Unrelated local-application scenarios no longer submit a login form; Sauce Demo examples retain it because the public target exposes no supported authentication API.

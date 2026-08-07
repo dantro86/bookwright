@@ -69,14 +69,14 @@ The audit baseline is the system bookwright actually tests, not a copied enterpr
 
 ### 6.1 Domain boundaries
 
-- [ ] Move Retrofit clients into target/domain packages so similarly named external and local domains cannot be confused.
-- [ ] Split restful-booker health checks out of `AuthApi` into `HealthApi`; keep token creation in `AuthApi`.
-- [ ] Split `LocalUserApi` into local `AuthApi`/session operations and `UsersApi` lifecycle operations.
-- [ ] Keep booking clients separate per target and use consistent plural resource naming.
-- [ ] Mirror every API boundary in focused `HealthSteps`, `AuthSteps`, `BookingSteps`, and `UserSteps`; keep `ApiSteps` as a compact access facade only.
-- [ ] Split `UiSteps` into login, inventory, checkout, and local-bookings domains; keep `UiSteps` only as a compact facade if one access point remains useful.
-- [ ] Add architecture self-tests that reject catch-all API/steps classes and unintended cross-domain dependencies.
-- [ ] Remove superseded API and steps classes after migration and verify that no imports or reflection-based registrations still reference them.
+- [x] Move Retrofit clients into target/domain packages so similarly named external and local domains cannot be confused.
+- [x] Split restful-booker health checks out of `AuthApi` into `HealthApi`; keep token creation in `AuthApi`.
+- [x] Split `LocalUserApi` into local `AuthApi`/session operations and `UsersApi` lifecycle operations.
+- [x] Keep booking clients separate per target and use consistent plural resource naming.
+- [x] Mirror every API boundary in focused `HealthSteps`, `AuthSteps`, `BookingSteps`, and `UserSteps`; keep `ApiSteps` as a compact access facade only.
+- [x] Split `UiSteps` into login, inventory, checkout, and local-bookings domains; keep `UiSteps` only as a compact facade if one access point remains useful.
+- [x] Add architecture self-tests that reject catch-all API/steps classes and unintended cross-domain dependencies.
+- [x] Remove superseded API and steps classes after migration and verify that no imports or reflection-based registrations still reference them.
 
 ### 6.2 Test data and fixtures
 
@@ -111,9 +111,9 @@ The audit baseline is the system bookwright actually tests, not a copied enterpr
 
 ### 6.5 Refactoring verification
 
-- [ ] Document the final domain/state ownership map in an ADR before moving packages.
-- [ ] Preserve behavior and LIFO cleanup with characterization tests before deleting old classes.
-- [ ] Run Spotless, framework self-tests, product smoke tests, integrated API/UI/DB scenarios, and `git diff --check` after each migration slice.
+- [x] Document the final domain/state ownership map in an ADR before moving packages.
+- [x] Preserve behavior and LIFO cleanup with characterization tests before deleting old classes.
+- [x] Run Spotless, framework self-tests, product smoke tests, integrated API/UI/DB scenarios, and `git diff --check` after each migration slice.
 - [ ] Release the domain ownership, typed fixtures, and diagnostic hardening as the next minor version.
 
 ## 7. Advanced learning examples

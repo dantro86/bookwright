@@ -1,19 +1,19 @@
-package io.bookwright.steps;
+package io.bookwright.steps.local.bookings;
 
 import com.google.inject.Inject;
-import io.bookwright.api.LocalBookingApi;
+import io.bookwright.api.local.bookings.BookingsApi;
 import io.bookwright.api.model.LocalBooking;
 import io.bookwright.teardown.TeardownStorage;
 import io.bookwright.util.Calls;
 import io.qameta.allure.Step;
 
-public class LocalBookingApiSteps {
+public class BookingSteps {
 
-  private final LocalBookingApi api;
+  private final BookingsApi api;
   private final TeardownStorage teardown;
 
   @Inject
-  public LocalBookingApiSteps(LocalBookingApi api, TeardownStorage teardown) {
+  public BookingSteps(BookingsApi api, TeardownStorage teardown) {
     this.api = api;
     this.teardown = teardown;
   }

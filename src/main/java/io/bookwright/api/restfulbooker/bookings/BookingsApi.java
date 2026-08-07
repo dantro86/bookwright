@@ -1,4 +1,4 @@
-package io.bookwright.api;
+package io.bookwright.api.restfulbooker.bookings;
 
 import io.bookwright.api.model.Booking;
 import io.bookwright.api.model.BookingId;
@@ -15,11 +15,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-/**
- * restful-booker booking CRUD. Write operations authenticate with a {@code Cookie: token=<token>}
- * header.
- */
-public interface BookingApi {
+public interface BookingsApi {
 
   @GET("booking")
   Call<List<BookingId>> getBookingIds();

@@ -19,18 +19,18 @@ class AuthTest {
   @Test
   @DisplayName("API responds to ping")
   void apiIsAlive(ApiSteps api) {
-    api.auth().ping();
+    api.restfulBooker().health().ping();
   }
 
   @Test
   @DisplayName("API becomes available within the warm-up window")
   void apiBecomesAvailable(ApiSteps api) {
-    api.auth().waitUntilApiUp();
+    api.restfulBooker().health().waitUntilUp();
   }
 
   @Test
   @DisplayName("Auth token is issued for valid credentials")
   void tokenIsIssued(ApiSteps api) {
-    assertThat(api.auth().token()).isNotBlank();
+    assertThat(api.restfulBooker().auth().token()).isNotBlank();
   }
 }
