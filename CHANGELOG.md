@@ -7,12 +7,17 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Planned
+
+- See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
+
+## [1.4.0] - 2026-08-07
+
 ### Added
 
 - Explicit target/domain API and steps boundaries enforced by architecture self-tests and ADR 0011.
 - Typed Sauce Demo, local-user, and database fixtures with source-level ownership checks and ADR 0012.
 - Typed, owner-local JUnit state contracts with architecture checks and ADR 0013.
-
 - A minimal Java booking application backed by the same private MySQL service used by database tests.
 - An API → DB-over-SSH verification → API cleanup scenario with deterministic data and LIFO fallback cleanup.
 - An independent integration quality gate whose results are merged into the published Allure report.
@@ -27,13 +32,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Replaced the monolithic UI steps class with focused Sauce Demo login, inventory, and checkout domains plus local booking UI steps.
 - Moved scenario selection out of steps and product tests into immutable fixtures or reproducible per-test data.
 - Reduced `NamespaceRegistry` to scope creation, made generic test-store access internal, and established `@WithAuthSession` as the single restful-booker auth fixture.
-
 - The isolated local launcher now supports an opt-in `integrated` Compose profile and dynamically discovers the application port.
 - Unrelated local-application scenarios no longer submit a login form; Sauce Demo examples retain it because the public target exposes no supported authentication API.
-
-### Planned
-
-- See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
 
 ## [1.3.0] - 2026-08-01
 
@@ -115,7 +115,8 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - MIT license, project documentation, and author/contact information.
 - Semantic Versioning, a validated single version source, Keep a Changelog, and tag-driven GitHub Releases.
 
-[Unreleased]: https://github.com/dantro86/bookwright/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/dantro86/bookwright/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/dantro86/bookwright/releases/tag/v1.4.0
 [1.3.0]: https://github.com/dantro86/bookwright/releases/tag/v1.3.0
 [1.2.0]: https://github.com/dantro86/bookwright/releases/tag/v1.2.0
 [1.1.0]: https://github.com/dantro86/bookwright/releases/tag/v1.1.0

@@ -12,6 +12,7 @@ This roadmap records the SDET review decisions accepted for bookwright. Work is 
 - [x] Release the lifecycle and API contract hardening as `v1.1.0`.
 - [x] Release secure diagnostics, stronger UI contracts, and reproducible test data as `v1.2.0`.
 - [x] Release framework verification, hardened local infrastructure, quality gates, and Allure Pages as `v1.3.0`.
+- [x] Release domain boundaries, typed fixtures, integrated user flows, and owned JUnit state as `v1.4.0`.
 
 ## 1. Correctness and lifecycle
 
