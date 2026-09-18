@@ -28,8 +28,7 @@ public class UserFixtureExtension implements BeforeEachCallback {
       throw new IllegalStateException("@UserFixture configuration is not available");
     }
 
-    ApiSteps api =
-        StepsParameterResolver.injectorFor(ApiSteps.class, context).getInstance(ApiSteps.class);
+    ApiSteps api = TestRuntime.resolve(ApiSteps.class, context);
     TestUser user =
         Allure.step(
             "Fixture: provide %s user".formatted(fixture.value().name().toLowerCase()),

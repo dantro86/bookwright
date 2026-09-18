@@ -33,7 +33,7 @@ Owner (config) · Awaitility · JDBI + HikariCP · JSch (SSH tunnel) · Lombok �
 ```
 test ──> Steps facade (@Step, Allure) ──> Retrofit API interface / Playwright page object / JDBI DAO
               │
-              └── wired by Guice modules, injected into tests by StepsParameterResolver
+              └── one method-scoped Guice TestRuntime shared by steps, fixtures, and extensions
 ```
 
 API and UI ownership is explicit at every call site: target facades expose focused domains such as
@@ -53,7 +53,10 @@ Key mechanisms (all in `src/main/java/io/bookwright`):
   `TestUser` containing redacted credentials, profile, and API-issued session. Stable product scenarios use
   typed `SauceDemoFixtures`, `LocalUserFixtures`, and `HotelDatabaseFixtures`; unique payloads come from the
   deterministic per-test `TestData` sequence. Steps accept these ready values instead of inventing scenarios;
-  see [ADR 0012](docs/adr/0012-typed-fixture-ownership.md).
+  see [ADR 0012](docs/adr/0012-typed-fixture-ownership.md). Scenario fixtures are explicit `@TestFixture`
+  parameters with owner-defined injectable constructors. They share one method-scoped runtime with all step
+  facades, so adding a fixture requires no central registry; see
+  [ADR 0014](docs/adr/0014-method-scoped-test-runtime.md).
 - **Teardown** — steps push a cleanup lambda into a per-test LIFO queue for every entity they create;
   `TeardownExtension` drains it after each test. `teardown.failOnError` controls whether cleanup failures
   fail an otherwise successful test; a primary test failure is never replaced.

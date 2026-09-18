@@ -7,23 +7,13 @@ import com.google.inject.name.Named;
 import io.bookwright.api.RetrofitFactory;
 import io.bookwright.api.local.users.UsersApi;
 import io.bookwright.api.restfulbooker.health.HealthApi;
-import io.bookwright.config.Configs;
 import io.bookwright.config.MainConfig;
-import io.bookwright.teardown.TeardownStorage;
 import retrofit2.Retrofit;
 
 public class ApiModule extends AbstractModule {
 
-  private final TeardownStorage teardownStorage;
-
-  public ApiModule(TeardownStorage teardownStorage) {
-    this.teardownStorage = teardownStorage;
-  }
-
   @Override
   protected void configure() {
-    bind(MainConfig.class).toInstance(Configs.main());
-    bind(TeardownStorage.class).toInstance(teardownStorage);
     bind(io.bookwright.steps.restfulbooker.auth.AuthSteps.class).in(Singleton.class);
   }
 

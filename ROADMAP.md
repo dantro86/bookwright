@@ -98,7 +98,18 @@ The audit baseline is the system bookwright actually tests, not a copied enterpr
 - [x] For find-or-create preconditions, query first and branch on the returned collection; do not use expected exceptions as normal control flow.
 - [x] Preserve method-scoped ownership and LIFO cleanup for every entity created by a precondition or fixture.
 
-### 6.4 Wait contracts and diagnostics
+### 6.4 Test runtime and fixture construction
+
+- [x] Replace resolver-owned fixture factories with an explicit `@TestFixture` parameter contract.
+- [x] Build fixtures through owner-defined injectable constructors instead of a central catalog,
+  marker interface, package scan, or reflection-based factory convention.
+- [x] Compose API, UI, database, configuration, deterministic data, and teardown dependencies in
+  one method-scoped `TestRuntime` injector.
+- [x] Separate steps, framework state, fixture, and test-data parameter resolution responsibilities.
+- [x] Add framework tests proving that a new fixture needs no central registration and shares the
+  test-owned runtime dependencies.
+
+### 6.5 Wait contracts and diagnostics
 
 - [ ] Return a matched value directly from Awaitility `until` whenever the caller needs it; never use arrays, atomics, or mutable holders as lambda return channels.
 - [ ] Keep terminal/error-state classification in named methods and fail immediately when polling reaches a terminal failure.
@@ -110,7 +121,7 @@ The audit baseline is the system bookwright actually tests, not a copied enterpr
 - [ ] Replace cleanup-specific generic `IllegalStateException` diagnostics with the same safe API response contract and operation context.
 - [ ] Add regression tests proving that cause chains remain intact and that passwords, cookies, tokens, and secrets never reach exceptions, logs, Allure parameters, or `toString()`.
 
-### 6.5 Refactoring verification
+### 6.6 Refactoring verification
 
 - [x] Document the final domain/state ownership map in an ADR before moving packages.
 - [x] Preserve behavior and LIFO cleanup with characterization tests before deleting old classes.

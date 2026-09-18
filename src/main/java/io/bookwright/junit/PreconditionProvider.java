@@ -10,8 +10,8 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 /**
  * Runs {@link Preconditions} declared on the test method (or class) just before the test body.
- * Reuses the class-level Guice injector, so preconditions go through the same steps (and the same
- * LIFO teardown) as the test itself.
+ * Reuses the method-scoped test runtime, so preconditions go through the same steps and LIFO
+ * teardown as the test itself.
  */
 public class PreconditionProvider implements BeforeTestExecutionCallback {
 
@@ -26,8 +26,7 @@ public class PreconditionProvider implements BeforeTestExecutionCallback {
                         "PreconditionProvider is registered but no @Preconditions annotation found on "
                             + context.getDisplayName()));
 
-    ApiSteps api =
-        StepsParameterResolver.injectorFor(ApiSteps.class, context).getInstance(ApiSteps.class);
+    ApiSteps api = TestRuntime.resolve(ApiSteps.class, context);
     TestDataExtension.getOrCreate(context);
 
     execute(preconditions, api, new TestStore(context));

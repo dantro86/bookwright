@@ -4,6 +4,7 @@ import io.bookwright.annotations.OwnerDanil;
 import io.bookwright.annotations.Smoke;
 import io.bookwright.annotations.Ui;
 import io.bookwright.fixtures.saucedemo.SauceDemoFixtures;
+import io.bookwright.junit.TestFixture;
 import io.bookwright.steps.UiSteps;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -17,14 +18,14 @@ class LoginTest {
 
   @Test
   @DisplayName("Standard user can log in")
-  void standardUserCanLogIn(UiSteps ui, SauceDemoFixtures fixtures) {
+  void standardUserCanLogIn(UiSteps ui, @TestFixture SauceDemoFixtures fixtures) {
     ui.sauceDemo().login().login(fixtures.standardUser());
     ui.sauceDemo().inventory().assertReady(fixtures.catalog());
   }
 
   @Test
   @DisplayName("Invalid password shows an error")
-  void invalidPasswordShowsError(UiSteps ui, SauceDemoFixtures fixtures) {
+  void invalidPasswordShowsError(UiSteps ui, @TestFixture SauceDemoFixtures fixtures) {
     ui.sauceDemo().login().loginAndExpectError(fixtures.invalidPassword());
   }
 }

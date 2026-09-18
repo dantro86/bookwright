@@ -1,5 +1,6 @@
 package io.bookwright.fixtures.saucedemo;
 
+import com.google.inject.Inject;
 import io.bookwright.config.MainConfig;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -12,8 +13,35 @@ public record SauceDemoFixtures(
     Catalog catalog,
     Checkout checkout) {
 
+  @Inject
+  public SauceDemoFixtures(MainConfig config) {
+    this(
+        standardUser(config),
+        invalidPassword(config),
+        lockedOut(config),
+        catalogFixtures(),
+        checkoutFixtures());
+  }
+
   public static SauceDemoFixtures from(MainConfig config) {
-    User standard = new User(config.uiUser(), config.uiPassword());
+    return new SauceDemoFixtures(config);
+  }
+
+  private static User standardUser(MainConfig config) {
+    return new User(config.uiUser(), config.uiPassword());
+  }
+
+  private static LoginCase invalidPassword(MainConfig config) {
+    return new LoginCase(
+        new User(config.uiUser(), "definitely-wrong"), "Username and password do not match");
+  }
+
+  private static LoginCase lockedOut(MainConfig config) {
+    return new LoginCase(
+        new User("locked_out_user", config.uiPassword()), "Sorry, this user has been locked out");
+  }
+
+  private static Catalog catalogFixtures() {
     List<String> products =
         List.of(
             "Sauce Labs Backpack",
@@ -22,29 +50,25 @@ public record SauceDemoFixtures(
             "Sauce Labs Fleece Jacket",
             "Sauce Labs Onesie",
             "Test.allTheThings() T-Shirt (Red)");
-    return new SauceDemoFixtures(
-        standard,
-        new LoginCase(
-            new User(config.uiUser(), "definitely-wrong"), "Username and password do not match"),
-        new LoginCase(
-            new User("locked_out_user", config.uiPassword()),
-            "Sorry, this user has been locked out"),
-        new Catalog(
-            "Products",
-            products,
-            "za",
-            products.reversed(),
-            "Sauce Labs Backpack",
-            "Test.allTheThings() T-Shirt (Red)",
-            "Remove",
-            1),
-        new Checkout(
-            new Customer("Test", "Guest", "00100"),
-            "Thank you for your order!",
-            "Your order has been dispatched",
-            Pattern.compile(".*/checkout-complete\\.html"),
-            1,
-            0));
+    return new Catalog(
+        "Products",
+        products,
+        "za",
+        products.reversed(),
+        "Sauce Labs Backpack",
+        "Test.allTheThings() T-Shirt (Red)",
+        "Remove",
+        1);
+  }
+
+  private static Checkout checkoutFixtures() {
+    return new Checkout(
+        new Customer("Test", "Guest", "00100"),
+        "Thank you for your order!",
+        "Your order has been dispatched",
+        Pattern.compile(".*/checkout-complete\\.html"),
+        1,
+        0);
   }
 
   public record User(String username, String password) {

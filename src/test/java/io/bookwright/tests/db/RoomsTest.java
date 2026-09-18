@@ -6,6 +6,7 @@ import io.bookwright.annotations.Db;
 import io.bookwright.annotations.OwnerDanil;
 import io.bookwright.annotations.Regression;
 import io.bookwright.fixtures.database.HotelDatabaseFixtures;
+import io.bookwright.junit.TestFixture;
 import io.bookwright.steps.DbSteps;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -19,14 +20,14 @@ class RoomsTest {
 
   @Test
   @DisplayName("Seeded schema contains all rooms")
-  void seededRoomsArePresent(DbSteps db, HotelDatabaseFixtures fixtures) {
+  void seededRoomsArePresent(DbSteps db, @TestFixture HotelDatabaseFixtures fixtures) {
     db.assertRoomCount(fixtures.roomCount());
     db.assertRoomsOfTypeExist(fixtures.roomType());
   }
 
   @Test
   @DisplayName("Join query finds rooms booked by a guest")
-  void roomsBookedByGuestAreFound(DbSteps db, HotelDatabaseFixtures fixtures) {
+  void roomsBookedByGuestAreFound(DbSteps db, @TestFixture HotelDatabaseFixtures fixtures) {
     assertThat(db.roomsBookedByGuest(fixtures.seededGuestLastName()))
         .as("rooms booked by seeded guest")
         .isNotEmpty();

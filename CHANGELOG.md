@@ -7,6 +7,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- An explicit `@TestFixture` parameter contract backed by owner-defined injectable constructors.
+- ADR 0014 documenting the method-scoped test runtime and decentralized fixture construction.
+
+### Changed
+
+- Composed API, UI, database, configuration, deterministic data, and teardown dependencies in one
+  method-scoped Guice runtime shared by each test.
+- Split steps, framework state, fixture, and test-data parameter resolution into focused JUnit
+  extensions, removing fixture construction from `StepsParameterResolver`.
+
 ### Planned
 
 - See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.

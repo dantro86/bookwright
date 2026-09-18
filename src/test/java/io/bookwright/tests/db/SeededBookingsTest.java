@@ -7,6 +7,7 @@ import io.bookwright.annotations.OwnerDanil;
 import io.bookwright.annotations.Smoke;
 import io.bookwright.db.BookingRow;
 import io.bookwright.fixtures.database.HotelDatabaseFixtures;
+import io.bookwright.junit.TestFixture;
 import io.bookwright.steps.DbSteps;
 import io.bookwright.util.TestData;
 import io.qameta.allure.Feature;
@@ -21,7 +22,7 @@ class SeededBookingsTest {
 
   @Test
   @DisplayName("Seeded schema contains the expected bookings")
-  void seededBookingsArePresent(DbSteps db, HotelDatabaseFixtures fixtures) {
+  void seededBookingsArePresent(DbSteps db, @TestFixture HotelDatabaseFixtures fixtures) {
     db.assertBookingCountAtLeast(fixtures.minimumBookingCount());
     db.assertGuestHasBooking(fixtures.seededGuestLastName());
   }

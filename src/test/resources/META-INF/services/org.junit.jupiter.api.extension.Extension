@@ -1,4 +1,6 @@
 io.bookwright.teardown.TeardownExtension
+io.bookwright.junit.FrameworkParameterResolver
 io.bookwright.junit.StepsParameterResolver
+io.bookwright.junit.TestFixtureParameterResolver
 io.bookwright.junit.UiArtifactsOnFailureExtension
 io.bookwright.junit.TestDataExtension

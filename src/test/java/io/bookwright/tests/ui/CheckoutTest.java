@@ -4,6 +4,7 @@ import io.bookwright.annotations.OwnerDanil;
 import io.bookwright.annotations.Regression;
 import io.bookwright.annotations.Ui;
 import io.bookwright.fixtures.saucedemo.SauceDemoFixtures;
+import io.bookwright.junit.TestFixture;
 import io.bookwright.steps.UiSteps;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +18,7 @@ class CheckoutTest {
 
   @Test
   @DisplayName("Standard user can check out a backpack")
-  void standardUserCanCheckout(UiSteps ui, SauceDemoFixtures fixtures) {
+  void standardUserCanCheckout(UiSteps ui, @TestFixture SauceDemoFixtures fixtures) {
     String product = fixtures.catalog().checkoutProduct();
     ui.sauceDemo().login().login(fixtures.standardUser());
     ui.sauceDemo().inventory().assertReady(fixtures.catalog());

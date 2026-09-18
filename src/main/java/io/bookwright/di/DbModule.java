@@ -6,20 +6,8 @@ import com.google.inject.Singleton;
 import io.bookwright.db.BookingDao;
 import io.bookwright.db.DbPool;
 import io.bookwright.db.RoomDao;
-import io.bookwright.teardown.TeardownStorage;
 
 public class DbModule extends AbstractModule {
-
-  private final TeardownStorage teardownStorage;
-
-  public DbModule(TeardownStorage teardownStorage) {
-    this.teardownStorage = teardownStorage;
-  }
-
-  @Override
-  protected void configure() {
-    bind(TeardownStorage.class).toInstance(teardownStorage);
-  }
 
   @Provides
   @Singleton
