@@ -11,6 +11,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 - An explicit `@TestFixture` parameter contract backed by owner-defined injectable constructors.
 - ADR 0014 documenting the method-scoped test runtime and decentralized fixture construction.
+- A dependency submission job that publishes the resolved Gradle classpath to GitHub's dependency
+  graph, so Dependabot alerts and dependency review cover Java dependencies instead of GitHub
+  Actions alone.
 
 ### Changed
 

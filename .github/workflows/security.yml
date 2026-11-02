@@ -12,6 +12,24 @@ permissions:
   contents: read
 
 jobs:
+  dependency-submission:
+    name: Dependency submission
+    # GitHub derives the dependency graph from Maven manifests by itself, but not from Gradle
+    # builds: without this job the graph holds GitHub Actions only, which leaves Dependabot
+    # alerts and the review below blind to every Java dependency. Only the default branch
+    # submits, so a pull request cannot rewrite the graph it is reviewed against.
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/dependency-submission@v6
+
   dependency-review:
     name: Dependency review
     if: github.event_name == 'pull_request'

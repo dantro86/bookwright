@@ -16,6 +16,7 @@ Each test gate uploads an independent Allure result artifact. A successful `main
 Security automation is intentionally separate:
 
 - CodeQL analyzes Java on pushes, pull requests, and a weekly schedule.
+- Dependency submission publishes the resolved Gradle classpath from `main` to the dependency graph. GitHub reads Maven manifests on its own but not Gradle builds, so without it the graph — and every alert derived from it — covers GitHub Actions only.
 - Dependency Review rejects newly introduced dependencies with moderate-or-higher known vulnerabilities.
 - Dependabot proposes grouped Gradle and GitHub Actions updates weekly. Dependency and plugin versions live in `gradle/libs.versions.toml` for its benefit: a version hidden behind a Kotlin constant in a build script is invisible to it and silently rots.
 - Gradle dependency verification checks committed SHA-256 values before using resolved artifacts.
