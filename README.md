@@ -3,7 +3,7 @@
 ![Java 21](https://img.shields.io/badge/Java-21-orange?logo=openjdk)
 ![Gradle](https://img.shields.io/badge/Gradle-8.14-02303A?logo=gradle)
 ![JUnit 5](https://img.shields.io/badge/JUnit-5-25A162?logo=junit5&logoColor=white)
-![Playwright](https://img.shields.io/badge/Playwright-1.53-2EAD33?logo=playwright)
+![Playwright](https://img.shields.io/badge/Playwright-1.64-2EAD33?logo=playwright)
 ![Retrofit](https://img.shields.io/badge/Retrofit-3.0-48B983)
 ![Allure](https://img.shields.io/badge/Allure-2.29-FA6C0E)
 ![GitHub Release](https://img.shields.io/github/v/release/dantro86/bookwright?sort=semver)

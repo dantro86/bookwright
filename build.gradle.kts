@@ -22,7 +22,7 @@ object Versions {
     const val JACKSON = "2.19.2"
     const val ALLURE = "2.29.1"
     const val ALLURE_CLI = "2.39.0"
-    const val PLAYWRIGHT = "1.53.0"
+    const val PLAYWRIGHT = "1.64.0"
     const val OWNER = "1.0.12"
     const val AWAITILITY = "4.3.0"
     const val JDBI = "3.49.5"

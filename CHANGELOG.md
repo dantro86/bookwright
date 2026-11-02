@@ -18,6 +18,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   method-scoped Guice runtime shared by each test.
 - Split steps, framework state, fixture, and test-data parameter resolution into focused JUnit
   extensions, removing fixture construction from `StepsParameterResolver`.
+- Upgraded Playwright from 1.53.0 to 1.64.0, which ships browser builds for Ubuntu 26.04.
+- Returned the quality gate runners to `ubuntu-latest`, which the upgraded Playwright supports
+  again after the runner image moved to Ubuntu 26.04.
 
 ### Planned
 
