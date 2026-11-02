@@ -13,7 +13,7 @@
 [![XERJ Corpus Hub contributor](https://hub.xerj.org/contributors/dantro86/badge.svg)](https://hub.xerj.org/contributors/dantro86)
 
 Example Java test-automation framework: API + UI + DB-over-SSH in one lean project.
-Distilled from a production framework — same architectural ideas.
+Production architecture in a codebase small enough to read end to end.
 
 ## Stack
 
@@ -178,7 +178,7 @@ API consistency boundaries.
 
 ```
 src/main/java/io/bookwright/
-├── annotations/  tags + owners (6 annotations, not 133)
+├── annotations/  tags + owners (6 wrappers over JUnit @Tag and Allure @Owner)
 ├── api/          target/domain Retrofit interfaces + shared transport and DTOs
 ├── config/       Owner configs + Configs entry point
 ├── fixtures/     immutable target-owned product scenarios
