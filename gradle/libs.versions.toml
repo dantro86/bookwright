@@ -1,0 +1,64 @@
+# Single source of truth for dependency and plugin versions, shared by the root project and
+# local-app. Versions live here rather than in Kotlin constants inside the build scripts because
+# Dependabot reads this file and cannot resolve a version hidden behind a constant: declaring them
+# here is what makes automated upgrade pull requests possible.
+
+[versions]
+junit = "5.13.4"
+guice = "7.0.0"
+retrofit = "3.0.0"
+okhttp = "5.1.0"
+jackson = "2.19.2"
+allure-java = "2.29.1"
+# Allure command line distribution downloaded by the Allure plugin, versioned independently
+# of the allure-java adapters above.
+allure-cli = "2.39.0"
+playwright = "1.64.0"
+owner = "1.0.12"
+awaitility = "4.3.0"
+jdbi = "3.49.5"
+mysql = "9.3.0"
+hikari = "6.3.0"
+jsch = "2.27.0"
+assertj = "3.27.3"
+slf4j = "2.0.17"
+logback = "1.5.18"
+
+[libraries]
+# Platforms: every module below that omits a version takes it from one of these.
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jackson" }
+okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp" }
+allure-bom = { module = "io.qameta.allure:allure-bom", version.ref = "allure-java" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+
+guice = { module = "com.google.inject:guice", version.ref = "guice" }
+retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter-jackson = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofit" }
+okhttp-core = { module = "com.squareup.okhttp3:okhttp" }
+okhttp-mockwebserver = { module = "com.squareup.okhttp3:mockwebserver" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+allure-junit5 = { module = "io.qameta.allure:allure-junit5" }
+allure-assertj = { module = "io.qameta.allure:allure-assertj" }
+# Not declared as a dependency: the Allure plugin consumes this version, and the entry exists so
+# Dependabot resolves `allure-cli` against the real artifact instead of skipping it.
+allure-commandline = { module = "io.qameta.allure:allure-commandline", version.ref = "allure-cli" }
+playwright = { module = "com.microsoft.playwright:playwright", version.ref = "playwright" }
+owner = { module = "org.aeonbits.owner:owner", version.ref = "owner" }
+awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
+jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
+jdbi-sqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbi" }
+mysql-connector = { module = "com.mysql:mysql-connector-j", version.ref = "mysql" }
+hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
+jsch = { module = "com.github.mwiede:jsch", version.ref = "jsch" }
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+
+[plugins]
+allure = { id = "io.qameta.allure", version = "2.12.0" }
+lombok = { id = "io.freefair.lombok", version = "8.13" }
+spotless = { id = "com.diffplug.spotless", version = "8.8.0" }
+versions = { id = "com.github.ben-manes.versions", version = "0.54.0" }

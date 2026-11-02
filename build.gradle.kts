@@ -5,33 +5,14 @@ import org.gradle.testing.jacoco.tasks.JacocoReport
 plugins {
     java
     jacoco
-    id("io.qameta.allure") version "2.12.0"
-    id("io.freefair.lombok") version "8.13"
-    id("com.diffplug.spotless") version "8.8.0"
-    id("com.github.ben-manes.versions") version "0.54.0"
+    alias(libs.plugins.allure)
+    alias(libs.plugins.lombok)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.versions)
 }
 
 group = "io.bookwright"
 version = providers.gradleProperty("projectVersion").get()
-
-object Versions {
-    const val JUNIT = "5.13.4"
-    const val GUICE = "7.0.0"
-    const val RETROFIT = "3.0.0"
-    const val OKHTTP = "5.1.0"
-    const val JACKSON = "2.19.2"
-    const val ALLURE = "2.29.1"
-    const val ALLURE_CLI = "2.39.0"
-    const val PLAYWRIGHT = "1.64.0"
-    const val OWNER = "1.0.12"
-    const val AWAITILITY = "4.3.0"
-    const val JDBI = "3.49.5"
-    const val MYSQL = "9.3.0"
-    const val HIKARI = "6.3.0"
-    const val JSCH = "2.27.0"
-    const val ASSERTJ = "3.27.3"
-    const val LOGBACK = "1.5.18"
-}
 
 java {
     toolchain {
@@ -44,43 +25,43 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.fasterxml.jackson:jackson-bom:${Versions.JACKSON}"))
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:${Versions.OKHTTP}"))
-    implementation(platform("io.qameta.allure:allure-bom:${Versions.ALLURE}"))
+    implementation(platform(libs.jackson.bom))
+    implementation(platform(libs.okhttp.bom))
+    implementation(platform(libs.allure.bom))
 
-    implementation("com.google.inject:guice:${Versions.GUICE}")
-    implementation("com.squareup.retrofit2:retrofit:${Versions.RETROFIT}")
-    implementation("com.squareup.retrofit2:converter-jackson:${Versions.RETROFIT}")
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.fasterxml.jackson.core:jackson-databind")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-    implementation("io.qameta.allure:allure-junit5")
-    implementation("io.qameta.allure:allure-assertj")
-    implementation("com.microsoft.playwright:playwright:${Versions.PLAYWRIGHT}")
-    implementation("org.aeonbits.owner:owner:${Versions.OWNER}")
-    implementation("org.awaitility:awaitility:${Versions.AWAITILITY}")
-    implementation("org.jdbi:jdbi3-core:${Versions.JDBI}")
-    implementation("org.jdbi:jdbi3-sqlobject:${Versions.JDBI}")
-    implementation("com.mysql:mysql-connector-j:${Versions.MYSQL}")
-    implementation("com.zaxxer:HikariCP:${Versions.HIKARI}")
-    implementation("com.github.mwiede:jsch:${Versions.JSCH}")
-    implementation("org.assertj:assertj-core:${Versions.ASSERTJ}")
-    implementation("ch.qos.logback:logback-classic:${Versions.LOGBACK}")
+    implementation(libs.guice)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.jackson)
+    implementation(libs.okhttp.core)
+    implementation(libs.jackson.databind)
+    implementation(libs.jackson.datatype.jsr310)
+    implementation(libs.allure.junit5)
+    implementation(libs.allure.assertj)
+    implementation(libs.playwright)
+    implementation(libs.owner)
+    implementation(libs.awaitility)
+    implementation(libs.jdbi.core)
+    implementation(libs.jdbi.sqlobject)
+    implementation(libs.mysql.connector)
+    implementation(libs.hikaricp)
+    implementation(libs.jsch)
+    implementation(libs.assertj.core)
+    implementation(libs.logback.classic)
 
-    implementation(platform("org.junit:junit-bom:${Versions.JUNIT}"))
-    implementation("org.junit.jupiter:junit-jupiter")
-    implementation("org.junit.platform:junit-platform-launcher")
+    implementation(platform(libs.junit.bom))
+    implementation(libs.junit.jupiter)
+    implementation(libs.junit.platform.launcher)
 
-    testImplementation("com.squareup.okhttp3:mockwebserver")
+    testImplementation(libs.okhttp.mockwebserver)
 }
 
 allure {
-    version = Versions.ALLURE_CLI
+    version = libs.versions.allure.cli.get()
     adapter {
         autoconfigure = true
         frameworks {
             junit5 {
-                adapterVersion = Versions.ALLURE
+                adapterVersion = libs.versions.allure.java.get()
             }
         }
     }
@@ -95,7 +76,15 @@ spotless {
         endWithNewline()
     }
     format("projectFiles") {
-        target("*.md", "*.kts", "*.properties", ".github/**/*.yml", "docker/**/*.yml", "scripts/**/*.sh")
+        target(
+            "*.md",
+            "*.kts",
+            "*.properties",
+            "gradle/*.toml",
+            ".github/**/*.yml",
+            "docker/**/*.yml",
+            "scripts/**/*.sh",
+        )
         trimTrailingWhitespace()
         endWithNewline()
     }

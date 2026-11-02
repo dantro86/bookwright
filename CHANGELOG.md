@@ -19,6 +19,9 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Split steps, framework state, fixture, and test-data parameter resolution into focused JUnit
   extensions, removing fixture construction from `StepsParameterResolver`.
 - Upgraded Playwright from 1.53.0 to 1.64.0, which ships browser builds for Ubuntu 26.04.
+- Moved every dependency and plugin version into a `gradle/libs.versions.toml` version catalog,
+  shared by the root project and `local-app`, so that Dependabot can see the versions that
+  Kotlin constants in the build script hid from it.
 - Returned the quality gate runners to `ubuntu-latest`, which the upgraded Playwright supports
   again after the runner image moved to Ubuntu 26.04.
 

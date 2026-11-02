@@ -17,7 +17,7 @@ Security automation is intentionally separate:
 
 - CodeQL analyzes Java on pushes, pull requests, and a weekly schedule.
 - Dependency Review rejects newly introduced dependencies with moderate-or-higher known vulnerabilities.
-- Dependabot proposes grouped Gradle and GitHub Actions updates weekly.
+- Dependabot proposes grouped Gradle and GitHub Actions updates weekly. Dependency and plugin versions live in `gradle/libs.versions.toml` for its benefit: a version hidden behind a Kotlin constant in a build script is invisible to it and silently rots.
 - Gradle dependency verification checks committed SHA-256 values before using resolved artifacts.
 
 For branch protection, require `Required quality gate`, `CodeQL`, and `Dependency review`. The last check applies to pull requests only.
