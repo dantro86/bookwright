@@ -25,6 +25,15 @@ repositories {
 }
 
 dependencies {
+    constraints {
+        // Guice 7.0.0 still brings Guava 31.0.1, which carries deserialization advisories fixed in
+        // 33.7.2. Nothing here uses Guava directly, so raise the transitive version instead of
+        // declaring a dependency the code does not have.
+        implementation(libs.guava) {
+            because("Guava below 33.7.2 is affected by advisories against the version Guice resolves")
+        }
+    }
+
     implementation(platform(libs.jackson.bom))
     implementation(platform(libs.okhttp.bom))
     implementation(platform(libs.allure.bom))

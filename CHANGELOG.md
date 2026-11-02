@@ -28,6 +28,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Returned the quality gate runners to `ubuntu-latest`, which the upgraded Playwright supports
   again after the runner image moved to Ubuntu 26.04.
 
+### Security
+
+- Raised Jackson to 2.22.4, Logback to 1.5.38, and AssertJ to 3.27.7, and constrained Guava, which
+  Guice 7.0.0 still resolves at 31.0.1, to 33.8.0-jre: advisories were reported against every one
+  of those versions.
+
 ### Planned
 
 - See [ROADMAP.md](ROADMAP.md) for the prioritized engineering plan.
