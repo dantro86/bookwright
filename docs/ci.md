@@ -38,3 +38,11 @@ When intentionally changing dependencies, review the artifacts and regenerate ch
 ```
 
 Checksum changes are security-sensitive and must not be accepted blindly.
+
+Regeneration records only the artifacts this machine actually downloads. A file already cached in `~/.gradle` leaves no checksum behind, verification still passes locally, and every gate — `Static quality` included — then fails on a clean runner with `<artifact> failed verification`. Confirm the committed file from an empty cache before pushing:
+
+```bash
+GRADLE_USER_HOME="$(mktemp -d)" ./gradlew --no-daemon clean compileTestJava frameworkTest
+```
+
+Some components publish Gradle Module Metadata next to the POM, and both are fetched. A missing `.module` checksum is copied from Maven Central after its published SHA-1 matches the downloaded file, and is recorded with `origin="Maven Central"` to keep hand-added values distinguishable from generated ones.
