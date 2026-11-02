@@ -10,6 +10,7 @@
 [![Quality Gates](https://github.com/dantro86/bookwright/actions/workflows/tests.yml/badge.svg)](https://github.com/dantro86/bookwright/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/dantro86/bookwright/actions/workflows/security.yml/badge.svg)](https://github.com/dantro86/bookwright/actions/workflows/security.yml)
 [![Allure Report](https://img.shields.io/badge/Allure_Report-live-FA6C0E)](https://dantro86.github.io/bookwright/)
+[![XERJ Corpus Hub contributor](https://hub.xerj.org/contributors/dantro86/badge.svg)](https://hub.xerj.org/contributors/dantro86)
 
 Example Java test-automation framework: API + UI + DB-over-SSH in one lean project.
 Distilled from a production framework — same architectural ideas.
@@ -216,3 +217,7 @@ and treating quality as an engineering system rather than a checklist. **bookwri
 educational expression of those principles.
 
 [LinkedIn](https://www.linkedin.com/in/dantro/) · [GitHub](https://github.com/dantro86)
+
+## License
+
+MIT — see [LICENSE](LICENSE).
