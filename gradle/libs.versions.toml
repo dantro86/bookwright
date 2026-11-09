@@ -4,27 +4,27 @@
 # here is what makes automated upgrade pull requests possible.
 
 [versions]
-junit = "5.13.4"
+junit = "6.1.3"
 guice = "7.0.0"
 # Raised through a dependency constraint, not a declared dependency: see build.gradle.kts.
 guava = "33.8.0-jre"
 retrofit = "3.0.0"
-okhttp = "5.1.0"
+okhttp = "5.5.1"
 jackson = "2.22.4"
-allure-java = "2.29.1"
+allure-java = "3.1.1"
 # Allure command line distribution downloaded by the Allure plugin, versioned independently
 # of the allure-java adapters above.
-allure-cli = "2.39.0"
+allure-cli = "2.46.1"
 playwright = "1.64.0"
 owner = "1.0.12"
 awaitility = "4.3.0"
-jdbi = "3.49.5"
-mysql = "9.3.0"
-hikari = "6.3.0"
-jsch = "2.27.0"
+jdbi = "3.55.0"
+mysql = "26.10.0"
+hikari = "7.1.0"
+jsch = "2.28.8"
 assertj = "3.27.7"
-slf4j = "2.0.17"
-logback = "1.5.38"
+slf4j = "2.0.20"
+logback = "1.6.6"
 
 [libraries]
 # Platforms: every module below that omits a version takes it from one of these.
@@ -61,7 +61,7 @@ junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 
 [plugins]
-allure = { id = "io.qameta.allure", version = "2.12.0" }
-lombok = { id = "io.freefair.lombok", version = "8.13" }
-spotless = { id = "com.diffplug.spotless", version = "8.8.0" }
-versions = { id = "com.github.ben-manes.versions", version = "0.54.0" }
+allure = { id = "io.qameta.allure", version = "4.3.0" }
+lombok = { id = "io.freefair.lombok", version = "9.8.3" }
+spotless = { id = "com.diffplug.spotless", version = "8.11.0" }
+versions = { id = "com.github.ben-manes.versions", version = "0.67.0" }
